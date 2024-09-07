@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 import time
 from io import StringIO
-
+import matplotlib
 
 # Path to data files
 STOK_BARANG_FILE = "stok_barang.csv"
