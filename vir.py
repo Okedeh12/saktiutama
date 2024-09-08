@@ -12,7 +12,6 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
 st.markdown("""
     <style>
     .header {
@@ -52,6 +51,17 @@ st.markdown("""
         cursor: pointer;
     }
     .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    .sidebar .sidebar-content .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+    .sidebar .sidebar-content .stButton > button:hover {
         background-color: #0056b3;
     }
     .stDataFrame {
