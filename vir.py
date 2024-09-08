@@ -25,16 +25,33 @@ st.markdown("""
         color: #333;
     }
     .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
+        background-color: #007bff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        color: white;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'arial', sans-serif;
-        color: #333;
+        color: white;
+        text-align: center;
         margin-bottom: 20px;
     }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
+    .sidebar .sidebar-content .btn {
+        background-color: white;
+        color: #007bff;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .sidebar .sidebar-content .btn:hover {
+        background-color: #0056b3;
+        color: white;
     }
     .main-content {
         padding: 20px;
@@ -56,23 +73,12 @@ st.markdown("""
     .stdataframe {
         overflow-x: auto;
     }
-    .sidebar .sidebar-content .btn {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    .sidebar .sidebar-content .btn:hover {
-        background-color: #0056b3;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>toko sakti utama</h1></div>', unsafe_allow_html=True)
+
 
 
 
