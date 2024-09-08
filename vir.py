@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 import time
 from io import StringIO
+import hashlib
 
 
 # Path to data files
