@@ -99,6 +99,7 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
+
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.header("Stock Barang")
