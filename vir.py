@@ -144,7 +144,6 @@ if 'stok_barang' not in st.session_state:
 def halaman_stock_barang():
     st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Ini adalah halaman Stock Barang. Menampilkan data terkait stok barang yang tersedia.</p></div>', unsafe_allow_html=True)
 
-
     
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
@@ -234,6 +233,7 @@ def halaman_stock_barang():
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.markdown('<div class="main-content"><h2>Penjualan</h2><p>Ini adalah halaman Penjualan. Menampilkan data penjualan dan grafik terkait penjualan harian atau bulanan.</p></div>', unsafe_allow_html=True)
+
 
 
     # Form untuk tambah/edit penjualan
