@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk desain profesional
+# CSS styles for a professional look
 st.markdown("""
     <style>
     .header {
@@ -34,24 +34,8 @@ st.markdown("""
         color: #333;
         margin-bottom: 20px;
     }
-    .sidebar .sidebar-content .btn-hover {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        color: white;
-        background-color: #007bff;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.3s;
-        margin-bottom: 10px;
-    }
-    .sidebar .sidebar-content .btn-hover:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
+    .sidebar .sidebar-content .radio {
+        margin-top: 10px;
     }
     .main-content {
         padding: 20px;
@@ -76,9 +60,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Tampilkan header
+# Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
 
 
 # Load data from CSV files
@@ -911,18 +894,17 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Sidebar dengan tombol
-with st.sidebar:
-    st.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
-    st.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
-    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/stock-barang\'">Stock Barang</a>', unsafe_allow_html=True)
-    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/penjualan\'">Penjualan</a>', unsafe_allow_html=True)
-    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/supplier\'">Supplier</a>', unsafe_allow_html=True)
-    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/owner\'">Owner</a>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
-# Konten utama
-st.markdown('<div class="main-content">Content goes here...</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
