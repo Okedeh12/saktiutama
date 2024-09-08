@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk desain profesional dan dinamis
+# Tambahkan CSS untuk desain sidebar dengan tombol gradien
 st.markdown("""
     <style>
     /* Desain header */
@@ -26,29 +26,30 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
         margin: 0;
-        font-size: 36px;
     }
 
     /* Desain sidebar dengan gambar, menu, dan tombol gradien */
-    .sidebar .sidebar-content {
+    .sidebar-content {
         background-color: #f7f9fc;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         text-align: center;
     }
-    .sidebar .sidebar-content img {
+    .sidebar-content img {
         width: 100px; /* Ukuran gambar logo */
         margin-bottom: 20px;
     }
-    .sidebar .sidebar-content h2 {
+    .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
         color: #007bff;
         margin-bottom: 20px;
         font-size: 24px;
     }
-    .btn-hover.color-3 {
-        background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
+
+    /* Desain tombol dengan gradien dan efek hover */
+    .btn-hover {
+        background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7); /* Gradien tombol */
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -61,9 +62,9 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         text-align: center;
     }
-    .btn-hover.color-3:hover {
-        background-image: linear-gradient(to right, #5a3aab, #6a4f9c, #4a6dbe, #7b2be1);
-        transform: translateY(-2px);
+    .btn-hover:hover {
+        background-image: linear-gradient(to right, #5a3aab, #6a4f9c, #4a6dbe, #7b2be1); /* Gradien saat hover */
+        transform: translateY(-2px); /* Tombol akan sedikit naik saat di-hover */
     }
 
     /* Desain konten utama */
@@ -73,20 +74,9 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin: 20px auto;
-        width: 80%; /* Menyesuaikan lebar konten utama */
+        width: 90%; /* Menyesuaikan lebar konten utama */
         max-width: 1200px; /* Maksimal lebar konten utama */
         text-align: center; /* Menyelaraskan teks di tengah */
-    }
-    .main-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #007bff;
-        margin-bottom: 20px;
-        font-size: 28px;
-    }
-    .main-content p {
-        font-family: 'Arial', sans-serif;
-        color: #666;
-        font-size: 16px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -98,13 +88,13 @@ st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_
 st.sidebar.markdown('<div class="sidebar-content">'
                     '<img src="https://via.placeholder.com/100" alt="Logo"> <!-- Ganti URL gambar dengan gambar yang sesuai -->'
                     '<h2>Menu</h2>'
-                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
-                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
-                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
-                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=owner\'">Owner</button>'
+                    '<button class="btn-hover" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
+                    '<button class="btn-hover" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
+                    '<button class="btn-hover" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
+                    '<button class="btn-hover" onclick="window.location.href=\'?page=owner\'">Owner</button>'
                     '</div>', unsafe_allow_html=True)
 
-# Mengatur pilihan halaman menggunakan parameter URL
+# Mengambil parameter halaman dari URL
 page = st.experimental_get_query_params().get('page', [''])[0]
 
 # Load data from CSV files
@@ -143,6 +133,7 @@ if 'stok_barang' not in st.session_state:
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Ini adalah halaman Stock Barang. Menampilkan data terkait stok barang yang tersedia.</p></div>', unsafe_allow_html=True)
+
 
     
     # Form input barang baru dan edit barang
