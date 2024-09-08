@@ -925,17 +925,18 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman sesuai tombol yang dipilih
-if page == "stock_barang":
+# Menampilkan halaman sesuai pilihan
+if page == "Stock Barang":
     halaman_stock_barang()
-elif page == "penjualan":
+elif page == "Penjualan":
     halaman_penjualan()
-elif page == "supplier":
+elif page == "Supplier":
     halaman_supplier()
-elif page == "owner":
+elif page == "Owner":
     halaman_owner()
 else:
-    # Halaman default ketika tidak ada tombol yang diklik
+    # Halaman default
     st.markdown('<div class="main-content"><h2>Selamat Datang di Toko Sakti Utama</h2><p>Pilih salah satu menu di sebelah kiri untuk melihat konten halaman.</p></div>', unsafe_allow_html=True)
+    
 # Save data when the app is closed or the menu is changed
 save_data()
