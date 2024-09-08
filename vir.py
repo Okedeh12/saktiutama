@@ -12,12 +12,32 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk tombol hover
+# Tambahkan CSS untuk desain profesional
 st.markdown("""
     <style>
-    .btn-hover {
-        display: inline-block;
-        padding: 10px 20px;
+    .header {
+        text-align: center;
+        padding: 20px;
+        background-color: #f0f4f8;
+        border-bottom: 1px solid #ddd;
+    }
+    .header h1 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    .sidebar .sidebar-content {
+        background-color: #f7f9fc;
+        padding-top: 20px;
+    }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .sidebar .sidebar-content .btn-hover {
+        display: block;
+        width: 100%;
+        padding: 10px;
         font-size: 16px;
         color: white;
         background-color: #007bff;
@@ -27,16 +47,38 @@ st.markdown("""
         border: none;
         cursor: pointer;
         transition: background-color 0.3s, transform 0.3s;
+        margin-bottom: 10px;
     }
-    .btn-hover:hover {
+    .sidebar .sidebar-content .btn-hover:hover {
         background-color: #0056b3;
         transform: scale(1.05);
     }
+    .main-content {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+    .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    .stDataFrame {
+        overflow-x: auto;
+    }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# Display the header
+# Tampilkan header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
 
 
 # Load data from CSV files
@@ -869,11 +911,18 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan tombol dengan CSS
-st.markdown('<a class="btn-hover" href="#">Stock Barang</a>', unsafe_allow_html=True)
-st.markdown('<a class="btn-hover" href="#">Penjualan</a>', unsafe_allow_html=True)
-st.markdown('<a class="btn-hover" href="#">Supplier</a>', unsafe_allow_html=True)
-st.markdown('<a class="btn-hover" href="#">Owner</a>', unsafe_allow_html=True)
+# Sidebar dengan tombol
+with st.sidebar:
+    st.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+    st.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
+    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/stock-barang\'">Stock Barang</a>', unsafe_allow_html=True)
+    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/penjualan\'">Penjualan</a>', unsafe_allow_html=True)
+    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/supplier\'">Supplier</a>', unsafe_allow_html=True)
+    st.markdown('<a class="btn-hover" href="#" onclick="window.location.href=\'/owner\'">Owner</a>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Konten utama
+st.markdown('<div class="main-content">Content goes here...</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
