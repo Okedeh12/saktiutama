@@ -12,9 +12,10 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
+# Tambahkan CSS yang lebih rapi dan modern
 st.markdown("""
     <style>
+    /* Desain header */
     .header {
         text-align: center;
         padding: 20px;
@@ -25,45 +26,56 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
     }
+
+    /* Desain sidebar dengan tombol */
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
-        padding-top: 20px;
-        border-bottom: 1px solid #ddd;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
         padding: 20px;
-        background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    /* Desain tombol dengan efek hover dan transisi halus */
     .stButton > button {
         background-color: #007bff;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
+        margin: 10px 0;
         border: none;
         cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        font-size: 16px;
+        font-family: 'Arial', sans-serif;
     }
     .stButton > button:hover {
         background-color: #0056b3;
+        transform: translateY(-2px); /* Tombol akan sedikit naik saat di-hover */
     }
-    .stDataFrame {
-        overflow-x: auto;
+
+    /* Desain konten utama */
+    .main-content {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
     }
+
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
+# Sidebar dengan tombol navigasi
+st.sidebar.markdown('<div class="sidebar-content"><h2>Menu</h2></div>', unsafe_allow_html=True)
 
 # Load data from CSV files
 def load_data():
@@ -98,15 +110,10 @@ def save_data():
 if 'stok_barang' not in st.session_state:
     load_data()
 
-# Sidebar menu
-menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
-
-# Main content area
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
-    st.header("Stock Barang")
+    st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Ini adalah halaman Stock Barang. Menampilkan data terkait stok barang yang tersedia.</p></div>', unsafe_allow_html=True)
+
     
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
@@ -195,7 +202,7 @@ def halaman_stock_barang():
 
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
-    st.header("Penjualan")
+    st.markdown('<div class="main-content"><h2>Penjualan</h2><p>Ini adalah halaman Penjualan. Menampilkan data penjualan dan grafik terkait penjualan harian atau bulanan.</p></div>', unsafe_allow_html=True)
 
     # Form untuk tambah/edit penjualan
     st.subheader("Tambah/Edit Penjualan")
@@ -372,7 +379,7 @@ def halaman_penjualan():
 
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
-    st.header("Data Supplier")
+    st.markdown('<div class="main-content"><h2>Supplier</h2><p>Ini adalah halaman Supplier. Menampilkan data supplier dan informasi terkait hubungan kerja sama dengan pemasok.</p></div>', unsafe_allow_html=True)
 
     # Memilih ID Supplier untuk diedit atau menambah baru
     supplier_ids = st.session_state.supplier["ID"].tolist()
@@ -494,9 +501,8 @@ def save_to_excel():
 
 
 
-# Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
-    st.header("Halaman Owner - Analisa Keuangan")
+    st.markdown('<div class="main-content"><h2>Owner</h2><p>Ini adalah halaman Owner. Menampilkan informasi rahasia atau akses khusus untuk pemilik toko.</p></div>', unsafe_allow_html=True)
 
     # Login form
     if 'authenticated' not in st.session_state:
@@ -895,17 +901,31 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Variabel untuk menyimpan pilihan halaman yang diklik
+halaman = ""
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Menambahkan tombol navigasi dengan efek hover
+if st.sidebar.button("Stock Barang"):
+    halaman = "Stock Barang"
+if st.sidebar.button("Penjualan"):
+    halaman = "Penjualan"
+if st.sidebar.button("Supplier"):
+    halaman = "Supplier"
+if st.sidebar.button("Owner"):
+    halaman = "Owner"
+
+# Menampilkan halaman sesuai tombol yang dipilih
+if halaman == "Stock Barang":
+    halaman_stock_barang()
+elif halaman == "Penjualan":
+    halaman_penjualan()
+elif halaman == "Supplier":
+    halaman_supplier()
+elif halaman == "Owner":
+    halaman_owner()
+else:
+    # Halaman default ketika tidak ada tombol yang diklik
+    st.markdown('<div class="main-content"><h2>Selamat Datang di Toko Sakti Utama</h2><p>Pilih salah satu menu di sebelah kiri untuk melihat konten halaman.</p></div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
