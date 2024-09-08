@@ -12,54 +12,77 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
-st.markdown("""
-    <style>
-    .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
+<style>
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f4f8;
+    border-bottom: 1px solid #ddd;
+}
+.header h1 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+.sidebar {
+    display: flex;
+    justify-content: center;
+    background-color: #f7f9fc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+.sidebar-content {
+    width: 100%;
+}
+.sidebar-content h2 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.sidebar-content .radio {
+    margin-top: 10px;
+}
+.sidebar-content .radio input[type="radio"] {
+    display: none;
+}
+.sidebar-content .radio label {
+    display: block;
+    background-color: #f7f9fc;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+.sidebar-content .radio input[type="radio"]:checked + label {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+.main-content {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.stButton > button {
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+.stButton > button:hover {
+    background-color: #0056b3;
+}
+.stDataFrame {
+    overflow-x: auto;
+}
+</style>
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
