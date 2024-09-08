@@ -933,27 +933,14 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Variabel untuk menyimpan pilihan halaman yang diklik
-halaman = ""
-
-# Menambahkan tombol navigasi dengan efek gradien
-if st.sidebar.button("Stock Barang", key="stock_barang", help="Go to Stock Barang", css_class="btn-hover color-3"):
-    halaman = "Stock Barang"
-if st.sidebar.button("Penjualan", key="penjualan", help="Go to Penjualan", css_class="btn-hover color-3"):
-    halaman = "Penjualan"
-if st.sidebar.button("Supplier", key="supplier", help="Go to Supplier", css_class="btn-hover color-3"):
-    halaman = "Supplier"
-if st.sidebar.button("Owner", key="owner", help="Go to Owner", css_class="btn-hover color-3"):
-    halaman = "Owner"
-
 # Menampilkan halaman sesuai tombol yang dipilih
-if halaman == "Stock Barang":
+if page == "stock_barang":
     halaman_stock_barang()
-elif halaman == "Penjualan":
+elif page == "penjualan":
     halaman_penjualan()
-elif halaman == "Supplier":
+elif page == "supplier":
     halaman_supplier()
-elif halaman == "Owner":
+elif page == "owner":
     halaman_owner()
 else:
     # Halaman default ketika tidak ada tombol yang diklik
