@@ -25,38 +25,6 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
     }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
-    }
     .sidebar-menu {
         display: flex;
         flex-direction: column;
@@ -81,6 +49,7 @@ st.markdown("""
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
 
 
 # Load data from CSV files
@@ -122,9 +91,9 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.header("Stock Barang")
+    st.write("Menampilkan informasi tentang stock barang di toko.")
     
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
@@ -211,9 +180,9 @@ def halaman_stock_barang():
     
     st.dataframe(df_stok_barang)
 
-# Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.header("Penjualan")
+    st.write("Menampilkan data penjualan produk toko.")
 
     # Form untuk tambah/edit penjualan
     st.subheader("Tambah/Edit Penjualan")
@@ -391,7 +360,8 @@ def halaman_penjualan():
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
     st.header("Data Supplier")
-
+    st.write("Menampilkan informasi mengenai supplier barang.")
+    
     # Memilih ID Supplier untuk diedit atau menambah baru
     supplier_ids = st.session_state.supplier["ID"].tolist()
     supplier_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah data baru
@@ -515,6 +485,7 @@ def save_to_excel():
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
     st.header("Halaman Owner - Analisa Keuangan")
+    st.write("Selamat datang di halaman Owner. Berikut adalah analisa keuangan.")
 
     # Login form
     if 'authenticated' not in st.session_state:
