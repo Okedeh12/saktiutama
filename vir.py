@@ -32,7 +32,7 @@ st.markdown("""
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
         color: #333;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
     .sidebar .sidebar-content .radio {
         margin-top: 10px;
