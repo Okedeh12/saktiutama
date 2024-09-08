@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS yang lebih rapi dan modern
+# Tambahkan CSS untuk tombol dengan efek gradien dan hover
 st.markdown("""
     <style>
     /* Desain header */
@@ -40,9 +40,9 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* Desain tombol dengan efek hover dan transisi halus */
+    /* Desain tombol dengan gradien dan efek hover */
     .stButton > button {
-        background-color: #007bff;
+        background: linear-gradient(90deg, #007bff, #00d4ff); /* Gradien biru ke cyan */
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -50,12 +50,13 @@ st.markdown("""
         border: none;
         cursor: pointer;
         width: 100%;
-        transition: background-color 0.3s ease, transform 0.2s ease;
+        transition: background 0.3s ease, transform 0.2s ease;
         font-size: 16px;
         font-family: 'Arial', sans-serif;
+        text-align: center;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
+        background: linear-gradient(90deg, #0056b3, #00a1d3); /* Gradien biru gelap ke cyan lebih gelap */
         transform: translateY(-2px); /* Tombol akan sedikit naik saat di-hover */
     }
 
@@ -76,6 +77,7 @@ st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_
 
 # Sidebar dengan tombol navigasi
 st.sidebar.markdown('<div class="sidebar-content"><h2>Menu</h2></div>', unsafe_allow_html=True)
+
 
 # Load data from CSV files
 def load_data():
@@ -501,6 +503,7 @@ def save_to_excel():
 
 
 
+# Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
     st.markdown('<div class="main-content"><h2>Owner</h2><p>Ini adalah halaman Owner. Menampilkan informasi rahasia atau akses khusus untuk pemilik toko.</p></div>', unsafe_allow_html=True)
 
@@ -904,7 +907,7 @@ def halaman_owner():
 # Variabel untuk menyimpan pilihan halaman yang diklik
 halaman = ""
 
-# Menambahkan tombol navigasi dengan efek hover
+# Menambahkan tombol navigasi dengan efek gradien
 if st.sidebar.button("Stock Barang"):
     halaman = "Stock Barang"
 if st.sidebar.button("Penjualan"):
