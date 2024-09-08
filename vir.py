@@ -13,59 +13,69 @@ SUPPLIER_FILE = "supplier.csv"
 # CSS styles for a professional look
 st.markdown("""
     <style>
-    /* Header styling */
+    /* Header Styles */
     .header {
         text-align: center;
         padding: 20px;
-        background-color: #007bff;
-        border-bottom: 1px solid #0056b3;
-        color: white;
+        background-color: #f0f4f8;
+        border-bottom: 1px solid #ddd;
     }
     .header h1 {
         font-family: 'Arial', sans-serif;
-        font-size: 24px;
-        margin: 0;
-    }
-    /* Sidebar styling */
-    .sidebar .sidebar-content {
-        background-color: #f0f4f8;
-        padding-top: 20px;
-        font-family: 'Arial', sans-serif;
-    }
-    .sidebar .sidebar-content .stRadio {
-        background-color: #e9ecef;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-    .sidebar .sidebar-content .stRadio label {
-        font-size: 18px;
-        font-weight: bold;
         color: #333;
-        padding: 10px 20px;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 250px;
+        background-color: #343a40; /* Dark background for sidebar */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        border-right: 1px solid #ddd;
+        overflow: auto;
+    }
+    .sidebar .sidebar-content {
+        background-color: #343a40; /* Dark background for sidebar content */
+        padding-top: 20px;
+    }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #ffffff; /* White text color */
+        margin-bottom: 20px;
+        font-size: 1.5em; /* Larger font size for section headers */
+    }
+    .sidebar .sidebar-content .menu-item {
+        margin-top: 10px;
+    }
+    .sidebar .sidebar-content .menu-item a {
+        text-decoration: none;
+        color: #ffffff; /* White text color */
+        font-size: 1.2em; /* Larger font size for menu items */
         display: block;
-        cursor: pointer;
-        transition: background-color 0.3s;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #495057; /* Slightly lighter background color */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, color 0.3s;
     }
-    .sidebar .sidebar-content .stRadio input[type="radio"] {
-        margin-right: 10px;
+    .sidebar .sidebar-content .menu-item a:hover {
+        background-color: #6c757d; /* Hover effect background color */
+        color: #ffffff; /* Hover text color */
     }
-    .sidebar .sidebar-content .stRadio:hover {
-        background-color: #d6d6d6;
-    }
-    /* Main content styling */
+
+    /* Main Content Styles */
     .main-content {
+        margin-left: 250px;
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 20px;
     }
-    .main-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
+
+    /* Button Styles */
     .stButton > button {
         background-color: #007bff;
         color: white;
@@ -73,11 +83,12 @@ st.markdown("""
         padding: 10px 20px;
         border: none;
         cursor: pointer;
-        transition: background-color 0.3s;
     }
     .stButton > button:hover {
         background-color: #0056b3;
     }
+
+    /* DataFrame Styles */
     .stDataFrame {
         overflow-x: auto;
     }
@@ -918,7 +929,9 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Render pages based on sidebar selection
+# Display the content based on menu selection
+menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"], key="menu_radio")
+
 if menu == "Stock Barang":
     halaman_stock_barang()
 elif menu == "Penjualan":
@@ -927,8 +940,6 @@ elif menu == "Supplier":
     halaman_supplier()
 elif menu == "Owner":
     halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
