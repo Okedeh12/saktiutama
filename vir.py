@@ -21,7 +21,7 @@ st.markdown("""
         border-bottom: 1px solid #ddd;
     }
     .header h1 {
-        font-family: 'Arial', sans-serif;
+        font-family: 'arial', sans-serif;
         color: #333;
     }
     .sidebar .sidebar-content {
@@ -29,7 +29,7 @@ st.markdown("""
         padding-top: 20px;
     }
     .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
+        font-family: 'arial', sans-serif;
         color: #333;
         margin-bottom: 20px;
     }
@@ -42,7 +42,7 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .stButton > button {
+    .stbutton > button {
         background-color: #007bff;
         color: white;
         border-radius: 8px;
@@ -50,28 +50,30 @@ st.markdown("""
         border: none;
         cursor: pointer;
     }
-    .stButton > button:hover {
+    .stbutton > button:hover {
         background-color: #0056b3;
     }
-    .sidebar .sidebar-content .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .sidebar .sidebar-content .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
+    .stdataframe {
         overflow-x: auto;
+    }
+    .sidebar .sidebar-content .btn {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .sidebar .sidebar-content .btn:hover {
+        background-color: #0056b3;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="header"><h1>toko sakti utama</h1></div>', unsafe_allow_html=True)
+
 
 
 # Load data from CSV files
