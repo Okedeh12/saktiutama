@@ -15,36 +15,81 @@ SUPPLIER_FILE = "supplier.csv"
 # CSS styles for a professional look
 st.markdown("""
     <style>
+    /* Reset margin and padding */
+    body, h1, h2, p {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* General Body Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Header Styles */
     .header {
         text-align: center;
         padding: 20px;
-        background-color: #f0f4f8;
+        background-color: #2c3e50; /* Dark Blue Background */
         border-bottom: 1px solid #ddd;
     }
     .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
+        color: #ecf0f1; /* Light Gray Text */
     }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 250px;
+        background-color: #34495e; /* Dark Gray Background */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
         padding-top: 20px;
+        border-right: 1px solid #ddd;
+        overflow: auto;
     }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
+    .sidebar-content {
+        padding: 20px;
+    }
+    .sidebar-content h2 {
+        color: #ecf0f1; /* Light Gray Text */
         margin-bottom: 20px;
     }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
+    .sidebar-content .menu-item {
+        margin-bottom: 10px;
     }
+    .sidebar-content .menu-item a {
+        text-decoration: none;
+        color: #ffffff; /* White Text */
+        font-size: 1.1em;
+        display: block;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #1abc9c; /* Teal Background */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .sidebar-content .menu-item a:hover {
+        background-color: #16a085; /* Darker Teal Background on Hover */
+        color: #ffffff; /* White Text on Hover */
+    }
+
+    /* Main Content Styles */
     .main-content {
+        margin-left: 250px;
         padding: 20px;
-        background-color: #ffffff;
+        background-color: #ecf0f1; /* Light Gray Background */
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
     }
+
+    /* Button Styles */
     .stButton > button {
-        background-color: #007bff;
+        background-color: #3498db; /* Blue Background */
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -52,8 +97,10 @@ st.markdown("""
         cursor: pointer;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
+        background-color: #2980b9; /* Darker Blue Background on Hover */
     }
+
+    /* DataFrame Styles */
     .stDataFrame {
         overflow-x: auto;
     }
@@ -62,6 +109,14 @@ st.markdown("""
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
+# Sidebar layout
+st.sidebar.markdown('<div class="sidebar"><div class="sidebar-content"><h2>Menu</h2>'
+                     '<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>'
+                     '<div class="menu-item"><a href="#penjualan">Penjualan</a></div>'
+                     '<div class="menu-item"><a href="#supplier">Supplier</a></div>'
+                     '<div class="menu-item"><a href="#owner">Owner</a></div>'
+                     '</div></div>', unsafe_allow_html=True)
 
 
 # Load data from CSV files
@@ -894,17 +949,18 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Menu selection
+menu = st.sidebar.selectbox("Select Page", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Display the selected page
+if menu == "Stock Barang":
+    st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Konten untuk Stock Barang akan ditampilkan di sini.</p></div>', unsafe_allow_html=True)
+elif menu == "Penjualan":
+    st.markdown('<div class="main-content"><h2>Penjualan</h2><p>Konten untuk Penjualan akan ditampilkan di sini.</p></div>', unsafe_allow_html=True)
+elif menu == "Supplier":
+    st.markdown('<div class="main-content"><h2>Supplier</h2><p>Konten untuk Supplier akan ditampilkan di sini.</p></div>', unsafe_allow_html=True)
+elif menu == "Owner":
+    st.markdown('<div class="main-content"><h2>Owner</h2><p>Konten untuk Owner akan ditampilkan di sini.</p></div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
