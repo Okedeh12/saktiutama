@@ -89,14 +89,14 @@ st.markdown("""
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-# Sidebar dengan tombol navigasi
+# Sidebar dengan dropdown menu
 st.sidebar.markdown('<div class="sidebar-content">'
                     '<h2>Menu</h2>'
-                    '<button class="btn-hover" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
-                    '<button class="btn-hover" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
-                    '<button class="btn-hover" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
-                    '<button class="btn-hover" onclick="window.location.href=\'?page=owner\'">Owner</button>'
                     '</div>', unsafe_allow_html=True)
+
+# Pilihan halaman menggunakan selectbox
+page = st.sidebar.selectbox("Pilih Halaman", ["Selamat Datang", "Stock Barang", "Penjualan", "Supplier", "Owner"])
+
 
 
 # Load data from CSV files
