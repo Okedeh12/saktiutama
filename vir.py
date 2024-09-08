@@ -517,73 +517,10 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
-# Fungsi untuk menyimpan data
-def save_data():
-    st.session_state.stok_barang.to_csv('stok_barang.csv', index=False)
-    st.session_state.penjualan.to_csv('penjualan.csv', index=False)
-    st.session_state.supplier.to_csv('supplier.csv', index=False)
-    st.session_state.piutang_konsumen.to_csv('piutang_konsumen.csv', index=False)
-    st.session_state.pengeluaran.to_csv('pengeluaran.csv', index=False)
-    st.session_state.historis_analisis_keuangan.to_csv('historis_analisis_keuangan.csv', index=False)
-    st.session_state.historis_keuntungan_bersih.to_csv('historis_keuntungan_bersih.csv', index=False)
-
-# Fungsi untuk menyimpan semua data ke Excel
-def save_to_excel():
-    with pd.ExcelWriter('data_laporan.xlsx') as writer:
-        st.session_state.stok_barang.to_excel(writer, sheet_name='Stok Barang', index=False)
-        st.session_state.penjualan.to_excel(writer, sheet_name='Penjualan', index=False)
-        st.session_state.supplier.to_excel(writer, sheet_name='Supplier', index=False)
-        st.session_state.piutang_konsumen.to_excel(writer, sheet_name='Piutang Konsumen', index=False)
-        st.session_state.pengeluaran.to_excel(writer, sheet_name='Pengeluaran', index=False)
-        st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name='Historis Analisis Keuangan', index=False)
-        st.session_state.historis_keuntungan_bersih.to_excel(writer, sheet_name='Historis Keuntungan Bersih', index=False)
-
-# Fungsi utama halaman Owner
-def halaman_owner():
-    st.header("Halaman Owner - Analisa Keuangan")
-
-    # Login form
-    if 'authenticated' not in st.session_state:
-        st.session_state.authenticated = False
-
-    if not st.session_state.authenticated:
-        with st.form("login_form"):
-            password = st.text_input("Masukkan Password", type="password")
-            submit = st.form_submit_button("Login")
-            
-            if submit and password == "Jayaselalu123":  # Ganti dengan password yang Anda inginkan
-                st.session_state.authenticated = True
-                st.success("Login berhasil!")
-            elif submit:
-                st.error("Password salah!")
-        return
-
-    # Menampilkan session state di sidebar untuk debugging
-    with st.sidebar:
-        st.subheader("Session State")
-        st.write("Stok Barang:")
-        st.dataframe(st.session_state.get('stok_barang', pd.DataFrame()))
-        st.write("Penjualan:")
-        st.dataframe(st.session_state.get('penjualan', pd.DataFrame()))
-        st.write("Supplier:")
-        st.dataframe(st.session_state.get('supplier', pd.DataFrame()))
-        st.write("Piutang Konsumen:")
-        st.dataframe(st.session_state.get('piutang_konsumen', pd.DataFrame()))
-        st.write("Pengeluaran:")
-        st.dataframe(st.session_state.get('pengeluaran', pd.DataFrame()))
-        st.write("Historis Analisis Keuangan:")
-        st.dataframe(st.session_state.get('historis_analisis_keuangan', pd.DataFrame()))
-        st.write("Historis Keuntungan Bersih:")
-        st.dataframe(st.session_state.get('historis_keuntungan_bersih', pd.DataFrame()))
-
-    # Inisialisasi stok barang jika belum ada
-    if 'stok_barang' not in st.session_state:
-        st.session_state.stok_barang = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan"
-        ])
-    
     # Tabel stok barang dengan fitur edit dan hapus
     st.header("Stock Barang")
+
+    # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
@@ -613,9 +550,11 @@ def halaman_owner():
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
+        
         harga = st.number_input("Harga", min_value=0, value=int(default_values["Harga"]))
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
+        
         submit = st.form_submit_button("Simpan Barang")
 
         if submit:
@@ -654,12 +593,6 @@ def halaman_owner():
     
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
-    if 'penjualan' not in st.session_state:
-        st.session_state.penjualan = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
-            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
-            "Keuntungan", "Waktu"
-        ])
     st.dataframe(st.session_state.penjualan)
     
     # Analisa keuangan dengan grafik pemasaran
@@ -670,106 +603,296 @@ def halaman_owner():
     st.write(f"Total Penjualan: Rp {total_penjualan}")
     
     # Perhitungan tagihan supplier bulanan
-    if 'supplier' not in st.session_state:
-        st.session_state.supplier = pd.DataFrame(columns=[
-            "Nama Supplier", "Tagihan", "Waktu"
-        ])
-        
     current_month = datetime.now().strftime("%Y-%m")
     st.session_state.supplier['Waktu'] = pd.to_datetime(st.session_state.supplier['Waktu'])
-    monthly_supplier_bills = st.session_state.supplier[st.session_state.supplier['Waktu'].dt.to_period('M') == current_month]['Tagihan'].sum()
-    st.write(f"Tagihan Supplier Bulan Ini: Rp {monthly_supplier_bills}")
+    monthly_supplier_bills = st.session_state.supplier[st.session_state.supplier["Waktu"].dt.strftime("%Y-%m") == current_month]["Tagihan"].sum()
+    st.write(f"Total Tagihan Supplier Bulan Ini: Rp {monthly_supplier_bills}")
     
-    # Grafik keuntungan per barang
+    # Menghitung total penjualan
+    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+
+    # Menghitung total tagihan supplier
+    if not st.session_state.supplier.empty:
+        monthly_supplier_bills = st.session_state.supplier["Tagihan"].sum()
+    else:
+        monthly_supplier_bills = 0
+
+    # Menghitung selisih antara total penjualan dan tagihan supplier
+    selisih = total_penjualan - monthly_supplier_bills
+
+    # Menampilkan hasil perbandingan
+    st.write(f"Total Penjualan: Rp {total_penjualan:,.0f}")
+    st.write(f"Total Tagihan Supplier: Rp {monthly_supplier_bills:,.0f}")
+    st.write(f"Selisih antara Total Penjualan dan Tagihan Supplier: Rp {selisih:,.0f}")
+
+    # Membuat DataFrame untuk analisis keuangan
+    analisis_keuangan_df = pd.DataFrame({
+        "Tanggal": [datetime.now().strftime("%Y-%m-%d")],
+        "Total Penjualan": [total_penjualan],
+        "Total Tagihan Supplier": [monthly_supplier_bills],
+        "Selisih": [selisih]
+    })
+
+    # Menampilkan tabel analisis keuangan
+    st.subheader("Tabel Analisis Keuangan")
+    st.dataframe(analisis_keuangan_df)
+
+    # Menyimpan histori analisis keuangan ke file CSV
+    if "historis_analisis_keuangan" not in st.session_state:
+        st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
+
+    st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
+
+    # Menampilkan tabel data supplier dengan pencarian
+    st.subheader("Data Supplier")
+    
+    search_input = st.text_input("Cari Nama Barang atau Merk")
+    
+    if search_input:
+        filtered_supplier = st.session_state.supplier[
+            (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False)) |
+            (st.session_state.supplier["Merk"].str.contains(search_input, case=False))
+        ]
+        st.write("Hasil Pencarian:")
+        st.dataframe(filtered_supplier)
+    else:
+        st.dataframe(st.session_state.supplier)
+
+        # Inisialisasi piutang konsumen jika belum ada
+    if 'piutang_konsumen' not in st.session_state:
+        st.session_state.piutang_konsumen = pd.DataFrame(columns=[
+            "Nama Konsumen", "Alamat", "Nomor Telepon", "Nama Barang", "Merk", 
+            "Kode Warna", "Ukuran/Kemasan", "Jumlah", "Total Tagihan", 
+            "Cicilan Tagihan", "Sisa Tagihan", "Janji Bayar"
+        ])
+
+    # Form Piutang Konsumen
+    st.subheader("Form Piutang Konsumen")
+
+    with st.form("form_piutang"):
+        nama_konsumen = st.text_input("Nama Konsumen")
+        alamat = st.text_input("Alamat")
+        nomor_telepon = st.text_input("Nomor Telepon")
+        nama_barang = st.text_input("Nama Barang")
+        merk = st.text_input("Merk")
+        kode_warna = st.text_input("Kode Warna (opsional)")
+        ukuran = st.text_input("Ukuran/Kemasan")
+        jumlah = st.number_input("Jumlah", min_value=1)
+        total_tagihan = st.number_input("Total Tagihan", min_value=0)
+        cicilan_tagihan = st.number_input("Cicilan Tagihan (opsional)", min_value=0, value=0)
+        janji_bayar = st.date_input("Janji Bayar")
+
+        # Menghitung Sisa Tagihan
+        sisa_tagihan = total_tagihan - cicilan_tagihan
+
+        # Tombol submit untuk menambahkan atau mengedit data piutang
+        submit_piutang = st.form_submit_button("Tambah/Edit Piutang")
+
+        if submit_piutang:
+            new_piutang = {
+                "Nama Konsumen": nama_konsumen,
+                "Alamat": alamat,
+                "Nomor Telepon": nomor_telepon,
+                "Nama Barang": nama_barang,
+                "Merk": merk,
+                "Kode Warna": kode_warna if kode_warna else "",
+                "Ukuran/Kemasan": ukuran,
+                "Jumlah": jumlah,
+                "Total Tagihan": total_tagihan,
+                "Cicilan Tagihan": cicilan_tagihan if cicilan_tagihan else 0,
+                "Sisa Tagihan": sisa_tagihan,
+                "Janji Bayar": janji_bayar
+            }
+
+            # Tambah data piutang ke session state
+            st.session_state.piutang_konsumen = st.session_state.piutang_konsumen.append(new_piutang, ignore_index=True)
+            st.success("Piutang konsumen berhasil ditambahkan!")
+            save_data()  # Panggil fungsi untuk menyimpan data
+
+    # Tabel Piutang Konsumen
+    st.subheader("Tabel Piutang Konsumen")
+
+    # Tampilkan tabel piutang dengan fitur edit dan hapus
+    if not st.session_state.piutang_konsumen.empty:
+        st.dataframe(st.session_state.piutang_konsumen)
+
+        # Pilih piutang yang akan diedit
+        selected_row = st.selectbox("Pilih Nama Konsumen untuk Diedit", st.session_state.piutang_konsumen["Nama Konsumen"])
+
+        piutang_dipilih = st.session_state.piutang_konsumen[st.session_state.piutang_konsumen["Nama Konsumen"] == selected_row]
+
+        # Form untuk edit piutang konsumen
+        with st.form("edit_piutang"):
+            nama_konsumen_edit = st.text_input("Nama Konsumen", value=piutang_dipilih["Nama Konsumen"].values[0])
+            alamat_edit = st.text_input("Alamat", value=piutang_dipilih["Alamat"].values[0])
+            nomor_telepon_edit = st.text_input("Nomor Telepon", value=piutang_dipilih["Nomor Telepon"].values[0])
+            nama_barang_edit = st.text_input("Nama Barang", value=piutang_dipilih["Nama Barang"].values[0])
+            merk_edit = st.text_input("Merk", value=piutang_dipilih["Merk"].values[0])
+            kode_warna_edit = st.text_input("Kode Warna (opsional)", value=piutang_dipilih["Kode Warna"].values[0])
+            ukuran_edit = st.text_input("Ukuran/Kemasan", value=piutang_dipilih["Ukuran/Kemasan"].values[0])
+            jumlah_edit = st.number_input("Jumlah", min_value=1, value=int(piutang_dipilih["Jumlah"].values[0]))
+            total_tagihan_edit = st.number_input("Total Tagihan", min_value=0, value=int(piutang_dipilih["Total Tagihan"].values[0]))
+            cicilan_tagihan_edit = st.number_input("Cicilan Tagihan (opsional)", min_value=0, value=int(piutang_dipilih["Cicilan Tagihan"].values[0]))
+            janji_bayar_edit = st.date_input("Janji Bayar", value=pd.to_datetime(piutang_dipilih["Janji Bayar"].values[0]))
+
+            sisa_tagihan_edit = total_tagihan_edit - cicilan_tagihan_edit
+
+            submit_edit_piutang = st.form_submit_button("Update Piutang")
+
+            if submit_edit_piutang:
+                st.session_state.piutang_konsumen.loc[st.session_state.piutang_konsumen["Nama Konsumen"] == selected_row, [
+                    "Nama Konsumen", "Alamat", "Nomor Telepon", "Nama Barang", "Merk", 
+                    "Kode Warna", "Ukuran/Kemasan", "Jumlah", "Total Tagihan", 
+                    "Cicilan Tagihan", "Sisa Tagihan", "Janji Bayar"
+                ]] = [nama_konsumen_edit, alamat_edit, nomor_telepon_edit, nama_barang_edit, merk_edit, 
+                      kode_warna_edit, ukuran_edit, jumlah_edit, total_tagihan_edit, cicilan_tagihan_edit, 
+                      sisa_tagihan_edit, janji_bayar_edit]
+                st.success("Piutang konsumen berhasil diupdate!")
+                save_data()  # Simpan perubahan data
+
+        # Tombol hapus piutang
+        if st.button("Hapus Piutang"):
+            st.session_state.piutang_konsumen = st.session_state.piutang_konsumen[st.session_state.piutang_konsumen["Nama Konsumen"] != selected_row]
+            st.success("Piutang konsumen berhasil dihapus!")
+            save_data()  # Simpan setelah hapus
+    else:
+        st.write("Tidak ada data piutang konsumen.")
+
+    # Menampilkan histori analisis keuangan
+    st.subheader("Histori Analisis Keuangan")
+    st.dataframe(st.session_state.historis_analisis_keuangan)
+
+    # Tombol untuk mendownload histori analisis keuangan
+    if st.button("Download Histori Analisis Keuangan (CSV)"):
+        csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
+        st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
+
+    
+    # Grafik keuntungan penjualan per barang
     if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
         st.subheader("Grafik Pemasaran")
-        
+
+        # Grouping the data by "Nama Barang" and summing up the "Keuntungan"
         keuntungan_per_barang = st.session_state.penjualan.groupby("Nama Barang")["Keuntungan"].sum()
-        
+
+        # Plotting the bar chart
         plt.figure(figsize=(10, 6))
         keuntungan_per_barang.sort_values(ascending=False).plot(kind="bar", color="skyblue")
+        
+        # Adding titles and labels
         plt.title("Keuntungan per Barang", fontsize=14)
         plt.xlabel("Nama Barang", fontsize=12)
         plt.ylabel("Total Keuntungan (Rp)", fontsize=12)
         plt.xticks(rotation=45, ha="right", fontsize=10)
+
+        # Display the plot in Streamlit
         st.pyplot(plt)
+
+    else:
+        st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
     
-    # Form untuk mengelola piutang konsumen
-    st.subheader("Piutang Konsumen")
-    if 'piutang_konsumen' not in st.session_state:
-        st.session_state.piutang_konsumen = pd.DataFrame(columns=[
-            "Nama Konsumen", "Jumlah Piutang", "Tanggal", "Keterangan"
+    # Menambahkan tabel pengeluaran dan fitur edit
+    st.subheader("Pengeluaran")
+    
+    # Simulasi data untuk penjualan dan pengeluaran
+    if 'penjualan' not in st.session_state:
+        st.session_state.penjualan = pd.DataFrame(columns=[
+            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
+            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
+            "Keuntungan", "Waktu"
         ])
 
-    with st.form("form_piutang"):
-        nama_konsumen = st.text_input("Nama Konsumen")
-        jumlah_piutang = st.number_input("Jumlah Piutang", min_value=0)
-        tanggal = st.date_input("Tanggal", datetime.now())
-        keterangan = st.text_area("Keterangan")
-        submit_piutang = st.form_submit_button("Simpan Piutang")
-        
-        if submit_piutang:
-            new_piutang = pd.DataFrame({
-                "Nama Konsumen": [nama_konsumen],
-                "Jumlah Piutang": [jumlah_piutang],
-                "Tanggal": [tanggal],
-                "Keterangan": [keterangan]
-            })
-            st.session_state.piutang_konsumen = pd.concat([st.session_state.piutang_konsumen, new_piutang], ignore_index=True)
-            st.success("Piutang konsumen berhasil ditambahkan!")
-            save_data()  # Simpan data setelah menambah piutang
-
-    st.dataframe(st.session_state.piutang_konsumen)
-    
-    # Form untuk mengelola pengeluaran
-    st.subheader("Pengeluaran")
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=[
-            "Nama Pengeluaran", "Jumlah", "Tanggal", "Keterangan"
+            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
-    
-    with st.form("form_pengeluaran"):
-        nama_pengeluaran = st.text_input("Nama Pengeluaran")
-        jumlah_pengeluaran = st.number_input("Jumlah Pengeluaran", min_value=0)
-        tanggal_pengeluaran = st.date_input("Tanggal Pengeluaran", datetime.now())
-        keterangan_pengeluaran = st.text_area("Keterangan Pengeluaran")
-        submit_pengeluaran = st.form_submit_button("Simpan Pengeluaran")
-        
-        if submit_pengeluaran:
-            new_pengeluaran = pd.DataFrame({
-                "Nama Pengeluaran": [nama_pengeluaran],
-                "Jumlah": [jumlah_pengeluaran],
-                "Tanggal": [tanggal_pengeluaran],
-                "Keterangan": [keterangan_pengeluaran]
-            })
-            st.session_state.pengeluaran = pd.concat([st.session_state.pengeluaran, new_pengeluaran], ignore_index=True)
-            st.success("Pengeluaran berhasil ditambahkan!")
-            save_data()  # Simpan data setelah menambah pengeluaran
 
-    st.dataframe(st.session_state.pengeluaran)
-    
-    # Historis Analisis Keuangan dan Keuntungan Bersih
-    st.subheader("Historis Analisis Keuangan dan Keuntungan Bersih")
-    if 'historis_analisis_keuangan' not in st.session_state:
-        st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=[
-            "Tanggal", "Pendapatan", "Pengeluaran", "Keuntungan Bersih"
-        ])
-        
     if 'historis_keuntungan_bersih' not in st.session_state:
         st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=[
-            "Tanggal", "Keuntungan Bersih"
+            "Waktu", "Keuntungan Bersih"
         ])
-    
-    st.write("Analisis Keuangan:")
-    st.dataframe(st.session_state.historis_analisis_keuangan)
-    
-    st.write("Keuntungan Bersih:")
+
+    # Menampilkan tabel pengeluaran
+    st.dataframe(st.session_state.pengeluaran)
+
+    # Form untuk menambah pengeluaran
+    with st.form("tambah_pengeluaran"):
+        st.write("Tambah Pengeluaran Baru")
+        jenis_pengeluaran = st.selectbox("Jenis Pengeluaran", ["Biaya Gaji", "Biaya Operasional", "Biaya Lainnya"])
+        jumlah_pengeluaran = st.number_input("Jumlah Pengeluaran (Rp)", min_value=0)
+        keterangan_pengeluaran = st.text_input("Keterangan Pengeluaran")
+        submit_pengeluaran = st.form_submit_button("Tambah Pengeluaran")
+        
+        if submit_pengeluaran:
+            new_data = pd.DataFrame({
+                "Jenis Pengeluaran": [jenis_pengeluaran],
+                "Jumlah Pengeluaran": [jumlah_pengeluaran],
+                "Keterangan": [keterangan_pengeluaran],
+                "Waktu": [datetime.now()]
+            })
+            st.session_state.pengeluaran = pd.concat([st.session_state.pengeluaran, new_data], ignore_index=True)
+            st.success("Pengeluaran berhasil ditambahkan!")
+            save_data()  # Simpan data setelah penambahan pengeluaran
+
+    # Tabel historis pengeluaran
+    st.subheader("Historis Pengeluaran")
+    st.dataframe(st.session_state.pengeluaran)
+
+    # Analisa Keuangan - Total Keuntungan Bersih
+    st.subheader("Analisa Keuangan - Total Keuntungan Bersih")
+
+    # Perhitungan total pengeluaran
+    total_pengeluaran = st.session_state.pengeluaran["Jumlah Pengeluaran"].sum()
+    st.write(f"Total Pengeluaran: Rp {total_pengeluaran}")
+
+    # Perhitungan total keuntungan dari penjualan
+    total_keuntungan = st.session_state.penjualan["Keuntungan"].sum()
+    st.write(f"Total Keuntungan Penjualan: Rp {total_keuntungan}")
+
+    # Tabel analisis keuntungan per barang
+    st.subheader("Analisis Keuntungan Per Barang")
+    if not st.session_state.penjualan.empty:
+        analisis_keuntungan = st.session_state.penjualan.groupby(
+            ["Nama Barang", "Ukuran/Kemasan", "Merk", "Waktu"]
+        ).agg({
+            "Keuntungan": "sum",
+            "Jumlah": "sum"
+        }).reset_index()
+        st.dataframe(analisis_keuntungan)
+
+    # Perhitungan total keuntungan bersih
+    total_keuntungan_bersih = total_keuntungan - total_pengeluaran
+    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih}")
+
+    # Tambah data historis keuntungan bersih
+    new_historis = pd.DataFrame({
+        "Waktu": [datetime.now()],
+        "Keuntungan Bersih": [total_keuntungan_bersih]
+    })
+    st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
+
+    # Tabel historis keuntungan bersih
+    st.subheader("Historis Keuntungan Bersih")
     st.dataframe(st.session_state.historis_keuntungan_bersih)
-    
-    # Tombol untuk menyimpan data ke file Excel
-    if st.button("Simpan Semua Data ke Excel"):
+
+    # Tabel ringkasan keuangan
+    st.subheader("Ringkasan Keuangan")
+    data_ringkasan = pd.DataFrame({
+        "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
+        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
+    })
+    st.table(data_ringkasan)
+
+    # Tombol untuk mendownload semua data ke file Excel
+    if st.button("Download Semua Data (Excel)"):
         save_to_excel()
-        st.success("Semua data berhasil disimpan ke file Excel!")
+        with open("data_laporan.xlsx", "rb") as file:
+            st.download_button(
+                label="Download Excel",
+                data=file,
+                file_name="data_laporan.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
