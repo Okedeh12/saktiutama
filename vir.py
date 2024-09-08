@@ -138,12 +138,6 @@ def save_data():
 if 'stok_barang' not in st.session_state:
     load_data()
 
-# Sidebar menu
-menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
-
-# Main content area
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Ini adalah halaman Stock Barang. Menampilkan data terkait stok barang yang tersedia.</p></div>', unsafe_allow_html=True)
