@@ -98,11 +98,14 @@ st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_
 st.sidebar.markdown('<div class="sidebar-content">'
                     '<img src="https://via.placeholder.com/100" alt="Logo"> <!-- Ganti URL gambar dengan gambar yang sesuai -->'
                     '<h2>Menu</h2>'
-                    '<button class="btn-hover color-3">Stock Barang</button>'
-                    '<button class="btn-hover color-3">Penjualan</button>'
-                    '<button class="btn-hover color-3">Supplier</button>'
-                    '<button class="btn-hover color-3">Owner</button>'
+                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
+                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
+                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
+                    '<button class="btn-hover color-3" onclick="window.location.href=\'?page=owner\'">Owner</button>'
                     '</div>', unsafe_allow_html=True)
+
+# Mengatur pilihan halaman menggunakan parameter URL
+page = st.experimental_get_query_params().get('page', [''])[0]
 
 # Load data from CSV files
 def load_data():
