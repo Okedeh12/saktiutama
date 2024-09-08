@@ -12,9 +12,23 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Menambahkan CSS dengan efek hover
+# Menambahkan CSS dengan efek gradien pada tombol
 st.markdown("""
     <style>
+    /* Desain tombol dengan efek gradien */
+    .stButton > button {
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #0056b3, #00a1d3);
+    }
+
     /* Desain header */
     .header {
         text-align: center;
@@ -26,7 +40,7 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
     }
-    
+
     /* Desain kotak utama dengan efek hover */
     .main-content {
         padding: 20px;
@@ -40,41 +54,11 @@ st.markdown("""
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
-
-    /* Judul halaman di dalam kotak */
-    .main-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #007bff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    
-    /* Desain tombol dengan efek hover */
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-
-    /* Efek hover untuk DataFrame atau tabel */
-    .stDataFrame:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Header aplikasi
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
-
 
 # Load data from CSV files
 def load_data():
@@ -923,6 +907,9 @@ elif menu == "Supplier":
     halaman_supplier()
 elif menu == "Owner":
     halaman_owner()
+
+# Tombol dengan efek gradien
+st.button("Klik Saya")
     
 # Save data when the app is closed or the menu is changed
 save_data()
