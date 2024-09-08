@@ -12,56 +12,99 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
-st.markdown("""
+# Define functions for each page
+def halaman_stock_barang():
+    st.header("Stock Barang")
+    st.write("Menampilkan informasi tentang stock barang di toko.")
+
+def halaman_penjualan():
+    st.header("Penjualan")
+    st.write("Menampilkan data penjualan produk toko.")
+
+def halaman_supplier():
+    st.header("Data Supplier")
+    st.write("Menampilkan informasi mengenai supplier barang.")
+
+def halaman_owner():
+    st.header("Halaman Owner - Analisa Keuangan")
+    st.write("Menampilkan analisa keuangan dan data penting untuk pemilik toko.")
+
+# Function to handle password protection
+def password_protect():
+    st.sidebar.subheader("Login untuk Akses Halaman Owner")
+    password = st.sidebar.text_input("Masukkan Password:", type="password")
+    if password == "your_password_here":
+        st.session_state["authenticated"] = True
+        return True
+    elif password:
+        st.error("Password salah. Coba lagi.")
+    return False
+
+# Main app logic
+def main():
+    st.markdown("""
     <style>
-    .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-    }
+    /* Apply styles to the sidebar container */
     .sidebar .sidebar-content {
-        background-color: #f7f9fc;
+        background-color: #f7f9fc; /* Light background color */
         padding-top: 20px;
+        padding-left: 20px;
     }
+
+    /* Style the sidebar header */
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
         color: #333;
         margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
     }
-    .sidebar .sidebar-content .radio {
+
+    /* Style the buttons in the sidebar */
+    .sidebar .sidebar-content .sidebar-button {
+        display: block;
         margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
+        padding: 12px 24px;
+        background-color: #007bff; /* Blue background */
+        color: #ffffff; /* White text */
         border: none;
+        border-radius: 5px; /* Rounded corners */
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        text-align: center;
         cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        text-decoration: none; /* Remove underline */
     }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
+
+    /* Style the buttons on hover */
+    .sidebar .sidebar-content .sidebar-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        transform: scale(1.05); /* Slight zoom effect */
     }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+    # Sidebar content
+    st.sidebar.header("Pages")
+    page = st.sidebar.radio("Pilih Halaman:", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
+
+    if page == "Stock Barang":
+        halaman_stock_barang()
+    elif page == "Penjualan":
+        halaman_penjualan()
+    elif page == "Supplier":
+        halaman_supplier()
+    elif page == "Owner":
+        # Check password protection
+        if "authenticated" in st.session_state and st.session_state["authenticated"]:
+            halaman_owner()
+        else:
+            if password_protect():
+                halaman_owner()
+
+if __name__ == "__main__":
+    main()
 
 
 # Load data from CSV files
@@ -894,17 +937,6 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
