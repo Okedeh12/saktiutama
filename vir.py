@@ -26,9 +26,10 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
         margin: 0;
+        font-size: 36px;
     }
 
-    /* Desain sidebar dengan gambar dan menu */
+    /* Desain sidebar dengan gambar, menu, dan tombol gradien */
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
         padding: 20px;
@@ -46,10 +47,8 @@ st.markdown("""
         margin-bottom: 20px;
         font-size: 24px;
     }
-
-    /* Desain tombol dengan gradien dan efek hover */
-    .stButton > button {
-        background: linear-gradient(90deg, #007bff, #00d4ff); /* Gradien biru ke cyan */
+    .btn-hover.color-3 {
+        background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -57,14 +56,14 @@ st.markdown("""
         border: none;
         cursor: pointer;
         width: 100%;
-        transition: background 0.3s ease, transform 0.2s ease;
+        transition: background-image 0.3s ease, transform 0.2s ease;
         font-size: 16px;
         font-family: 'Arial', sans-serif;
         text-align: center;
     }
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #0056b3, #00a1d3); /* Gradien biru gelap ke cyan lebih gelap */
-        transform: translateY(-2px); /* Tombol akan sedikit naik saat di-hover */
+    .btn-hover.color-3:hover {
+        background-image: linear-gradient(to right, #5a3aab, #6a4f9c, #4a6dbe, #7b2be1);
+        transform: translateY(-2px);
     }
 
     /* Desain konten utama */
@@ -74,8 +73,20 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin: 20px auto;
-        width: 90%; /* Menyesuaikan lebar konten utama */
+        width: 80%; /* Menyesuaikan lebar konten utama */
         max-width: 1200px; /* Maksimal lebar konten utama */
+        text-align: center; /* Menyelaraskan teks di tengah */
+    }
+    .main-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 28px;
+    }
+    .main-content p {
+        font-family: 'Arial', sans-serif;
+        color: #666;
+        font-size: 16px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -86,9 +97,12 @@ st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_
 # Sidebar dengan gambar dan tombol navigasi
 st.sidebar.markdown('<div class="sidebar-content">'
                     '<img src="https://via.placeholder.com/100" alt="Logo"> <!-- Ganti URL gambar dengan gambar yang sesuai -->'
-                    '<h2>Menu</h2></div>', unsafe_allow_html=True)
-
-
+                    '<h2>Menu</h2>'
+                    '<button class="btn-hover color-3">Stock Barang</button>'
+                    '<button class="btn-hover color-3">Penjualan</button>'
+                    '<button class="btn-hover color-3">Supplier</button>'
+                    '<button class="btn-hover color-3">Owner</button>'
+                    '</div>', unsafe_allow_html=True)
 
 # Load data from CSV files
 def load_data():
@@ -920,13 +934,13 @@ def halaman_owner():
 halaman = ""
 
 # Menambahkan tombol navigasi dengan efek gradien
-if st.sidebar.button("Stock Barang"):
+if st.sidebar.button("Stock Barang", key="stock_barang", help="Go to Stock Barang", css_class="btn-hover color-3"):
     halaman = "Stock Barang"
-if st.sidebar.button("Penjualan"):
+if st.sidebar.button("Penjualan", key="penjualan", help="Go to Penjualan", css_class="btn-hover color-3"):
     halaman = "Penjualan"
-if st.sidebar.button("Supplier"):
+if st.sidebar.button("Supplier", key="supplier", help="Go to Supplier", css_class="btn-hover color-3"):
     halaman = "Supplier"
-if st.sidebar.button("Owner"):
+if st.sidebar.button("Owner", key="owner", help="Go to Owner", css_class="btn-hover color-3"):
     halaman = "Owner"
 
 # Menampilkan halaman sesuai tombol yang dipilih
