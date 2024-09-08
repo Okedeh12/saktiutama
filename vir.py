@@ -87,33 +87,6 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #0056b3; /* Default hover color */
     }
-
-    /* Variations for Button Hover Effects */
-    .btn-primary:hover {
-        background-color: #0056b3; /* Blue variant */
-    }
-    .btn-secondary:hover {
-        background-color: #6c757d; /* Gray variant */
-    }
-    .btn-success:hover {
-        background-color: #28a745; /* Green variant */
-    }
-    .btn-danger:hover {
-        background-color: #dc3545; /* Red variant */
-    }
-    .btn-warning:hover {
-        background-color: #ffc107; /* Yellow variant */
-    }
-    .btn-info:hover {
-        background-color: #17a2b8; /* Teal variant */
-    }
-    .btn-light:hover {
-        background-color: #f8f9fa; /* Light gray variant */
-        color: #212529; /* Dark text for contrast */
-    }
-    .btn-dark:hover {
-        background-color: #343a40; /* Dark gray variant */
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -961,30 +934,11 @@ menu = st.sidebar.radio(
 # Sidebar with menu items
 st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
 st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">{menu[0]}</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">{menu[1]}</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">{menu[2]}</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">{menu[3]}</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-# Add buttons with different hover effects for demonstration
-st.sidebar.markdown('<button class="btn-primary">Primary Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-secondary">Secondary Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-success">Success Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-danger">Danger Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-warning">Warning Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-info">Info Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-light">Light Button</button>', unsafe_allow_html=True)
-st.sidebar.markdown('<button class="btn-dark">Dark Button</button>', unsafe_allow_html=True)
-
-# Display content based on menu selection
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
 # Save data when the app is closed or the menu is changed
 save_data()
