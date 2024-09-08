@@ -26,22 +26,19 @@ st.markdown("""
         color: #333;
     }
     .sidebar-menu {
-        display: flex;
-        flex-direction: column;
         margin: 20px;
     }
-    .sidebar-menu button {
+    .sidebar-menu select {
         background-color: #007bff;
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 15px 20px;
-        margin-bottom: 10px;
+        padding: 10px 20px;
         cursor: pointer;
         font-family: 'Arial', sans-serif;
         font-size: 16px;
     }
-    .sidebar-menu button:hover {
+    .sidebar-menu select:hover {
         background-color: #0056b3;
     }
     </style>
@@ -884,6 +881,9 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
+# Sidebar menu dropdown
+menu = st.selectbox("Pilih Halaman", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
+
 # Function to handle page navigation
 def show_page(page_name):
     if page_name == "Stock Barang":
@@ -895,13 +895,8 @@ def show_page(page_name):
     elif page_name == "Owner":
         halaman_owner()
 
-# Sidebar menu buttons
-st.sidebar.markdown('<div class="sidebar-menu">'
-                     '<button onclick="window.location.href=\'/?page=Stock%20Barang\'">Stock Barang</button>'
-                     '<button onclick="window.location.href=\'/?page=Penjualan\'">Penjualan</button>'
-                     '<button onclick="window.location.href=\'/?page=Supplier\'">Supplier</button>'
-                     '<button onclick="window.location.href=\'/?page=Owner\'">Owner</button>'
-                     '</div>', unsafe_allow_html=True)
+# Show the selected page
+show_page(menu)
 
 # Save data when the app is closed or the menu is changed
 save_data()
