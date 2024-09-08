@@ -35,7 +35,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
     .sidebar .sidebar-content .radio {
-        margin-top: 10px;
+        margin-top: 30px;
     }
     .main-content {
         padding: 20px;
