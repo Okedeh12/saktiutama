@@ -12,6 +12,39 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
+# Fungsi untuk halaman Stock Barang
+def halaman_stock_barang():
+    st.header("Stock Barang")
+    st.write("Menampilkan informasi tentang stock barang di toko.")
+
+# Fungsi untuk halaman Penjualan
+def halaman_penjualan():
+    st.header("Penjualan")
+    st.write("Menampilkan data penjualan produk toko.")
+
+# Fungsi untuk halaman Supplier
+def halaman_supplier():
+    st.header("Data Supplier")
+    st.write("Menampilkan informasi mengenai supplier barang.")
+
+# Fungsi untuk halaman Owner dengan pengaman password
+def halaman_owner():
+    st.header("Halaman Owner - Analisa Keuangan")
+    
+    # Password Protection
+    password = st.text_input("Password untuk mengakses Halaman Owner:", type="password")
+    hashed_password = hashlib.sha256("your_secret_password".encode()).hexdigest()
+    
+    if password:
+        input_hash = hashlib.sha256(password.encode()).hexdigest()
+        if input_hash == hashed_password:
+            st.write("Selamat datang di halaman Owner. Berikut adalah analisa keuangan.")
+            # Tambahkan konten analisa keuangan di sini
+        else:
+            st.error("Password salah. Coba lagi.")
+    else:
+        st.warning("Masukkan password untuk melanjutkan.")
+
 # CSS styles for a professional look
 st.markdown("""
     <style>
@@ -25,17 +58,21 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
     }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
+    .sidebar-menu {
+        margin: 20px;
     }
-    .sidebar .sidebar-content h2 {
+    .sidebar-menu select {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        cursor: pointer;
         font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
+        font-size: 16px;
     }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
+    .sidebar-menu select:hover {
+        background-color: #0056b3;
     }
     .main-content {
         padding: 20px;
@@ -43,26 +80,11 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
 
 # Load data from CSV files
 def load_data():
@@ -894,17 +916,22 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Sidebar menu dropdown
+menu = st.selectbox("Pilih Halaman", ["Stock Barang", "Penjualan", "Supplier", "Owner"], key='menu')
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Function to handle page navigation
+def show_page(page_name):
+    if page_name == "Stock Barang":
+        halaman_stock_barang()
+    elif page_name == "Penjualan":
+        halaman_penjualan()
+    elif page_name == "Supplier":
+        halaman_supplier()
+    elif page_name == "Owner":
+        halaman_owner()
+
+# Show the selected page
+show_page(menu)
 
 # Save data when the app is closed or the menu is changed
 save_data()
