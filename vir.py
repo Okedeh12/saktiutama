@@ -12,74 +12,31 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
+# Tambahkan CSS untuk tombol hover
 st.markdown("""
     <style>
-    .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
-        font-family: 'arial', sans-serif;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #007bff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        color: white;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'arial', sans-serif;
-        color: white;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .btn {
-        background-color: white;
-        color: #007bff;
-        border-radius: 8px;
+    .btn-hover {
+        display: inline-block;
         padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
         border: none;
         cursor: pointer;
-        display: block;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 10px;
+        transition: background-color 0.3s, transform 0.3s;
     }
-    .sidebar .sidebar-content .btn:hover {
+    .btn-hover:hover {
         background-color: #0056b3;
-        color: white;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stbutton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stbutton > button:hover {
-        background-color: #0056b3;
-    }
-    .stdataframe {
-        overflow-x: auto;
+        transform: scale(1.05);
     }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # Display the header
-st.markdown('<div class="header"><h1>toko sakti utama</h1></div>', unsafe_allow_html=True)
-
-
+st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
 
 # Load data from CSV files
@@ -912,17 +869,11 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
+# Menampilkan tombol dengan CSS
+st.markdown('<a class="btn-hover" href="#">Stock Barang</a>', unsafe_allow_html=True)
+st.markdown('<a class="btn-hover" href="#">Penjualan</a>', unsafe_allow_html=True)
+st.markdown('<a class="btn-hover" href="#">Supplier</a>', unsafe_allow_html=True)
+st.markdown('<a class="btn-hover" href="#">Owner</a>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
