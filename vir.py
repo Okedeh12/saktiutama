@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk desain tombol gradien dan sidebar
+# Tambahkan CSS untuk desain profesional dan dinamis
 st.markdown("""
     <style>
     .header {
@@ -57,12 +57,12 @@ st.markdown("""
         font-size: 16px;
         font-family: 'Arial', sans-serif;
         text-align: center;
-        box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75); /* Bayangan tombol */
+        box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
     }
     .btn-hover.color-8:hover {
         background-image: linear-gradient(to right, #2b2f33, #394953, #1e3a5b, #3a2e56);
-        box-shadow: 0 6px 20px 0 rgba(25, 34, 43, 0.9); /* Bayangan lebih gelap saat hover */
-        transform: translateY(-2px); /* Tombol sedikit naik saat di-hover */
+        box-shadow: 0 6px 20px 0 rgba(25, 34, 43, 0.9);
+        transform: translateY(-2px);
     }
 
     /* Desain konten utama */
@@ -92,20 +92,6 @@ st.markdown("""
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
-# Sidebar dengan tombol navigasi
-st.sidebar.markdown('<div class="sidebar-content">'
-                    '<h2>Menu</h2>'
-                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
-                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
-                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
-                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=owner\'">Owner</button>'
-                    '</div>', unsafe_allow_html=True)
-
-# Mengatur pilihan halaman menggunakan parameter URL
-page = st.experimental_get_query_params().get('page', [''])[0]
-
-
 
 # Load data from CSV files
 def load_data():
@@ -935,17 +921,53 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman sesuai tombol yang dipilih
-if page == "stock_barang":
+# Sidebar with buttons
+def sidebar_buttons():
+    st.sidebar.markdown('<div class="sidebar-content">'
+                        '<h2>Menu</h2>'
+                        '</div>', unsafe_allow_html=True)
+    
+    # Define the button functions
+    if st.sidebar.button("Stock Barang", key="stock_barang"):
+        st.session_state.page = "stock_barang"
+    if st.sidebar.button("Penjualan", key="penjualan"):
+        st.session_state.page = "penjualan"
+    if st.sidebar.button("Supplier", key="supplier"):
+        st.session_state.page = "supplier"
+    if st.sidebar.button("Owner", key="owner"):
+        st.session_state.page = "owner"
+
+# Initialize session state if not already set
+if 'page' not in st.session_state:
+    st.session_state.page = ''
+
+# Display sidebar buttons
+sidebar_buttons()
+
+# Function to display each page content
+def halaman_stock_barang():
+    st.markdown('<div class="main-content"><h2>Stock Barang</h2><p>Ini adalah halaman Stock Barang. Menampilkan data terkait stok barang yang tersedia.</p></div>', unsafe_allow_html=True)
+
+def halaman_penjualan():
+    st.markdown('<div class="main-content"><h2>Penjualan</h2><p>Ini adalah halaman Penjualan. Menampilkan data penjualan dan grafik terkait penjualan harian atau bulanan.</p></div>', unsafe_allow_html=True)
+
+def halaman_supplier():
+    st.markdown('<div class="main-content"><h2>Supplier</h2><p>Ini adalah halaman Supplier. Menampilkan data supplier dan informasi terkait hubungan kerja sama dengan pemasok.</p></div>', unsafe_allow_html=True)
+
+def halaman_owner():
+    st.markdown('<div class="main-content"><h2>Owner</h2><p>Ini adalah halaman Owner. Menampilkan informasi rahasia atau akses khusus untuk pemilik toko.</p></div>', unsafe_allow_html=True)
+
+# Display the selected page content
+if st.session_state.page == "stock_barang":
     halaman_stock_barang()
-elif page == "penjualan":
+elif st.session_state.page == "penjualan":
     halaman_penjualan()
-elif page == "supplier":
+elif st.session_state.page == "supplier":
     halaman_supplier()
-elif page == "owner":
+elif st.session_state.page == "owner":
     halaman_owner()
 else:
-    # Halaman default ketika tidak ada tombol yang diklik
+    # Default page when no button is clicked
     st.markdown('<div class="main-content"><h2>Selamat Datang di Toko Sakti Utama</h2><p>Pilih salah satu menu di sebelah kiri untuk melihat konten halaman.</p></div>', unsafe_allow_html=True)
     
 # Save data when the app is closed or the menu is changed
