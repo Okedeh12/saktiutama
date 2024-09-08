@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk desain profesional
+# Tambahkan CSS untuk desain tombol gradien dan sidebar
 st.markdown("""
     <style>
     .header {
@@ -28,7 +28,7 @@ st.markdown("""
         font-size: 36px;
     }
 
-    /* Desain sidebar tanpa gambar */
+    /* Desain sidebar */
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
         padding: 20px;
@@ -42,8 +42,10 @@ st.markdown("""
         margin-bottom: 20px;
         font-size: 24px;
     }
-    .btn-hover {
-        background-color: #007bff; /* Warna biru tombol */
+    
+    /* Desain tombol gradien dengan efek hover */
+    .btn-hover.color-8 {
+        background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
@@ -51,14 +53,16 @@ st.markdown("""
         border: none;
         cursor: pointer;
         width: 100%;
-        transition: background-color 0.3s ease, transform 0.2s ease;
+        transition: background-image 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
         font-size: 16px;
         font-family: 'Arial', sans-serif;
         text-align: center;
+        box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75); /* Bayangan tombol */
     }
-    .btn-hover:hover {
-        background-color: #0056b3; /* Warna biru gelap saat hover */
-        transform: translateY(-2px); /* Tombol akan sedikit naik saat di-hover */
+    .btn-hover.color-8:hover {
+        background-image: linear-gradient(to right, #2b2f33, #394953, #1e3a5b, #3a2e56);
+        box-shadow: 0 6px 20px 0 rgba(25, 34, 43, 0.9); /* Bayangan lebih gelap saat hover */
+        transform: translateY(-2px); /* Tombol sedikit naik saat di-hover */
     }
 
     /* Desain konten utama */
@@ -68,9 +72,9 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin: 20px auto;
-        width: 80%; /* Menyesuaikan lebar konten utama */
-        max-width: 1200px; /* Maksimal lebar konten utama */
-        text-align: center; /* Menyelaraskan teks di tengah */
+        width: 80%;
+        max-width: 1200px;
+        text-align: center;
     }
     .main-content h2 {
         font-family: 'Arial', sans-serif;
@@ -89,13 +93,17 @@ st.markdown("""
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-# Sidebar dengan dropdown menu
+# Sidebar dengan tombol navigasi
 st.sidebar.markdown('<div class="sidebar-content">'
                     '<h2>Menu</h2>'
+                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
+                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
+                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=supplier\'">Supplier</button>'
+                    '<button class="btn-hover color-8" onclick="window.location.href=\'?page=owner\'">Owner</button>'
                     '</div>', unsafe_allow_html=True)
 
-# Pilihan halaman menggunakan selectbox
-page = st.sidebar.selectbox("Pilih Halaman", ["Selamat Datang", "Stock Barang", "Penjualan", "Supplier", "Owner"])
+# Mengatur pilihan halaman menggunakan parameter URL
+page = st.experimental_get_query_params().get('page', [''])[0]
 
 
 
@@ -927,17 +935,17 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman sesuai pilihan
-if page == "Stock Barang":
+# Menampilkan halaman sesuai tombol yang dipilih
+if page == "stock_barang":
     halaman_stock_barang()
-elif page == "Penjualan":
+elif page == "penjualan":
     halaman_penjualan()
-elif page == "Supplier":
+elif page == "supplier":
     halaman_supplier()
-elif page == "Owner":
+elif page == "owner":
     halaman_owner()
 else:
-    # Halaman default
+    # Halaman default ketika tidak ada tombol yang diklik
     st.markdown('<div class="main-content"><h2>Selamat Datang di Toko Sakti Utama</h2><p>Pilih salah satu menu di sebelah kiri untuk melihat konten halaman.</p></div>', unsafe_allow_html=True)
     
 # Save data when the app is closed or the menu is changed
