@@ -28,6 +28,7 @@ st.markdown("""
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
         padding-top: 20px;
+        border-bottom: 1px solid #ddd;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
