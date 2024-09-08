@@ -13,6 +13,7 @@ PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
 <style>
+/* Header styling */
 .header {
     text-align: center;
     padding: 20px;
@@ -23,17 +24,20 @@ SUPPLIER_FILE = "supplier.csv"
     font-family: 'Arial', sans-serif;
     color: #333;
 }
+
+/* Sidebar styling */
 .sidebar {
     display: flex;
     justify-content: center;
-    background-color: #f7f9fc;
     padding: 20px;
+    background-color: #f7f9fc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 20px;
 }
 .sidebar-content {
     width: 100%;
+    max-width: 300px; /* Adjust width as needed */
 }
 .sidebar-content h2 {
     font-family: 'Arial', sans-serif;
@@ -56,18 +60,23 @@ SUPPLIER_FILE = "supplier.csv"
     margin-bottom: 10px;
     cursor: pointer;
     text-align: center;
+    transition: background-color 0.3s, color 0.3s;
 }
 .sidebar-content .radio input[type="radio"]:checked + label {
     background-color: #007bff;
     color: white;
     border: 1px solid #007bff;
 }
+
+/* Main content styling */
 .main-content {
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Button styling */
 .stButton > button {
     background-color: #007bff;
     color: white;
@@ -75,16 +84,41 @@ SUPPLIER_FILE = "supplier.csv"
     padding: 10px 20px;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 .stButton > button:hover {
     background-color: #0056b3;
 }
+
+/* DataFrame styling */
 .stDataFrame {
     overflow-x: auto;
 }
 </style>
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+<div class="header">
+    <h1>TOKO SAKTI UTAMA</h1>
+</div>
+
+<div class="sidebar">
+    <div class="sidebar-content">
+        <h2>Menu</h2>
+        <div class="radio">
+            <input type="radio" id="stockBarang" name="menu" value="Stock Barang">
+            <label for="stockBarang">Stock Barang</label>
+            <input type="radio" id="penjualan" name="menu" value="Penjualan">
+            <label for="penjualan">Penjualan</label>
+            <input type="radio" id="supplier" name="menu" value="Supplier">
+            <label for="supplier">Supplier</label>
+            <input type="radio" id="owner" name="menu" value="Owner">
+            <label for="owner">Owner</label>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <!-- Main content goes here -->
+</div>
+
 
 
 # Load data from CSV files
