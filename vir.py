@@ -903,9 +903,5 @@ st.sidebar.markdown('<div class="sidebar-menu">'
                      '<button onclick="window.location.href=\'/?page=Owner\'">Owner</button>'
                      '</div>', unsafe_allow_html=True)
 
-# Get page parameter from query string
-page = st.experimental_get_query_params().get("page", ["Stock Barang"])[0]
-show_page(page)
-
 # Save data when the app is closed or the menu is changed
 save_data()
