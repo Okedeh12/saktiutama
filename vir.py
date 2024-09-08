@@ -12,54 +12,57 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Define custom CSS
-css = """
-<style>
-/* Apply styles to the sidebar container */
-.sidebar .sidebar-content {
-    background-color: #f7f9fc; /* Light background color */
-    padding-top: 20px;
-    padding-left: 20px;
-}
+# CSS styles for a professional look
+st.markdown("""
+    <style>
+    .header {
+        text-align: center;
+        padding: 20px;
+        background-color: #f0f4f8;
+        border-bottom: 1px solid #ddd;
+    }
+    .header h1 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    .sidebar .sidebar-content {
+        background-color: #f7f9fc;
+        padding-top: 20px;
+    }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .sidebar .sidebar-content .radio {
+        margin-top: 10px;
+    }
+    .main-content {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+    .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    .stDataFrame {
+        overflow-x: auto;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-/* Style the sidebar header */
-.sidebar .sidebar-content h2 {
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* Style the buttons in the sidebar */
-.sidebar .sidebar-content .sidebar-button {
-    display: block;
-    margin-top: 10px;
-    padding: 12px 24px;
-    background-color: #007bff; /* Blue background */
-    color: #ffffff; /* White text */
-    border: none;
-    border-radius: 5px; /* Rounded corners */
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    text-decoration: none; /* Remove underline */
-}
-
-/* Style the buttons on hover */
-.sidebar .sidebar-content .sidebar-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: scale(1.05); /* Slight zoom effect */
-}
-</style>
-"""
-
-# Inject CSS into the Streamlit app
-st.markdown(css, unsafe_allow_html=True)
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
 
 # Load data from CSV files
 def load_data():
@@ -891,31 +894,17 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Inject CSS into the Streamlit app
-st.markdown(css, unsafe_allow_html=True)
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
-# Sidebar content
-st.sidebar.header("Pages")
-st.sidebar.markdown('<a class="sidebar-button" href="#">stock</a>', unsafe_allow_html=True)
-st.sidebar.markdown('<a class="sidebar-button" href="#">penjualan</a>', unsafe_allow_html=True)
-st.sidebar.markdown('<a class="sidebar-button" href="#">supplier</a>', unsafe_allow_html=True)
-st.sidebar.markdown('<a class="sidebar-button" href="#">owner</a>', unsafe_allow_html=True)
-
-def halaman_stock_barang():
-    st.header("Stock Barang")
-    st.write("Menampilkan informasi tentang stock barang di toko.")
-
-def halaman_penjualan():
-    st.header("Penjualan")
-    st.write("Menampilkan data penjualan produk toko.")
-
-def halaman_supplier():
-    st.header("Data Supplier")
-    st.write("Menampilkan informasi mengenai supplier barang.")
-
-def halaman_owner():
-    st.header("Halaman Owner - Analisa Keuangan")
-    st.write("Menampilkan analisa keuangan dan data penting untuk pemilik toko.")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
