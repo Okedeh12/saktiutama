@@ -114,7 +114,7 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 # Fungsi halaman
 def halaman_stock_barang():
     st.markdown('<div class="main-content"><h2>Stock Barang</h2>', unsafe_allow_html=True)
-    st.write("Konten untuk Stock Barang")
+    st.write("Konten untuk Stock Barang: Menampilkan data stok barang yang tersedia di toko.")
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Form input barang baru dan edit barang
@@ -204,7 +204,7 @@ def halaman_stock_barang():
 
 def halaman_penjualan():
     st.markdown('<div class="main-content"><h2>Penjualan</h2>', unsafe_allow_html=True)
-    st.write("Konten untuk Penjualan")
+    st.write("Konten untuk Penjualan: Menampilkan laporan dan statistik penjualan.")
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Form untuk tambah/edit penjualan
@@ -382,7 +382,7 @@ def halaman_penjualan():
 
 def halaman_supplier():
     st.markdown('<div class="main-content"><h2>Supplier</h2>', unsafe_allow_html=True)
-    st.write("Konten untuk Supplier")
+    st.write("Konten untuk Supplier: Menampilkan informasi mengenai supplier toko.")
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Memilih ID Supplier untuk diedit atau menambah baru
@@ -507,7 +507,7 @@ def save_to_excel():
 
 def halaman_owner():
     st.markdown('<div class="main-content"><h2>Owner</h2>', unsafe_allow_html=True)
-    st.write("Konten untuk Owner")
+    st.write("Konten untuk Owner: Fitur khusus untuk pemilik toko dengan kontrol penuh.")
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Login form
