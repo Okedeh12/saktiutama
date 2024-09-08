@@ -12,56 +12,65 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
+# Menambahkan CSS untuk mendesain sidebar dan konten utama
 st.markdown("""
     <style>
-    .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-    }
+    /* Desain sidebar dalam kotak */
     .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
-        color: #333;
+        color: #007bff;
         margin-bottom: 20px;
     }
     .sidebar .sidebar-content .radio {
         margin-top: 10px;
     }
+    
+    /* Desain konten utama */
     .main-content {
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .main-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Desain tombol dengan efek gradien */
     .stButton > button {
-        background-color: #007bff;
+        background: linear-gradient(90deg, #007bff, #00d4ff);
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         border: none;
         cursor: pointer;
+        transition: background 0.3s ease;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
+        background: linear-gradient(90deg, #0056b3, #00a1d3);
     }
-    .stDataFrame {
-        overflow-x: auto;
-    }
+
     </style>
 """, unsafe_allow_html=True)
 
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+# Sidebar
+st.sidebar.markdown('<div class="sidebar-content"><h2>Menu</h2></div>', unsafe_allow_html=True)
+
+# Main Content Example
+st.markdown('<div class="main-content"><h2>TOKO SAKTI UTAMA</h2><p>Ini adalah contoh konten utama.</p></div>', unsafe_allow_html=True)
+
+# Tombol dengan efek gradien
+st.button("Klik Saya")
 
 
 # Load data from CSV files
