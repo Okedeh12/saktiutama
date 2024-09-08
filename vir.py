@@ -12,7 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Tambahkan CSS untuk tombol dengan efek gradien dan hover
+# Tambahkan CSS untuk desain profesional dan dinamis
 st.markdown("""
     <style>
     /* Desain header */
@@ -25,19 +25,26 @@ st.markdown("""
     .header h1 {
         font-family: 'Arial', sans-serif;
         color: #333;
+        margin: 0;
     }
 
-    /* Desain sidebar dengan tombol */
+    /* Desain sidebar dengan gambar dan menu */
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .sidebar .sidebar-content img {
+        width: 100px; /* Ukuran gambar logo */
+        margin-bottom: 20px;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
         color: #007bff;
         margin-bottom: 20px;
+        font-size: 24px;
     }
 
     /* Desain tombol dengan gradien dan efek hover */
@@ -66,17 +73,21 @@ st.markdown("""
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
+        margin: 20px auto;
+        width: 90%; /* Menyesuaikan lebar konten utama */
+        max-width: 1200px; /* Maksimal lebar konten utama */
     }
-
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-# Sidebar dengan tombol navigasi
-st.sidebar.markdown('<div class="sidebar-content"><h2>Menu</h2></div>', unsafe_allow_html=True)
+# Sidebar dengan gambar dan tombol navigasi
+st.sidebar.markdown('<div class="sidebar-content">'
+                    '<img src="https://via.placeholder.com/100" alt="Logo"> <!-- Ganti URL gambar dengan gambar yang sesuai -->'
+                    '<h2>Menu</h2></div>', unsafe_allow_html=True)
+
 
 
 # Load data from CSV files
@@ -205,6 +216,7 @@ def halaman_stock_barang():
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.markdown('<div class="main-content"><h2>Penjualan</h2><p>Ini adalah halaman Penjualan. Menampilkan data penjualan dan grafik terkait penjualan harian atau bulanan.</p></div>', unsafe_allow_html=True)
+
 
     # Form untuk tambah/edit penjualan
     st.subheader("Tambah/Edit Penjualan")
