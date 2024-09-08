@@ -15,7 +15,6 @@ SUPPLIER_FILE = "supplier.csv"
 # Tambahkan CSS untuk desain profesional
 st.markdown("""
     <style>
-    /* Desain header */
     .header {
         text-align: center;
         padding: 20px;
@@ -29,17 +28,13 @@ st.markdown("""
         font-size: 36px;
     }
 
-    /* Desain sidebar dengan gambar, menu, dan tombol gradien */
+    /* Desain sidebar tanpa gambar */
     .sidebar .sidebar-content {
         background-color: #f7f9fc;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         text-align: center;
-    }
-    .sidebar .sidebar-content img {
-        width: 100px; /* Ukuran gambar logo */
-        margin-bottom: 20px;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
@@ -94,9 +89,8 @@ st.markdown("""
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-# Sidebar dengan gambar dan tombol navigasi
+# Sidebar dengan tombol navigasi
 st.sidebar.markdown('<div class="sidebar-content">'
-                    '<img src="https://via.placeholder.com/100" alt="Logo"> <!-- Ganti URL gambar dengan gambar yang sesuai -->'
                     '<h2>Menu</h2>'
                     '<button class="btn-hover" onclick="window.location.href=\'?page=stock_barang\'">Stock Barang</button>'
                     '<button class="btn-hover" onclick="window.location.href=\'?page=penjualan\'">Penjualan</button>'
