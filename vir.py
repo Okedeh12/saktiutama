@@ -13,6 +13,8 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
+import streamlit as st
+
 # CSS styles for a professional look
 st.markdown("""
     <style>
@@ -131,61 +133,31 @@ st.markdown("""
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-    /* Main Content Styles */
-    .main-content {
-        margin-left: 250px;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        min-height: 100vh;
-    }
+# Define sidebar menu
+menu = st.sidebar.radio(
+    "Pilih Menu",
+    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
+    key="menu_radio"
+)
 
-    /* Button Styles */
-    .stButton > button {
-        background-color: #007bff; /* Default button color */
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3; /* Default hover color */
-    }
+# Sidebar with menu items
+st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-    /* Variations for Button Hover Effects */
-    .btn-primary:hover {
-        background-color: #0056b3; /* Blue variant */
-    }
-    .btn-secondary:hover {
-        background-color: #6c757d; /* Gray variant */
-    }
-    .btn-success:hover {
-        background-color: #28a745; /* Green variant */
-    }
-    .btn-danger:hover {
-        background-color: #dc3545; /* Red variant */
-    }
-    .btn-warning:hover {
-        background-color: #ffc107; /* Yellow variant */
-    }
-    .btn-info:hover {
-        background-color: #17a2b8; /* Teal variant */
-    }
-    .btn-light:hover {
-        background-color: #f8f9fa; /* Light gray variant */
-        color: #212529; /* Dark text for contrast */
-    }
-    .btn-dark:hover {
-        background-color: #343a40; /* Dark gray variant */
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+# Display content based on menu selection
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
 
 
@@ -1019,31 +991,5 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-
-# Define sidebar menu
-menu = st.sidebar.radio(
-    "Pilih Menu",
-    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
-    key="menu_radio"
-)
-
-# Sidebar with menu items
-st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
-
-# Display content based on menu selection
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
 # Save data when the app is closed or the menu is changed
 save_data()
