@@ -13,33 +13,58 @@ SUPPLIER_FILE = "supplier.csv"
 # CSS styles for a professional look
 st.markdown("""
     <style>
+    /* Header styling */
     .header {
         text-align: center;
         padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
+        background-color: #007bff;
+        border-bottom: 1px solid #0056b3;
+        color: white;
     }
     .header h1 {
         font-family: 'Arial', sans-serif;
-        color: #333;
+        font-size: 24px;
+        margin: 0;
     }
+    /* Sidebar styling */
     .sidebar .sidebar-content {
-        background-color: #f7f9fc;
+        background-color: #f0f4f8;
         padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
+    }
+    .sidebar .sidebar-content .stRadio {
+        background-color: #e9ecef;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    .sidebar .sidebar-content .stRadio label {
+        font-size: 18px;
+        font-weight: bold;
         color: #333;
-        margin-bottom: 20px;
+        padding: 10px 20px;
+        display: block;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
+    .sidebar .sidebar-content .stRadio input[type="radio"] {
+        margin-right: 10px;
     }
+    .sidebar .sidebar-content .stRadio:hover {
+        background-color: #d6d6d6;
+    }
+    /* Main content styling */
     .main-content {
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+    }
+    .main-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 20px;
     }
     .stButton > button {
         background-color: #007bff;
@@ -48,6 +73,7 @@ st.markdown("""
         padding: 10px 20px;
         border: none;
         cursor: pointer;
+        transition: background-color 0.3s;
     }
     .stButton > button:hover {
         background-color: #0056b3;
@@ -99,6 +125,7 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
+
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
