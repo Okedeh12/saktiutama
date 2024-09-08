@@ -26,7 +26,7 @@ st.markdown("""
         color: #333;
     }
     .sidebar .sidebar-content {
-        background-color: #f7f9fc;
+        background-color: #767f89
         padding-top: 20px;
     }
     .sidebar .sidebar-content h2 {
