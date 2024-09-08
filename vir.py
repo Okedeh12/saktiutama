@@ -16,6 +16,13 @@ SUPPLIER_FILE = "supplier.csv"
 # CSS styles for a professional look
 st.markdown("""
     <style>
+    /* Reset margin and padding */
+    body, h1, h2, p {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Header Styles */
     .header {
         text-align: center;
         padding: 20px;
@@ -25,44 +32,105 @@ st.markdown("""
     .header h1 {
         font-family: 'Arial', sans-serif;
         color: #333;
+        font-size: 2em;
     }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 250px;
+        background-color: #343a40; /* Dark background for sidebar */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        border-right: 1px solid #ddd;
+        overflow: auto;
+    }
+    .sidebar-content {
         padding-top: 20px;
     }
-    .sidebar .sidebar-content h2 {
+    .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
-        color: #333;
+        color: #ffffff; /* White text color */
         margin-bottom: 20px;
+        font-size: 1.5em; /* Larger font size for section headers */
     }
-    .sidebar .sidebar-content .radio {
+    .menu-item {
         margin-top: 10px;
     }
+    .menu-item a {
+        text-decoration: none;
+        color: #ffffff; /* White text color */
+        font-size: 1.2em; /* Larger font size for menu items */
+        display: block;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #495057; /* Slightly lighter background color */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .menu-item a:hover {
+        background-color: #6c757d; /* Hover effect background color */
+        color: #ffffff; /* Hover text color */
+    }
+
+    /* Main Content Styles */
     .main-content {
+        margin-left: 250px;
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
     }
+
+    /* Button Styles */
     .stButton > button {
-        background-color: #007bff;
+        background-color: #007bff; /* Default button color */
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         border: none;
         cursor: pointer;
+        transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
+        background-color: #0056b3; /* Default hover color */
     }
-    .stDataFrame {
-        overflow-x: auto;
+
+    /* Variations for Button Hover Effects */
+    .btn-primary:hover {
+        background-color: #0056b3; /* Blue variant */
+    }
+    .btn-secondary:hover {
+        background-color: #6c757d; /* Gray variant */
+    }
+    .btn-success:hover {
+        background-color: #28a745; /* Green variant */
+    }
+    .btn-danger:hover {
+        background-color: #dc3545; /* Red variant */
+    }
+    .btn-warning:hover {
+        background-color: #ffc107; /* Yellow variant */
+    }
+    .btn-info:hover {
+        background-color: #17a2b8; /* Teal variant */
+    }
+    .btn-light:hover {
+        background-color: #f8f9fa; /* Light gray variant */
+        color: #212529; /* Dark text for contrast */
+    }
+    .btn-dark:hover {
+        background-color: #343a40; /* Dark gray variant */
     }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
 
 
 # Load data from CSV files
