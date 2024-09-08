@@ -57,6 +57,25 @@ st.markdown("""
     .stDataFrame {
         overflow-x: auto;
     }
+    .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+    }
+    .sidebar-menu button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+    }
+    .sidebar-menu button:hover {
+        background-color: #0056b3;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -894,17 +913,28 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Function to handle page navigation
+def show_page(page_name):
+    if page_name == "Stock Barang":
+        halaman_stock_barang()
+    elif page_name == "Penjualan":
+        halaman_penjualan()
+    elif page_name == "Supplier":
+        halaman_supplier()
+    elif page_name == "Owner":
+        halaman_owner()
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Sidebar menu buttons
+st.sidebar.markdown('<div class="sidebar-menu">'
+                     '<button onclick="window.location.href=\'/?page=Stock%20Barang\'">Stock Barang</button>'
+                     '<button onclick="window.location.href=\'/?page=Penjualan\'">Penjualan</button>'
+                     '<button onclick="window.location.href=\'/?page=Supplier\'">Supplier</button>'
+                     '<button onclick="window.location.href=\'/?page=Owner\'">Owner</button>'
+                     '</div>', unsafe_allow_html=True)
+
+# Get page parameter from query string
+page = st.experimental_get_query_params().get("page", ["Stock Barang"])[0]
+show_page(page)
 
 # Save data when the app is closed or the menu is changed
 save_data()
