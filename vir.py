@@ -895,7 +895,23 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
+# Define sidebar menu
+menu = st.sidebar.radio(
+    "Pilih Menu",
+    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
+    key="menu_radio"
+)
+
+# Sidebar with menu items
+st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Display content based on menu selection
 if menu == "Stock Barang":
     halaman_stock_barang()
 elif menu == "Penjualan":
@@ -904,8 +920,6 @@ elif menu == "Supplier":
     halaman_supplier()
 elif menu == "Owner":
     halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
