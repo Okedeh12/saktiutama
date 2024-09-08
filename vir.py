@@ -42,6 +42,14 @@ st.markdown("""
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+    .main-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
     }
     .stButton > button {
         background-color: #007bff;
@@ -894,17 +902,22 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
+# Sidebar menu untuk memilih halaman
+menu = st.sidebar.selectbox("Pilih Halaman", ("Stock Barang", "Penjualan", "Supplier", "Owner"))
+
+# Logika untuk menampilkan halaman berdasarkan menu yang dipilih
+def display_content(title):
+    st.markdown(f'<div class="main-content"><h2>{title}</h2>', unsafe_allow_html=True)
+    st.write(f"Konten untuk halaman {title} ditampilkan di sini.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
 if menu == "Stock Barang":
-    halaman_stock_barang()
+    display_content("Stock Barang")
 elif menu == "Penjualan":
-    halaman_penjualan()
+    display_content("Penjualan")
 elif menu == "Supplier":
-    halaman_supplier()
+    display_content("Supplier")
 elif menu == "Owner":
-    halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
-
+    display_content("Owner")
 # Save data when the app is closed or the menu is changed
 save_data()
