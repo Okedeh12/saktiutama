@@ -12,23 +12,9 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# Menambahkan CSS dengan efek gradien pada tombol
+# Menambahkan CSS dengan efek gradien dan hover pada kotak dan tombol
 st.markdown("""
     <style>
-    /* Desain tombol dengan efek gradien */
-    .stButton > button {
-        background: linear-gradient(90deg, #007bff, #00d4ff);
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #0056b3, #00a1d3);
-    }
-
     /* Desain header */
     .header {
         text-align: center;
@@ -53,6 +39,32 @@ st.markdown("""
     .main-content:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Judul halaman di dalam kotak */
+    .main-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Desain tombol dengan efek gradien */
+    .stButton > button {
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #0056b3, #00a1d3);
+    }
+
+    .stDataFrame {
+        overflow-x: auto;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -895,21 +907,11 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Sidebar menu untuk memilih halaman
-menu = st.sidebar.selectbox("Pilih Halaman", ("Stock Barang", "Penjualan", "Supplier", "Owner"))
-
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
-
-# Tombol dengan efek gradien
-st.button("Klik Saya")
+# Menampilkan semua halaman dalam kotak yang terpisah
+halaman_stock_barang()
+halaman_penjualan()
+halaman_supplier()
+halaman_owner()
     
 # Save data when the app is closed or the menu is changed
 save_data()
