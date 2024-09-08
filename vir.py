@@ -5,7 +5,6 @@ from datetime import datetime
 import os
 import time
 from io import StringIO
-import matplotlib
 
 
 # Path to data files
@@ -13,18 +12,9 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-import streamlit as st
-
 # CSS styles for a professional look
 st.markdown("""
     <style>
-    /* Reset margin and padding */
-    body, h1, h2, p {
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Header Styles */
     .header {
         text-align: center;
         padding: 20px;
@@ -34,131 +24,44 @@ st.markdown("""
     .header h1 {
         font-family: 'Arial', sans-serif;
         color: #333;
-        font-size: 2em;
     }
-
-    /* Sidebar Styles */
-    .sidebar {
-        width: 250px;
-        background-color: #343a40; /* Dark background for sidebar */
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        padding-top: 20px;
-        border-right: 1px solid #ddd;
-        overflow: auto;
-    }
-    .sidebar-content {
+    .sidebar .sidebar-content {
+        background-color: #f7f9fc;
         padding-top: 20px;
     }
-    .sidebar-content h2 {
+    .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
-        color: #ffffff; /* White text color */
+        color: #333;
         margin-bottom: 20px;
-        font-size: 1.5em; /* Larger font size for section headers */
     }
-    .menu-item {
+    .sidebar .sidebar-content .radio {
         margin-top: 10px;
     }
-    .menu-item a {
-        text-decoration: none;
-        color: #ffffff; /* White text color */
-        font-size: 1.2em; /* Larger font size for menu items */
-        display: block;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: #495057; /* Slightly lighter background color */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .menu-item a:hover {
-        background-color: #6c757d; /* Hover effect background color */
-        color: #ffffff; /* Hover text color */
-    }
-
-    /* Main Content Styles */
     .main-content {
-        margin-left: 250px;
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        min-height: 100vh;
     }
-
-    /* Button Styles */
     .stButton > button {
-        background-color: #007bff; /* Default button color */
+        background-color: #007bff;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         border: none;
         cursor: pointer;
-        transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #0056b3; /* Default hover color */
+        background-color: #0056b3;
     }
-
-    /* Variations for Button Hover Effects */
-    .btn-primary:hover {
-        background-color: #0056b3; /* Blue variant */
-    }
-    .btn-secondary:hover {
-        background-color: #6c757d; /* Gray variant */
-    }
-    .btn-success:hover {
-        background-color: #28a745; /* Green variant */
-    }
-    .btn-danger:hover {
-        background-color: #dc3545; /* Red variant */
-    }
-    .btn-warning:hover {
-        background-color: #ffc107; /* Yellow variant */
-    }
-    .btn-info:hover {
-        background-color: #17a2b8; /* Teal variant */
-    }
-    .btn-light:hover {
-        background-color: #f8f9fa; /* Light gray variant */
-        color: #212529; /* Dark text for contrast */
-    }
-    .btn-dark:hover {
-        background-color: #343a40; /* Dark gray variant */
+    .stDataFrame {
+        overflow-x: auto;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
-# Define sidebar menu
-menu = st.sidebar.radio(
-    "Pilih Menu",
-    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
-    key="menu_radio"
-)
-
-# Sidebar with menu items
-st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
-
-# Display content based on menu selection
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
-
 
 
 # Load data from CSV files
@@ -990,6 +893,18 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
