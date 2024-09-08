@@ -3,7 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 import os
+import time
 from io import StringIO
+import matplotlib
+
 
 # Path to data files
 STOK_BARANG_FILE = "stok_barang.csv"
@@ -13,7 +16,6 @@ SUPPLIER_FILE = "supplier.csv"
 # CSS styles for a professional look
 st.markdown("""
     <style>
-    /* Header Styles */
     .header {
         text-align: center;
         padding: 20px;
@@ -24,74 +26,44 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
         color: #333;
     }
-
-    /* Sidebar Styles */
-    .sidebar {
-        width: 250px;
-        background-color: #343a40; /* Dark background for sidebar */
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        padding-top: 20px;
-        border-right: 1px solid #ddd;
-        overflow: auto;
-    }
     .sidebar .sidebar-content {
+        background-color: #f7f9fc;
         padding-top: 20px;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
-        color: #ffffff; /* White text color */
+        color: #333;
         margin-bottom: 20px;
-        font-size: 1.5em; /* Larger font size for section headers */
     }
-    .sidebar .sidebar-content .menu-item {
+    .sidebar .sidebar-content .radio {
         margin-top: 10px;
     }
-    .sidebar .sidebar-content .menu-item a {
-        text-decoration: none;
-        color: #ffffff; /* White text color */
-        font-size: 1.2em; /* Larger font size for menu items */
-        display: block;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: #495057; /* Slightly lighter background color */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .sidebar .sidebar-content .menu-item a:hover {
-        background-color: #6c757d; /* Hover effect background color */
-        color: #ffffff; /* Hover text color */
-    }
-
-    /* Main Content Styles */
     .main-content {
-        margin-left: 250px;
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-
-    /* Button Styles */
     .stButton > button {
-        background-color: #007bff; /* Default button color */
+        background-color: #007bff;
         color: white;
         border-radius: 8px;
         padding: 10px 20px;
         border: none;
         cursor: pointer;
-        transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #0056b3; /* Default hover color */
+        background-color: #0056b3;
+    }
+    .stDataFrame {
+        overflow-x: auto;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+
 
 # Load data from CSV files
 def load_data():
@@ -131,7 +103,6 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
@@ -924,21 +895,17 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Define sidebar menu
-menu = st.sidebar.radio(
-    "Pilih Menu",
-    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
-    key="menu_radio"
-)
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
-# Sidebar with menu items
-st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">Stock Barang</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">Penjualan</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">Supplier</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">Owner</a></div>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
