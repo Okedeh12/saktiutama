@@ -38,7 +38,6 @@ st.markdown("""
         overflow: auto;
     }
     .sidebar .sidebar-content {
-        background-color: #343a40; /* Dark background for sidebar content */
         padding-top: 20px;
     }
     .sidebar .sidebar-content h2 {
@@ -88,7 +87,7 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #0056b3; /* Default hover color */
     }
-    
+
     /* Variations for Button Hover Effects */
     .btn-primary:hover {
         background-color: #0056b3; /* Blue variant */
@@ -953,7 +952,20 @@ def halaman_owner():
             )
 
 # Define sidebar menu
-menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"], key="menu_radio")
+menu = st.sidebar.radio(
+    "Pilih Menu",
+    ["Stock Barang", "Penjualan", "Supplier", "Owner"],
+    key="menu_radio"
+)
+
+# Sidebar with menu items
+st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2>Menu</h2>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#stock-barang">{menu[0]}</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#penjualan">{menu[1]}</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#supplier">{menu[2]}</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<div class="menu-item"><a href="#owner">{menu[3]}</a></div>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Add buttons with different hover effects for demonstration
 st.sidebar.markdown('<button class="btn-primary">Primary Button</button>', unsafe_allow_html=True)
@@ -974,6 +986,5 @@ elif menu == "Supplier":
     halaman_supplier()
 elif menu == "Owner":
     halaman_owner()
-
 # Save data when the app is closed or the menu is changed
 save_data()
