@@ -36,129 +36,6 @@ def load_data():
             "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Jumlah Barang", "Nama Supplier", "Tagihan", "Waktu"
         ])
 
-    # Load JSON files
-    if os.path.exists(STOK_BARANG_JSON):
-        st.session_state.stok_barang_json = pd.read_json(STOK_BARANG_JSON)
-    else:
-        st.session_state.stok_barang_json = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Waktu Input"
-        ])
-
-    if os.path.exists(PENJUALAN_JSON):
-        st.session_state.penjualan_json = pd.read_json(PENJUALAN_JSON)
-    else:
-        st.session_state.penjualan_json = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Jumlah", "Total Harga", "Keuntungan", "Waktu"
-        ])
-
-    if os.path.exists(SUPPLIER_JSON):
-        st.session_state.supplier_json = pd.read_json(SUPPLIER_JSON)
-    else:
-        st.session_state.supplier_json = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Jumlah Barang", "Nama Supplier", "Tagihan", "Waktu"
-        ])
-
-# Save data to CSV and JSON files
-def save_data():
-    # Save to CSV files
-    st.session_state.stok_barang.to_csv(STOK_BARANG_FILE, index=False)
-    st.session_state.penjualan.to_csv(PENJUALAN_FILE, index=False)
-    st.session_state.supplier.to_csv(SUPPLIER_FILE, index=False)
-
-    # Save to JSON files
-    st.session_state.stok_barang.to_json(STOK_BARANG_JSON, orient='records', lines=True)
-    st.session_state.penjualan.to_json(PENJUALAN_JSON, orient='records', lines=True)
-    st.session_state.supplier.to_json(SUPPLIER_JSON, orient='records', lines=True)
-# Function to save data to CSV and JSON files
-def save_data():
-    # Save to Excel
-    with pd.ExcelWriter('data_laporan.xlsx', engine='openpyxl') as writer:
-        st.session_state.stok_barang.to_excel(writer, sheet_name='Stok Barang', index=False)
-        st.session_state.penjualan.to_excel(writer, sheet_name='Penjualan', index=False)
-        st.session_state.supplier.to_excel(writer, sheet_name='Supplier', index=False)
-        st.session_state.pengeluaran.to_excel(writer, sheet_name='Pengeluaran', index=False)
-        
-        if "piutang_konsumen" in st.session_state:
-            st.session_state.piutang_konsumen.to_excel(writer, sheet_name='Piutang Konsumen', index=False)
-
-        if "historis_analisis_keuangan" in st.session_state:
-            st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name='Histori Analisis Keuangan', index=False)
-
-        total_penjualan = st.session_state.penjualan["Total Harga"].sum()
-        total_pengeluaran = st.session_state.pengeluaran["Jumlah Pengeluaran"].sum()
-        total_keuntungan_bersih = total_penjualan - total_pengeluaran
-        df_keuntungan_bersih = pd.DataFrame({
-            "Total Penjualan": [total_penjualan],
-            "Total Pengeluaran": [total_pengeluaran],
-            "Keuntungan Bersih": [total_keuntungan_bersih]
-        })
-        df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
-
-    # Save to CSV
-    st.session_state.stok_barang.to_csv('stok_barang.csv', index=False)
-    st.session_state.penjualan.to_csv('penjualan.csv', index=False)
-    st.session_state.supplier.to_csv('supplier.csv', index=False)
-    st.session_state.pengeluaran.to_csv('pengeluaran.csv', index=False)
-
-    if "piutang_konsumen" in st.session_state:
-        st.session_state.piutang_konsumen.to_csv('piutang_konsumen.csv', index=False)
-
-    if "historis_analisis_keuangan" in st.session_state:
-        st.session_state.historis_analisis_keuangan.to_csv('historis_analisis_keuangan.csv', index=False)
-
-    # Save to JSON
-    st.session_state.stok_barang.to_json('stok_barang.json', orient='records', lines=True)
-    st.session_state.penjualan.to_json('penjualan.json', orient='records', lines=True)
-    st.session_state.supplier.to_json('supplier.json', orient='records', lines=True)
-    st.session_state.pengeluaran.to_json('pengeluaran.json', orient='records', lines=True)
-
-    if "piutang_konsumen" in st.session_state:
-        st.session_state.piutang_konsumen.to_json('piutang_konsumen.json', orient='records', lines=True)
-
-    if "historis_analisis_keuangan" in st.session_state:
-        st.session_state.historis_analisis_keuangan.to_json('historis_analisis_keuangan.json', orient='records', lines=True)
-
-    st.info("Data berhasil disimpan!")
-def save_data_to_files():
-    # Direktori penyimpanan
-    save_dir = 'data'
-    os.makedirs(save_dir, exist_ok=True)
-
-    # Simpan stok barang
-    if 'stok_barang' in st.session_state:
-        st.session_state.stok_barang.to_csv(os.path.join(save_dir, 'stok_barang.csv'), index=False)
-        st.session_state.stok_barang.to_json(os.path.join(save_dir, 'stok_barang.json'), orient='records', lines=True)
-
-    # Simpan penjualan
-    if 'penjualan' in st.session_state:
-        st.session_state.penjualan.to_csv(os.path.join(save_dir, 'penjualan.csv'), index=False)
-        st.session_state.penjualan.to_json(os.path.join(save_dir, 'penjualan.json'), orient='records', lines=True)
-
-    # Simpan supplier
-    if 'supplier' in st.session_state:
-        st.session_state.supplier.to_csv(os.path.join(save_dir, 'supplier.csv'), index=False)
-        st.session_state.supplier.to_json(os.path.join(save_dir, 'supplier.json'), orient='records', lines=True)
-
-    # Simpan piutang konsumen
-    if 'piutang_konsumen' in st.session_state:
-        st.session_state.piutang_konsumen.to_csv(os.path.join(save_dir, 'piutang_konsumen.csv'), index=False)
-        st.session_state.piutang_konsumen.to_json(os.path.join(save_dir, 'piutang_konsumen.json'), orient='records', lines=True)
-
-    # Simpan pengeluaran
-    if 'pengeluaran' in st.session_state:
-        st.session_state.pengeluaran.to_csv(os.path.join(save_dir, 'pengeluaran.csv'), index=False)
-        st.session_state.pengeluaran.to_json(os.path.join(save_dir, 'pengeluaran.json'), orient='records', lines=True)
-
-    # Simpan historis analisis keuangan
-    if 'historis_analisis_keuangan' in st.session_state:
-        st.session_state.historis_analisis_keuangan.to_csv(os.path.join(save_dir, 'historis_analisis_keuangan.csv'), index=False)
-        st.session_state.historis_analisis_keuangan.to_json(os.path.join(save_dir, 'historis_analisis_keuangan.json'), orient='records', lines=True)
-
-    # Simpan historis keuntungan bersih
-    if 'historis_keuntungan_bersih' in st.session_state:
-        st.session_state.historis_keuntungan_bersih.to_csv(os.path.join(save_dir, 'historis_keuntungan_bersih.csv'), index=False)
-        st.session_state.historis_keuntungan_bersih.to_json(os.path.join(save_dir, 'historis_keuntungan_bersih.json'), orient='records', lines=True)
-
 # Path to data files
 STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
@@ -765,6 +642,49 @@ def save_to_excel():
         })
         df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
 save_data()
+
+# Helper function to format currency values
+def format_rupiah(value):
+    return f"Rp {value:,.0f}".replace(",", ".")
+
+# Save all data to CSV and JSON
+def save_data():
+    # Create directory if it does not exist
+    if not os.path.exists('data'):
+        os.makedirs('data')
+    
+    # Save DataFrames to CSV
+    if 'penjualan' in st.session_state and not st.session_state.penjualan.empty:
+        st.session_state.penjualan.to_csv('data/penjualan.csv', index=False)
+    
+    if 'supplier' in st.session_state and not st.session_state.supplier.empty:
+        st.session_state.supplier.to_csv('data/supplier.csv', index=False)
+    
+    if 'piutang_konsumen' in st.session_state and not st.session_state.piutang_konsumen.empty:
+        st.session_state.piutang_konsumen.to_csv('data/piutang_konsumen.csv', index=False)
+    
+    if 'pengeluaran' in st.session_state and not st.session_state.pengeluaran.empty:
+        st.session_state.pengeluaran.to_csv('data/pengeluaran.csv', index=False)
+    
+    if 'historis_analisis_keuangan' in st.session_state and not st.session_state.historis_analisis_keuangan.empty:
+        st.session_state.historis_analisis_keuangan.to_csv('data/historis_analisis_keuangan.csv', index=False)
+    
+    if 'historis_keuntungan_bersih' in st.session_state and not st.session_state.historis_keuntungan_bersih.empty:
+        st.session_state.historis_keuntungan_bersih.to_csv('data/historis_keuntungan_bersih.csv', index=False)
+    
+    # Save all DataFrames to a JSON file
+    all_data = {
+        'penjualan': st.session_state.penjualan.to_dict(orient='records') if 'penjualan' in st.session_state else [],
+        'supplier': st.session_state.supplier.to_dict(orient='records') if 'supplier' in st.session_state else [],
+        'piutang_konsumen': st.session_state.piutang_konsumen.to_dict(orient='records') if 'piutang_konsumen' in st.session_state else [],
+        'pengeluaran': st.session_state.pengeluaran.to_dict(orient='records') if 'pengeluaran' in st.session_state else [],
+        'historis_analisis_keuangan': st.session_state.historis_analisis_keuangan.to_dict(orient='records') if 'historis_analisis_keuangan' in st.session_state else [],
+        'historis_keuntungan_bersih': st.session_state.historis_keuntungan_bersih.to_dict(orient='records') if 'historis_keuntungan_bersih' in st.session_state else [],
+    }
+
+    with open('data/all_data.json', 'w') as json_file:
+        json.dump(all_data, json_file, indent=4)
+
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
     st.header("Halaman Owner - Analisa Keuangan")
