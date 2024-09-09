@@ -237,7 +237,7 @@ def halaman_penjualan():
                 "Nama Barang": penjualan_edit["Nama Barang"],
                 "Ukuran/Kemasan": penjualan_edit["Ukuran/Kemasan"],
                 "Merk": penjualan_edit["Merk"],
-                "Kode Warna": penjualan_edit["Kode Warna"] if "Kode Warna" in penjualan_edit.index else "",
+                "Warna/Base": penjualan_edit["Warna/Base"] if "Warna/Base" in penjualan_edit.index else "",
                 "Jumlah": penjualan_edit["Jumlah"]
             }
         else:
@@ -248,7 +248,7 @@ def halaman_penjualan():
                 "Nama Barang": st.session_state.stok_barang["Nama Barang"].tolist()[0] if not st.session_state.stok_barang.empty else "",
                 "Ukuran/Kemasan": st.session_state.stok_barang["Ukuran/Kemasan"].tolist()[0] if not st.session_state.stok_barang.empty else "",
                 "Merk": st.session_state.stok_barang["Merk"].tolist()[0] if not st.session_state.stok_barang.empty else "",
-                "Kode Warna": "",
+                "Warna/Base": "",
                 "Jumlah": 1
             }
     else:
@@ -260,7 +260,7 @@ def halaman_penjualan():
             "Nama Barang": st.session_state.stok_barang["Nama Barang"].tolist()[0] if not st.session_state.stok_barang.empty else "",
             "Ukuran/Kemasan": st.session_state.stok_barang["Ukuran/Kemasan"].tolist()[0] if not st.session_state.stok_barang.empty else "",
             "Merk": st.session_state.stok_barang["Merk"].tolist()[0] if not st.session_state.stok_barang.empty else "",
-            "Kode Warna": "",
+            "Warna/Base": "",
             "Jumlah": 1
         }
 
@@ -271,7 +271,7 @@ def halaman_penjualan():
         nama_barang = st.selectbox("Pilih Barang", st.session_state.stok_barang["Nama Barang"], index=st.session_state.stok_barang["Nama Barang"].tolist().index(default_values["Nama Barang"]))
         ukuran = st.selectbox("Ukuran/Kemasan", st.session_state.stok_barang["Ukuran/Kemasan"], index=st.session_state.stok_barang["Ukuran/Kemasan"].tolist().index(default_values["Ukuran/Kemasan"]))
         merk = st.selectbox("Merk", st.session_state.stok_barang["Merk"], index=st.session_state.stok_barang["Merk"].tolist().index(default_values["Merk"]))
-        kode_warna = st.text_input("Kode Warna", value=default_values["Kode Warna"], placeholder="Opsional")
+        warna_base = st.text_input("Warna/Base", value=default_values["Warna/Base"], placeholder="Opsional")
         jumlah = st.number_input("Jumlah Orderan", min_value=1, value=int(default_values["Jumlah"]))
         submit = st.form_submit_button("Simpan Penjualan")
 
@@ -284,10 +284,9 @@ def halaman_penjualan():
             ]
             
             if not stok_barang_filter.empty:
-                harga_barang = stok_barang_filter["Harga"].values[0]
-                persentase_keuntungan = stok_barang_filter["Persentase Keuntungan"].values[0]
-                total_harga = harga_barang * jumlah
-                keuntungan = total_harga * (persentase_keuntungan / 100)
+                harga_jual = stok_barang_filter["Harga Jual"].values[0]  # Menggunakan Harga Jual
+                total_harga = harga_jual * jumlah
+                keuntungan = total_harga - (stok_barang_filter["Harga"].values[0] * jumlah)  # Menghitung Keuntungan
                 waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Mendapatkan waktu saat ini
                 
                 new_penjualan = pd.DataFrame({
@@ -298,7 +297,7 @@ def halaman_penjualan():
                     "Nama Barang": [nama_barang],
                     "Ukuran/Kemasan": [ukuran],
                     "Merk": [merk],
-                    "Kode Warna": [kode_warna if "Kode Warna" in st.session_state.stok_barang.columns else ""],
+                    "Warna/Base": [warna_base if "Warna/Base" in st.session_state.stok_barang.columns else ""],
                     "Jumlah": [jumlah],
                     "Total Harga": [total_harga],
                     "Keuntungan": [keuntungan],
@@ -309,8 +308,8 @@ def halaman_penjualan():
                     st.session_state.penjualan = pd.concat([st.session_state.penjualan, new_penjualan], ignore_index=True)
                 else:
                     st.session_state.penjualan.loc[st.session_state.penjualan["ID"] == id_penjualan, 
-                        ["Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga", "Keuntungan", "Waktu"]] = \
-                        [nama_pelanggan, nomor_telpon, alamat, nama_barang, ukuran, merk, kode_warna, jumlah, total_harga, keuntungan, waktu]
+                        ["Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Warna/Base", "Jumlah", "Total Harga", "Keuntungan", "Waktu"]] = \
+                        [nama_pelanggan, nomor_telpon, alamat, nama_barang, ukuran, merk, warna_base, jumlah, total_harga, keuntungan, waktu]
                 
                 # Update stok barang
                 st.session_state.stok_barang.loc[
@@ -337,8 +336,10 @@ def halaman_penjualan():
     # Tabel penjualan
     st.subheader("Data Penjualan")
     if not st.session_state.penjualan.empty:
-        st.session_state.penjualan["Nomor Telepon"] = st.session_state.penjualan["Nomor Telepon"].astype(str)
-        st.dataframe(st.session_state.penjualan, use_container_width=True, hide_index=False)
+        penjualan_table = st.session_state.penjualan.copy()
+        if "Keuntungan" in penjualan_table.columns:
+            penjualan_table = penjualan_table.drop(columns=["Keuntungan"])  # Menghapus kolom Keuntungan jika ada
+        st.dataframe(penjualan_table, use_container_width=True, hide_index=False)
 
     # Tombol pencarian stok barang
     search_barang = st.text_input("Cari Barang")
@@ -381,8 +382,8 @@ def halaman_penjualan():
             struk.write(f"Nama Barang: {selected_sale['Nama Barang']}\n")
             struk.write(f"Ukuran/Kemasan: {selected_sale['Ukuran/Kemasan']}\n")
             struk.write(f"Merk: {selected_sale['Merk']}\n")
-            if "Kode Warna" in selected_sale.index:
-                struk.write(f"Kode Warna: {selected_sale['Kode Warna']}\n")
+            if "Warna/Base" in selected_sale.index:
+                struk.write(f"Warna/Base: {selected_sale['Warna/Base']}\n")
             struk.write(f"Jumlah: {selected_sale['Jumlah']}\n")
             struk.write(f"Total Harga: {selected_sale['Total Harga']}\n")
             struk.write(f"Waktu: {selected_sale['Waktu']}\n")
@@ -395,7 +396,7 @@ def halaman_penjualan():
             
             with open(struk_file, 'r') as f:
                 st.download_button(label="Download Struk Penjualan", data=f, file_name=struk_file, mime="text/plain")
-
+                
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
     st.header("Data Supplier")
