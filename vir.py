@@ -226,7 +226,8 @@ def halaman_stock_barang():
         ]
     
     st.dataframe(df_stok_barang)
-    
+
+            save_data()  # Save data after adding or updating item
 
         
 # Dummy function to save data; replace with your actual save_data implementation
@@ -413,6 +414,7 @@ def halaman_penjualan():
             
             with open(struk_file, 'r') as f:
                 st.download_button(label="Download Struk Penjualan", data=f, file_name=struk_file, mime="text/plain")
+                save_data()  # Save data after adding or updating item
                 
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
@@ -1040,8 +1042,8 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+save_data()  # Save data after adding or updating item
 
-            
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
