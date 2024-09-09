@@ -231,7 +231,6 @@ def halaman_stock_barang():
     if selected_action == "Edit Barang" and selected_id != "Tambah Baru" and st.button("Hapus Barang"):
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_id]
         st.success(f"Barang ID {selected_id} berhasil dihapus!")
-        save_data()  # Simpan data setelah menghapus barang
 
         
 # Dummy function to save data; replace with your actual save_data implementation
