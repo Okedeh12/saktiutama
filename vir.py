@@ -26,16 +26,16 @@ st.markdown("""
         color: #333;
     }
     .sidebar .sidebar-content {
-        background-color: #767f89
+        background-color: #f7f9fc;
         padding-top: 20px;
     }
     .sidebar .sidebar-content h2 {
         font-family: 'Arial', sans-serif;
         color: #333;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
     }
     .sidebar .sidebar-content .radio {
-        margin-top: 30px;
+        margin-top: 10px;
     }
     .main-content {
         padding: 20px;
@@ -103,11 +103,7 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# Fungsi untuk menyimpan data (misalnya ke file atau database)
-def save_data():
-    # Implementasi penyimpanan data
-    pass
-
+# Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.header("Stock Barang")
     
@@ -117,16 +113,9 @@ def halaman_stock_barang():
     # Pilih barang yang akan diedit atau pilih "Tambah Baru"
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
 
-    # Normalisasi data dalam DataFrame untuk pencocokan huruf kapital/kecil
-    stok_barang_normalized = st.session_state.stok_barang.copy()
-    stok_barang_normalized["Nama Barang"] = stok_barang_normalized["Nama Barang"].str.lower()
-    stok_barang_normalized["Merk"] = stok_barang_normalized["Merk"].str.lower()
-    stok_barang_normalized["Ukuran/Kemasan"] = stok_barang_normalized["Ukuran/Kemasan"].str.lower()
-
     if selected_action == "Edit Barang":
         # Pilih ID Barang untuk Diedit
-        ids = st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"]
-        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", ids)
+        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
         
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
@@ -145,6 +134,7 @@ def halaman_stock_barang():
                 "Harga": 0,
                 "Stok": 0
             }
+
     else:
         # Untuk tambah barang baru, set default values kosong
         selected_id = "Tambah Baru"
@@ -165,30 +155,8 @@ def halaman_stock_barang():
         submit = st.form_submit_button("Simpan Barang")
 
         if submit:
-            # Normalisasi input pengguna
-            nama_barang_lower = nama_barang.strip().lower()
-            merk_lower = merk.strip().lower()
-            ukuran_lower = ukuran.strip().lower()
-
-            # Periksa apakah barang yang sama sudah ada tanpa mempertimbangkan Harga
-            existing_item = stok_barang_normalized[
-                (stok_barang_normalized["Nama Barang"] == nama_barang_lower) &
-                (stok_barang_normalized["Merk"] == merk_lower) &
-                (stok_barang_normalized["Ukuran/Kemasan"] == ukuran_lower)
-            ]
-
-            if not existing_item.empty:
-                # Jika barang sudah ada, tambahkan stok yang baru
-                existing_id = existing_item["ID"].values[0]
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] += stok
-                st.success(f"Stok untuk Barang ID {existing_id} berhasil diperbarui!")
-            else:
-                # Jika barang belum ada, tambahkan sebagai entri baru
-                if selected_id == "Tambah Baru":
-                    new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
-                else:
-                    new_id = selected_id
-                
+            if selected_id == "Tambah Baru":
+                new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = pd.DataFrame({
                     "ID": [new_id],
                     "Nama Barang": [nama_barang],
@@ -198,15 +166,13 @@ def halaman_stock_barang():
                     "Stok": [stok],
                     "Waktu Input": [datetime.now()]
                 })
-                
-                if selected_id == "Tambah Baru":
-                    st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
-                else:
-                    st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
-                        ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok"]] = \
-                        [nama_barang, merk, ukuran, harga, stok]
-                
-                st.success("Barang berhasil ditambahkan atau diupdate!")
+                st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
+                st.success("Barang berhasil ditambahkan!")
+            else:
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
+                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok"]] = \
+                    [nama_barang, merk, ukuran, harga, stok]
+                st.success(f"Barang ID {selected_id} berhasil diupdate!")
                 
             save_data()  # Save data after adding or updating item
 
@@ -219,30 +185,9 @@ def halaman_stock_barang():
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
     if search_text:
-        search_text_lower = search_text.strip().lower()
         df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.lower().str.contains(search_text_lower, na=False)) |
-            (df_stok_barang["Merk"].str.lower().str.contains(search_text_lower, na=False))
-        ]
-    
-    st.dataframe(df_stok_barang)
-
-                
-            save_data()  # Save data after adding or updating item
-
-    # Tabel stok barang
-    st.subheader("Daftar Stok Barang")
-    df_stok_barang = st.session_state.stok_barang.copy()
-    if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
-    
-    # Pencarian nama barang atau merk
-    search_text = st.text_input("Cari Nama Barang atau Merk")
-    if search_text:
-        search_text_lower = search_text.strip().lower()
-        df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.lower().str.contains(search_text_lower, na=False)) |
-            (df_stok_barang["Merk"].str.lower().str.contains(search_text_lower, na=False))
+            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
+            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
         ]
     
     st.dataframe(df_stok_barang)
