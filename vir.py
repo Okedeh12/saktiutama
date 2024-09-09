@@ -102,15 +102,16 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
+    
+
+# Dummy function to save data; replace with your actual save_data implementation
+def save_data():
+    # Your logic to save data, e.g., to a database or file
+    pass
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.header("Stock Barang")
-    
-    # Dummy function to save data; replace with your actual save_data implementation
-    def save_data():
-        # Your logic to save data, e.g., to a database or file
-        pass
     
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
@@ -129,7 +130,8 @@ def halaman_stock_barang():
                 "Merk": barang_dipilih["Merk"].values[0],
                 "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
                 "Stok": barang_dipilih["Stok"].values[0],
-                "Warna/Base": barang_dipilih["Warna/Base"].values[0] if "Warna/Base" in barang_dipilih.columns else ""
+                "Warna/Base": barang_dipilih["Warna/Base"].values[0] if "Warna/Base" in barang_dipilih.columns else "",
+                "Harga": barang_dipilih["Harga"].values[0] if "Harga" in barang_dipilih.columns else 0
             }
         else:
             default_values = {
@@ -137,7 +139,8 @@ def halaman_stock_barang():
                 "Merk": "",
                 "Ukuran/Kemasan": "",
                 "Stok": 0,
-                "Warna/Base": ""
+                "Warna/Base": "",
+                "Harga": 0
             }
     
     else:
@@ -148,7 +151,8 @@ def halaman_stock_barang():
             "Merk": "",
             "Ukuran/Kemasan": "",
             "Stok": 0,
-            "Warna/Base": ""
+            "Warna/Base": "",
+            "Harga": 0
         }
     
     with st.form("input_barang"):
@@ -157,6 +161,11 @@ def halaman_stock_barang():
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         warna_base = st.text_input("Warna/Base", value=default_values["Warna/Base"], placeholder="Opsional")
+        harga = st.number_input("Harga", min_value=0.0, value=float(default_values["Harga"]), format="%.2f")
+        
+        # Hitung harga jual dengan menambahkan 15%
+        harga_jual = harga * 1.15
+        
         submit = st.form_submit_button("Simpan Barang")
     
         if submit:
@@ -176,6 +185,8 @@ def halaman_stock_barang():
                 existing_id = match["ID"].values[0]
                 updated_stok = match["Stok"].values[0] + stok
                 st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] = updated_stok
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Harga"] = harga
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Harga Jual"] = harga_jual
                 st.success(f"Stok barang ID {existing_id} berhasil diperbarui!")
             else:
                 # Add new item
@@ -187,6 +198,8 @@ def halaman_stock_barang():
                     "Ukuran/Kemasan": [ukuran],
                     "Stok": [stok],
                     "Warna/Base": [warna_base],
+                    "Harga": [harga],
+                    "Harga Jual": [harga_jual],
                     "Waktu Input": [datetime.now()]
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
@@ -198,9 +211,11 @@ def halaman_stock_barang():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Harga dan Persentase Keuntungan dari tampilan
-    columns_to_drop = ["Harga", "Persentase Keuntungan"]
-    df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
+    # Hapus kolom Persentase Keuntungan dari tampilan
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
+    
+    st.dataframe(df_stok_barang)
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
