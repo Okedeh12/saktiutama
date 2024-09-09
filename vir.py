@@ -623,6 +623,7 @@ def halaman_owner():
             "Warna/Base": ""
         }
     
+    # Define the form
     with st.form("input_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
@@ -640,7 +641,7 @@ def halaman_owner():
         st.write(f"**Nominal Keuntungan**: Rp {nominal_keuntungan:,.0f}")  # Tampilkan nominal keuntungan
         
         # Jika kolom Warna/Base ada, tambahkan input untuk Warna/Base
-        warna_base = st.text_input("Warna/Base (Opsional)", value=default_values["Warna/Base"]) if "Warna/Base" in st.session_state.stok_barang.columns else None
+        warna_base = st.text_input("Warna/Base (Opsional)", value=default_values["Warna/Base"]) if "Warna/Base" in st.session_state.stok_barang.columns else ""
     
         submit = st.form_submit_button("Simpan Barang")
     
@@ -685,7 +686,7 @@ def halaman_owner():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Harga dari tampilan jika ada
+    # Hapus kolom Persentase Keuntungan dari tampilan jika ada
     columns_to_drop = ["Persentase Keuntungan"]
     df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
     
@@ -702,7 +703,7 @@ def halaman_owner():
         ]
     
     st.dataframe(df_stok_barang)
-    
+        
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
     st.dataframe(st.session_state.penjualan)
