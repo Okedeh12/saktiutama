@@ -180,8 +180,7 @@ def halaman_stock_barang():
             if not existing_item.empty:
                 # Jika barang sudah ada, tambahkan stok yang baru
                 existing_id = existing_item["ID"].values[0]
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, 
-                    "Stok"] += stok
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] += stok
                 st.success(f"Stok untuk Barang ID {existing_id} berhasil diperbarui!")
             else:
                 # Jika barang belum ada, tambahkan sebagai entri baru
@@ -208,6 +207,26 @@ def halaman_stock_barang():
                         [nama_barang, merk, ukuran, harga, stok]
                 
                 st.success("Barang berhasil ditambahkan atau diupdate!")
+                
+            save_data()  # Save data after adding or updating item
+
+    # Tabel stok barang
+    st.subheader("Daftar Stok Barang")
+    df_stok_barang = st.session_state.stok_barang.copy()
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
+    
+    # Pencarian nama barang atau merk
+    search_text = st.text_input("Cari Nama Barang atau Merk")
+    if search_text:
+        search_text_lower = search_text.strip().lower()
+        df_stok_barang = df_stok_barang[
+            (df_stok_barang["Nama Barang"].str.lower().str.contains(search_text_lower, na=False)) |
+            (df_stok_barang["Merk"].str.lower().str.contains(search_text_lower, na=False))
+        ]
+    
+    st.dataframe(df_stok_barang)
+
                 
             save_data()  # Save data after adding or updating item
 
