@@ -699,10 +699,6 @@ def halaman_owner():
     def format_rupiah(amount):
         return f"Rp {amount:,.2f}"
     
-    # Dummy function to format currency; replace with your actual implementation
-    def format_rupiah(amount):
-        return f"Rp {amount:,.2f}"
-    
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
     if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
