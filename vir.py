@@ -596,12 +596,13 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
-    # Dummy function to save data; replace with your actual save_data implementation
-    def save_data():
-        # Your logic to save data, e.g., to a database or file
-        pass
-    
-    # Form input barang baru dan edit barang
+# Dummy function to save data; replace with your actual save_data implementation
+def save_data():
+    # Your logic to save data, e.g., to a database or file
+    pass
+
+# Form input barang baru dan edit barang
+def halaman_stock_barang():
     st.header("Stock Barang")
     
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
@@ -690,7 +691,7 @@ def halaman_owner():
     if "Harga" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Harga"])
     
-    # Tampilkan Harga Jual
+    # Tampilkan Harga Jual jika tidak ada
     if "Harga Jual" not in df_stok_barang.columns:
         df_stok_barang["Harga Jual"] = df_stok_barang["Harga"] + (df_stok_barang["Harga"] * (df_stok_barang["Persentase Keuntungan"] / 100))
     
