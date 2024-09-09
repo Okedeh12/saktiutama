@@ -827,25 +827,15 @@ def halaman_owner():
     else:
         st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
     
-    # Menambahkan tabel pengeluaran dan fitur edit
-    st.subheader("Pengeluaran")
-    
-    # Simulasi data untuk penjualan dan pengeluaran
-    if 'penjualan' not in st.session_state:
-        st.session_state.penjualan = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
-            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
-            "Keuntungan", "Waktu"
-        ])
-
+    # Simulasi data untuk pengeluaran
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=[
             "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
 
-    if 'historis_keuntungan_bersih' not in st.session_state:
-        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=[
-            "Waktu", "Keuntungan Bersih"
+    if 'historis_pengeluaran' not in st.session_state:
+        st.session_state.historis_pengeluaran = pd.DataFrame(columns=[
+            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
 
     # Menampilkan tabel pengeluaran
@@ -858,7 +848,7 @@ def halaman_owner():
         jumlah_pengeluaran = st.number_input("Jumlah Pengeluaran (Rp)", min_value=0)
         keterangan_pengeluaran = st.text_input("Keterangan Pengeluaran")
         submit_pengeluaran = st.form_submit_button("Tambah Pengeluaran")
-        
+
         if submit_pengeluaran:
             new_data = pd.DataFrame({
                 "Jenis Pengeluaran": [jenis_pengeluaran],
@@ -870,9 +860,18 @@ def halaman_owner():
             st.success("Pengeluaran berhasil ditambahkan!")
             save_data()  # Simpan data setelah penambahan pengeluaran
 
+    # Menyaring data pengeluaran berdasarkan bulan yang sama
+    current_month = datetime.now().strftime('%Y-%m')
+    st.session_state.pengeluaran['Bulan'] = st.session_state.pengeluaran['Waktu'].dt.strftime('%Y-%m')
+    historis_bulan_ini = st.session_state.pengeluaran[st.session_state.pengeluaran['Bulan'] == current_month]
+
     # Tabel historis pengeluaran
-    st.subheader("Historis Pengeluaran")
-    st.dataframe(st.session_state.pengeluaran)
+    st.subheader("Historis Pengeluaran Bulan Ini")
+    st.dataframe(historis_bulan_ini[['Jenis Pengeluaran', 'Jumlah Pengeluaran', 'Keterangan', 'Waktu']])
+
+    # Tabel historis pengeluaran keseluruhan
+    st.subheader("Historis Pengeluaran Keseluruhan")
+    st.dataframe(st.session_state.pengeluaran[['Jenis Pengeluaran', 'Jumlah Pengeluaran', 'Keterangan', 'Waktu']])
 
     # Analisa Keuangan - Total Keuntungan Bersih
     st.subheader("Analisa Keuangan - Total Keuntungan Bersih")
