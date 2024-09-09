@@ -569,6 +569,11 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
+    # Dummy function to save data; replace with your actual save_data implementation
+    def save_data():
+        # Your logic to save data, e.g., to a database or file
+        pass
+    
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
     
@@ -624,7 +629,7 @@ def halaman_owner():
             warna_base = st.text_input("Warna/Base (Opsional)", value=default_values["Warna/Base"])
         else:
             warna_base = None
-    
+        
         submit = st.form_submit_button("Simpan Barang")
     
         if submit:
@@ -673,6 +678,22 @@ def halaman_owner():
     # Hapus kolom Harga dari tampilan jika ada
     if "Harga" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Harga"])
+    
+    # Tampilkan harga jual di tabel
+    if "Harga Jual" not in df_stok_barang.columns:
+        df_stok_barang["Harga Jual"] = df_stok_barang["Harga"] + (df_stok_barang["Harga"] * (df_stok_barang["Persentase Keuntungan"] / 100))
+    
+    # Hapus kolom Persentase Keuntungan dari tampilan jika ada
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
+    
+    # Pencarian nama barang atau merk
+    search_text = st.text_input("Cari Nama Barang atau Merk")
+    if search_text:
+        df_stok_barang = df_stok_barang[
+            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
+            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
+        ]
     
     st.dataframe(df_stok_barang)
     
