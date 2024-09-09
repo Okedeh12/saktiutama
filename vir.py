@@ -702,6 +702,16 @@ def halaman_owner():
     # Analisa keuangan dengan grafik pemasaran
     st.subheader("Analisa Keuangan")
     
+    # Laporan penjualan
+    st.subheader("Laporan Penjualan")
+    if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
+        st.dataframe(st.session_state.penjualan)
+    else:
+        st.warning("Data penjualan tidak tersedia.")
+    
+    # Analisa keuangan dengan grafik pemasaran
+    st.subheader("Analisa Keuangan")
+    
     # Perhitungan total penjualan
     if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
         total_penjualan = st.session_state.penjualan["Total Harga"].sum()
@@ -739,41 +749,30 @@ def halaman_owner():
         "Selisih": [selisih]
     })
     
+    # Menampilkan tabel analisis keuangan
+    st.subheader("Tabel Analisis Keuangan")
+    st.dataframe(analisis_keuangan_df)
+    
     # Menyimpan histori analisis keuangan ke dalam session_state
     if "historis_analisis_keuangan" not in st.session_state:
         st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
     
-    # Update histori analisis keuangan
-    historis_analisis_keuangan = st.session_state.historis_analisis_keuangan
+    # Menambahkan data baru ke histori
+    st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
     
-    # Filter histori analisis keuangan untuk bulan saat ini
+    # Filter histori analisis keuangan hanya untuk bulan saat ini
     current_month = datetime.now().strftime("%Y-%m")
-    historis_analisis_keuangan['Tanggal'] = pd.to_datetime(historis_analisis_keuangan['Tanggal'], errors='coerce')
-    filtered_historis_analisis_keuangan = historis_analisis_keuangan[
-        historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m") == current_month
+    st.session_state.historis_analisis_keuangan['Tanggal'] = pd.to_datetime(st.session_state.historis_analisis_keuangan['Tanggal'], errors='coerce')
+    filtered_historis_analisis_keuangan = st.session_state.historis_analisis_keuangan[
+        st.session_state.historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m") == current_month
     ]
-    
-    # Cek apakah sudah ada data untuk hari ini
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    if today_date in filtered_historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m-%d").values:
-        # Update data lama dengan data baru
-        historis_analisis_keuangan.loc[
-            historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m-%d") == today_date,
-            ["Total Penjualan", "Total Tagihan Supplier", "Selisih"]
-        ] = [total_penjualan, monthly_supplier_bills, selisih]
-    else:
-        # Tambahkan data baru
-        historis_analisis_keuangan = pd.concat([historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
-    
-    # Simpan data terbaru ke session_state
-    st.session_state.historis_analisis_keuangan = historis_analisis_keuangan
     
     # Menampilkan histori analisis keuangan
     st.subheader("Histori Analisis Keuangan")
     if not filtered_historis_analisis_keuangan.empty:
         st.dataframe(filtered_historis_analisis_keuangan)
     else:
-        st.write("Tidak ada data histori untuk bulan ini.")
+        st.write
     
     # Menampilkan tabel data supplier dengan fitur pencarian
     st.subheader("Data Supplier")
