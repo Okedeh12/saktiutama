@@ -561,6 +561,9 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
+    # Form input barang baru dan edit barang
+    st.subheader("Tambah/Edit Barang")
+    
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
@@ -611,11 +614,29 @@ def halaman_owner():
         # Jika kolom Warna/Base ada, tambahkan input untuk Warna/Base
         if has_warna_base:
             warna_base = st.text_input("Warna/Base (Opsional)", value=default_values["Warna/Base"])
+        else:
+            warna_base = None
     
         submit = st.form_submit_button("Simpan Barang")
     
         if submit:
-            if barang_dipilih is None:
+            # Cek apakah ada barang dengan atribut yang sama
+            match = st.session_state.stok_barang[
+                (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
+                (st.session_state.stok_barang["Merk"] == merk) &
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                (st.session_state.stok_barang["Warna/Base"] == warna_base if has_warna_base else True)
+            ]
+    
+            if not match.empty:
+                # Update stok barang yang ada
+                existing_id = match["ID"].values[0]
+                existing_stok = match["Stok"].values[0]
+                updated_stok = existing_stok + stok
+                
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, ["Stok"]] = updated_stok
+                st.success(f"Stok barang ID {existing_id} berhasil diperbarui!")
+            else:
                 # Tambah barang baru
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = {
@@ -634,29 +655,18 @@ def halaman_owner():
     
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, pd.DataFrame(new_data)], ignore_index=True)
                 st.success("Barang baru berhasil ditambahkan!")
-            else:
-                # Update barang yang ada
-                update_data = {
-                    "Nama Barang": nama_barang,
-                    "Merk": merk,
-                    "Ukuran/Kemasan": ukuran,
-                    "Harga": harga_beli,  # Harga beli barang
-                    "Harga Jual": harga_jual,  # Harga jual hasil dari kalkulasi
-                    "Stok": stok,
-                    "Persentase Keuntungan": persentase_keuntungan,
-                }
     
-                if has_warna_base:
-                    update_data["Warna/Base"] = warna_base
-    
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_row, list(update_data.keys())] = list(update_data.values())
-                st.success(f"Barang ID {selected_row} berhasil diupdate!")
-            
             save_data()  # Simpan data setelah menambah atau mengedit barang
     
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
-    st.dataframe(st.session_state.stok_barang)
+    df_stok_barang = st.session_state.stok_barang.copy()
+    
+    # Hapus kolom Harga dari tampilan jika ada
+    if "Harga" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
+    
+    st.dataframe(df_stok_barang)
     
     # Tombol untuk hapus barang (jika ID bukan 'Tambah Baru')
     if selected_row != "Tambah Baru" and st.button("Hapus Barang"):
