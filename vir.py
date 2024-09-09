@@ -208,12 +208,14 @@ def halaman_stock_barang():
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
+
+    # Hapus kolom Persentase Keuntungan dari tampilan
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
     
     # Hapus kolom Harga dari tampilan
     if "Harga" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Harga"])
-    
-    st.dataframe(df_stok_barang)
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
@@ -225,11 +227,7 @@ def halaman_stock_barang():
     
     st.dataframe(df_stok_barang)
     
-    # Hapus kolom Persentase Keuntungan dari tampilan
-    if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
-    
-    st.dataframe(df_stok_barang)
+
         
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
