@@ -410,6 +410,11 @@ def halaman_penjualan():
                 
 save_data()  # Save data after generating the receipt
                 
+# Dummy function to save data; replace with your actual save_data implementation
+def save_data():
+    # Your logic to save data, e.g., to a database or file
+    pass
+
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
     st.header("Data Supplier")
@@ -496,6 +501,15 @@ def halaman_supplier():
         st.subheader("Daftar Data Supplier")
         st.dataframe(st.session_state.supplier)
 
+    # Optional: Add functionality for deleting suppliers
+    if not st.session_state.supplier.empty:
+        delete_id = st.selectbox("Pilih ID Supplier untuk Dihapus", st.session_state.supplier["ID"].tolist() + ["None"])
+        if delete_id != "None":
+            if st.button(f"Hapus Supplier ID {delete_id}"):
+                st.session_state.supplier = st.session_state.supplier[st.session_state.supplier["ID"] != delete_id]
+                st.success(f"Data supplier ID {delete_id} berhasil dihapus!")
+                save_data()  # Save data after deleting a supplier
+                
 # Fungsi untuk menyimpan semua data ke file Excel
 def save_to_excel():
     with pd.ExcelWriter('data_laporan.xlsx', engine='openpyxl') as writer:
