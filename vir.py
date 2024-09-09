@@ -107,16 +107,17 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 def halaman_stock_barang():
     st.header("Stock Barang")
         
+
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
     
     # Pilih aksi untuk tambah atau edit barang
-    selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
+    selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"], key="select_action")
     
     if selected_action == "Edit Barang":
         # Pilih ID Barang untuk Diedit atau pilih "Tambah Baru"
-        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
-        
+        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"], key="select_id_barang")
+    
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
             default_values = {
@@ -145,12 +146,12 @@ def halaman_stock_barang():
         }
     
     with st.form("input_barang"):
-        nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
-        merk = st.text_input("Merk", value=default_values["Merk"])
-        ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
-        stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
-        warna_base = st.text_input("Warna/Base", value=default_values["Warna/Base"])
-        submit = st.form_submit_button("Simpan Barang")
+        nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"], key="nama_barang")
+        merk = st.text_input("Merk", value=default_values["Merk"], key="merk")
+        ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"], key="ukuran")
+        stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]), key="stok")
+        warna_base = st.text_input("Warna/Base", value=default_values["Warna/Base"], placeholder="Opsional", key="warna_base")
+        submit = st.form_submit_button("Simpan Barang", key="submit_barang")
     
         if submit:
             # Check if an existing item matches the input values
@@ -196,25 +197,7 @@ def halaman_stock_barang():
     df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
     
     # Pencarian nama barang atau merk
-    search_text = st.text_input("Cari Nama Barang atau Merk")
-    if search_text:
-        df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
-            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
-        ]
-    
-    st.dataframe(df_stok_barang)
-    
-    # Tabel stok barang
-    st.subheader("Daftar Stok Barang")
-    df_stok_barang = st.session_state.stok_barang.copy()
-    
-    # Hapus kolom Persentase Keuntungan dan Harga dari tampilan
-    columns_to_drop = ["Persentase Keuntungan", "Harga"]
-    df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
-    
-    # Pencarian nama barang atau merk
-    search_text = st.text_input("Cari Nama Barang atau Merk")
+    search_text = st.text_input("Cari Nama Barang atau Merk", key="search_text")
     if search_text:
         df_stok_barang = df_stok_barang[
             (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
