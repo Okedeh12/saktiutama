@@ -607,10 +607,6 @@ def halaman_owner():
 def save_data():
     # Your logic to save data, e.g., to a database or file
     pass
-
-# Form input barang baru dan edit barang
-def halaman_stock_barang():
-    st.header("Stock Barang")
     
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
