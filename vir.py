@@ -170,12 +170,11 @@ def halaman_stock_barang():
             merk_lower = merk.strip().lower()
             ukuran_lower = ukuran.strip().lower()
 
-            # Periksa apakah barang yang sama sudah ada
+            # Periksa apakah barang yang sama sudah ada tanpa mempertimbangkan Harga
             existing_item = stok_barang_normalized[
                 (stok_barang_normalized["Nama Barang"] == nama_barang_lower) &
                 (stok_barang_normalized["Merk"] == merk_lower) &
-                (stok_barang_normalized["Ukuran/Kemasan"] == ukuran_lower) &
-                (st.session_state.stok_barang["Harga"] == harga)
+                (stok_barang_normalized["Ukuran/Kemasan"] == ukuran_lower)
             ]
 
             if not existing_item.empty:
