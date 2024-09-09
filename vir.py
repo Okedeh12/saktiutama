@@ -106,10 +106,6 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
     st.header("Stock Barang")
-    
-    # Fungsi untuk halaman Stock Barang
-    def halaman_stock_barang():
-        st.header("Stock Barang")
         
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
@@ -159,7 +155,22 @@ def halaman_stock_barang():
         submit = st.form_submit_button("Simpan Barang")
     
         if submit:
-            if selected_id == "Tambah Baru":
+            # Check if an existing item matches the input values
+            match = st.session_state.stok_barang[
+                (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
+                (st.session_state.stok_barang["Merk"] == merk) &
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                (st.session_state.stok_barang["Warna/Base"] == warna_base)
+            ]
+    
+            if not match.empty:
+                # Update the stock of the existing item
+                existing_id = match["ID"].values[0]
+                updated_stok = match["Stok"].values[0] + stok
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] = updated_stok
+                st.success(f"Stok barang ID {existing_id} berhasil diperbarui!")
+            else:
+                # Add new item
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = pd.DataFrame({
                     "ID": [new_id],
@@ -172,12 +183,7 @@ def halaman_stock_barang():
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang berhasil ditambahkan!")
-            else:
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id,
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Stok", "Warna/Base"]] = \
-                    [nama_barang, merk, ukuran, stok, warna_base]
-                st.success(f"Barang ID {selected_id} berhasil diupdate!")
-            
+    
             save_data()  # Save data after adding or updating item
     
     # Tabel stok barang
