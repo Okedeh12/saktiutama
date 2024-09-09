@@ -896,40 +896,47 @@ def halaman_owner():
         }).reset_index()
         st.dataframe(analisis_keuntungan)
 
+   # Simulasi data untuk contoh
+    total_keuntungan = 5000000  # Total keuntungan
+    total_pengeluaran = 2000000  # Total pengeluaran
+
     # Perhitungan total keuntungan bersih
     total_keuntungan_bersih = total_keuntungan - total_pengeluaran
-    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih}")
+    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih:,.0f}")
 
     # Tambah data historis keuntungan bersih
     new_historis = pd.DataFrame({
         "Waktu": [datetime.now()],
         "Keuntungan Bersih": [total_keuntungan_bersih]
     })
+    
+    # Cek apakah data historis sudah ada
+    if 'historis_keuntungan_bersih' not in st.session_state:
+        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=["Waktu", "Keuntungan Bersih"])
+
+    # Menambahkan data historis
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
+
+    # Menyaring data historis berdasarkan bulan yang sama
+    current_month = datetime.now().strftime('%Y-%m')
+    st.session_state.historis_keuntungan_bersih['Bulan'] = st.session_state.historis_keuntungan_bersih['Waktu'].dt.strftime('%Y-%m')
+    historis_bulan_ini = st.session_state.historis_keuntungan_bersih[st.session_state.historis_keuntungan_bersih['Bulan'] == current_month]
 
     # Tabel historis keuntungan bersih
     st.subheader("Historis Keuntungan Bersih")
-    st.dataframe(st.session_state.historis_keuntungan_bersih)
+    st.dataframe(historis_bulan_ini[['Waktu', 'Keuntungan Bersih']])
 
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
     data_ringkasan = pd.DataFrame({
         "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
+        "Jumlah (Rp)": [
+            f"Rp {total_keuntungan:,.0f}",
+            f"Rp {total_pengeluaran:,.0f}",
+            f"Rp {total_keuntungan_bersih:,.0f}"
+        ]
     })
     st.table(data_ringkasan)
-
-    # Tombol untuk mendownload semua data ke file Excel
-    if st.button("Download Semua Data (Excel)"):
-        save_to_excel()
-        with open("data_laporan.xlsx", "rb") as file:
-            st.download_button(
-                label="Download Excel",
-                data=file,
-                file_name="data_laporan.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
