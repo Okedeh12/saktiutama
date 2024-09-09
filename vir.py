@@ -117,9 +117,16 @@ def halaman_stock_barang():
     # Pilih barang yang akan diedit atau pilih "Tambah Baru"
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
 
+    # Normalisasi data dalam DataFrame untuk pencocokan huruf kapital/kecil
+    stok_barang_normalized = st.session_state.stok_barang.copy()
+    stok_barang_normalized["Nama Barang"] = stok_barang_normalized["Nama Barang"].str.lower()
+    stok_barang_normalized["Merk"] = stok_barang_normalized["Merk"].str.lower()
+    stok_barang_normalized["Ukuran/Kemasan"] = stok_barang_normalized["Ukuran/Kemasan"].str.lower()
+
     if selected_action == "Edit Barang":
         # Pilih ID Barang untuk Diedit
-        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
+        ids = st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"]
+        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", ids)
         
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
@@ -138,7 +145,6 @@ def halaman_stock_barang():
                 "Harga": 0,
                 "Stok": 0
             }
-
     else:
         # Untuk tambah barang baru, set default values kosong
         selected_id = "Tambah Baru"
@@ -159,23 +165,24 @@ def halaman_stock_barang():
         submit = st.form_submit_button("Simpan Barang")
 
         if submit:
-            # Normalisasi input untuk pencocokan tidak sensitif huruf kapital/kecil
+            # Normalisasi input pengguna
             nama_barang_lower = nama_barang.strip().lower()
             merk_lower = merk.strip().lower()
             ukuran_lower = ukuran.strip().lower()
 
             # Periksa apakah barang yang sama sudah ada
-            existing_item = st.session_state.stok_barang[
-                (st.session_state.stok_barang["Nama Barang"].str.lower() == nama_barang_lower) &
-                (st.session_state.stok_barang["Merk"].str.lower() == merk_lower) &
-                (st.session_state.stok_barang["Ukuran/Kemasan"].str.lower() == ukuran_lower)
+            existing_item = stok_barang_normalized[
+                (stok_barang_normalized["Nama Barang"] == nama_barang_lower) &
+                (stok_barang_normalized["Merk"] == merk_lower) &
+                (stok_barang_normalized["Ukuran/Kemasan"] == ukuran_lower) &
+                (st.session_state.stok_barang["Harga"] == harga)
             ]
 
             if not existing_item.empty:
                 # Jika barang sudah ada, tambahkan stok yang baru
                 existing_id = existing_item["ID"].values[0]
                 st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, 
-                    ["Harga", "Stok"]] = [harga, existing_item["Stok"].values[0] + stok]
+                    "Stok"] += stok
                 st.success(f"Stok untuk Barang ID {existing_id} berhasil diperbarui!")
             else:
                 # Jika barang belum ada, tambahkan sebagai entri baru
@@ -216,12 +223,12 @@ def halaman_stock_barang():
     if search_text:
         search_text_lower = search_text.strip().lower()
         df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.contains(search_text_lower, case=False, na=False)) |
-            (df_stok_barang["Merk"].str.contains(search_text_lower, case=False, na=False))
+            (df_stok_barang["Nama Barang"].str.lower().str.contains(search_text_lower, na=False)) |
+            (df_stok_barang["Merk"].str.lower().str.contains(search_text_lower, na=False))
         ]
     
     st.dataframe(df_stok_barang)
-
+    
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.header("Penjualan")
