@@ -603,11 +603,6 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
-# Dummy function to save data; replace with your actual save_data implementation
-def save_data():
-    # Your logic to save data, e.g., to a database or file
-    pass
-    
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
