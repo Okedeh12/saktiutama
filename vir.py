@@ -574,6 +574,10 @@ def halaman_owner():
         # Your logic to save data, e.g., to a database or file
         pass
     
+    # Initialize session state if not already done
+    if "stok_barang" not in st.session_state:
+        st.session_state.stok_barang = pd.DataFrame(columns=["ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Harga Jual", "Stok", "Persentase Keuntungan", "Warna/Base"])
+    
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
     
@@ -686,7 +690,7 @@ def halaman_owner():
     df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
     
     # Tampilkan Harga Jual
-    if "Harga" not in df_stok_barang.columns and "Harga Jual" not in df_stok_barang.columns:
+    if "Harga" in df_stok_barang.columns and "Harga Jual" not in df_stok_barang.columns:
         df_stok_barang["Harga Jual"] = df_stok_barang["Harga"] + (df_stok_barang["Harga"] * (df_stok_barang["Persentase Keuntungan"] / 100))
     
     # Pencarian nama barang atau merk
