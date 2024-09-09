@@ -1031,7 +1031,6 @@ def save_data():
     st.session_state.piutang_konsumen.to_csv("piutang_konsumen.csv", index=False)
     st.session_state.historis_analisis_keuangan.to_csv("historis_analisis_keuangan.csv", index=False)
     st.session_state.historis_keuntungan_bersih.to_csv("historis_keuntungan_bersih.csv", index=False)
-    st.success("Data berhasil disimpan!")
 
 save_data()
 # Menampilkan halaman berdasarkan menu yang dipilih
