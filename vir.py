@@ -1051,7 +1051,7 @@ def halaman_stock_barang():
                 data=file,
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+            )save_data()
 
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
