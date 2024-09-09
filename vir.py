@@ -188,9 +188,9 @@ def halaman_stock_barang():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Persentase Keuntungan dari tampilan
-    if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
+    # Hapus kolom Persentase Keuntungan dan Harga dari tampilan
+    columns_to_drop = ["Persentase Keuntungan", "Harga"]
+    df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
