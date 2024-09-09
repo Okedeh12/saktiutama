@@ -491,7 +491,39 @@ def save_to_excel():
         })
         df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
 
+# Fungsi untuk menyimpan semua data ke file Excel
+def save_to_excel():
+    with pd.ExcelWriter('data_laporan.xlsx', engine='openpyxl') as writer:
+        # Simpan stok barang
+        st.session_state.stok_barang.to_excel(writer, sheet_name='Stok Barang', index=False)
+        
+        # Simpan penjualan
+        st.session_state.penjualan.to_excel(writer, sheet_name='Penjualan', index=False)
+        
+        # Simpan supplier
+        st.session_state.supplier.to_excel(writer, sheet_name='Supplier', index=False)
+        
+        # Simpan pengeluaran
+        st.session_state.pengeluaran.to_excel(writer, sheet_name='Pengeluaran', index=False)
+        
+        # Simpan piutang konsumen
+        if "piutang_konsumen" in st.session_state:
+            st.session_state.piutang_konsumen.to_excel(writer, sheet_name='Piutang Konsumen', index=False)
 
+        # Simpan histori analisis keuangan
+        if "historis_analisis_keuangan" in st.session_state:
+            st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name='Histori Analisis Keuangan', index=False)
+        
+        # Simpan keuntungan bersih
+        total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+        total_pengeluaran = st.session_state.pengeluaran["Jumlah Pengeluaran"].sum()
+        total_keuntungan_bersih = total_penjualan - total_pengeluaran
+        df_keuntungan_bersih = pd.DataFrame({
+            "Total Penjualan": [total_penjualan],
+            "Total Pengeluaran": [total_pengeluaran],
+            "Keuntungan Bersih": [total_keuntungan_bersih]
+        })
+        df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
 
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
