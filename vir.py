@@ -5,36 +5,6 @@ from datetime import datetime
 import os
 import time
 from io import StringIO
-import json
-
-# Paths to JSON files
-STOK_BARANG_JSON = "stok_barang.json"
-PENJUALAN_JSON = "penjualan.json"
-SUPPLIER_JSON = "supplier.json"
-
-# Load data from CSV and JSON files
-def load_data():
-    # Load CSV files
-    if os.path.exists(STOK_BARANG_FILE):
-        st.session_state.stok_barang = pd.read_csv(STOK_BARANG_FILE, parse_dates=["Waktu Input"])
-    else:
-        st.session_state.stok_barang = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Waktu Input"
-        ])
-
-    if os.path.exists(PENJUALAN_FILE):
-        st.session_state.penjualan = pd.read_csv(PENJUALAN_FILE, parse_dates=["Waktu"])
-    else:
-        st.session_state.penjualan = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Jumlah", "Total Harga", "Keuntungan", "Waktu"
-        ])
-
-    if os.path.exists(SUPPLIER_FILE):
-        st.session_state.supplier = pd.read_csv(SUPPLIER_FILE, parse_dates=["Waktu"])
-    else:
-        st.session_state.supplier = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Jumlah Barang", "Nama Supplier", "Tagihan", "Waktu"
-        ])
     
 # Path to data files
 STOK_BARANG_FILE = "stok_barang.csv"
@@ -132,32 +102,6 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
-
-# Dummy function to save data; replace with your actual save_data implementation
-def save_data():
-    # Define file paths
-    stok_barang_csv_path = "stok_barang.csv"
-    stok_barang_json_path = "stok_barang.json"
-    
-    # Save stock data to CSV
-    st.session_state.stok_barang.to_csv(stok_barang_csv_path, index=False)
-    
-    # Save stock data to JSON
-    stok_barang_json = st.session_state.stok_barang.to_dict(orient='records')
-    with open(stok_barang_json_path, "w") as json_file:
-        json.dump(stok_barang_json, json_file, indent=4)
-    
-    # Save sales data to CSV
-    penjualan_csv_path = "penjualan.csv"
-    penjualan_json_path = "penjualan.json"
-    
-    # Save sales data to CSV
-    st.session_state.penjualan.to_csv(penjualan_csv_path, index=False)
-    
-    # Save sales data to JSON
-    penjualan_json = st.session_state.penjualan.to_dict(orient='records')
-    with open(penjualan_json_path, "w") as json_file:
-        json.dump(penjualan_json, json_file, indent=4)
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
