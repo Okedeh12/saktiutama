@@ -1005,10 +1005,14 @@ def halaman_owner():
 
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
+    
+    # Mengonversi nilai angka ke string tanpa pemisah ribuan
     data_ringkasan = pd.DataFrame({
         "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
+        "Jumlah (Rp)": [f"{total_keuntungan:.0f}", f"{total_pengeluaran:.0f}", f"{total_keuntungan_bersih:.0f}"]
     })
+    
+    # Menampilkan tabel tanpa pemisah ribuan
     st.table(data_ringkasan)
 
     # Tombol untuk mendownload semua data ke file Excel
