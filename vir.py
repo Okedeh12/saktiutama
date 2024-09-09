@@ -145,7 +145,8 @@ def halaman_stock_barang():
             "Warna/Base": ""
         }
     
-    with st.form("input_barang"):
+    # Form handling
+    with st.form(key="input_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"], key="nama_barang")
         merk = st.text_input("Merk", value=default_values["Merk"], key="merk")
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"], key="ukuran")
