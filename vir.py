@@ -911,16 +911,25 @@ def halaman_owner():
 
     # Menambahkan data historis
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
-
+    
     # Menyaring data historis berdasarkan bulan yang sama
     current_month = datetime.now().strftime('%Y-%m')
     st.session_state.historis_keuntungan_bersih['Bulan'] = st.session_state.historis_keuntungan_bersih['Waktu'].dt.strftime('%Y-%m')
+    
+    # Hanya menampilkan satu data total keuntungan bersih per bulan
     historis_bulan_ini = st.session_state.historis_keuntungan_bersih[st.session_state.historis_keuntungan_bersih['Bulan'] == current_month]
-
+    if not historis_bulan_ini.empty:
+        # Mengelompokkan berdasarkan bulan dan mendapatkan total keuntungan bersih
+        total_keuntungan_bersih_bulan_ini = historis_bulan_ini['Keuntungan Bersih'].sum()
+        historis_bulan_ini = pd.DataFrame({
+            "Waktu": [historis_bulan_ini['Waktu'].max()],  # Tampilkan waktu terakhir pada bulan ini
+            "Keuntungan Bersih": [total_keuntungan_bersih_bulan_ini]
+        })
+    
     # Tabel historis keuntungan bersih
     st.subheader("Historis Keuntungan Bersih")
     st.dataframe(historis_bulan_ini[['Waktu', 'Keuntungan Bersih']])
-
+    
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
     data_ringkasan = pd.DataFrame({
