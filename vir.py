@@ -110,13 +110,13 @@ def halaman_stock_barang():
     # Form input barang baru dan edit barang
     st.subheader("Tambah/Edit Barang")
     
-    # Pilih barang yang akan diedit atau pilih "Tambah Baru"
+    # Pilih aksi untuk tambah atau edit barang
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
     
     if selected_action == "Edit Barang":
-        # Pilih ID Barang untuk Diedit
+        # Pilih ID Barang untuk Diedit atau pilih "Tambah Baru"
         selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
-    
+        
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
             default_values = {
@@ -124,7 +124,7 @@ def halaman_stock_barang():
                 "Merk": barang_dipilih["Merk"].values[0],
                 "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
                 "Stok": barang_dipilih["Stok"].values[0],
-                "Warna/Base": barang_dipilih["Warna/Base"].values[0] if "Warna/Base" in barang_dipilih else ""
+                "Warna/Base": barang_dipilih["Warna/Base"].values[0] if "Warna/Base" in barang_dipilih.columns else ""
             }
         else:
             default_values = {
@@ -134,9 +134,7 @@ def halaman_stock_barang():
                 "Stok": 0,
                 "Warna/Base": ""
             }
-    
     else:
-        # Untuk tambah barang baru, set default values kosong
         selected_id = "Tambah Baru"
         default_values = {
             "Nama Barang": "",
@@ -190,9 +188,9 @@ def halaman_stock_barang():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Harga dari tampilan jika ada
-    if "Harga" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
+    # Hapus kolom Persentase Keuntungan dari tampilan
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
