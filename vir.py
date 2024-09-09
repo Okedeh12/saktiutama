@@ -551,12 +551,12 @@ def halaman_owner():
 
     # Tabel stok barang dengan fitur edit dan hapus
     st.header("Stock Barang")
-
+    
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
-
+    
     if selected_row == "Tambah Baru":
         barang_dipilih = None
         default_values = {
@@ -577,7 +577,7 @@ def halaman_owner():
             "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
             "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0
         }
-
+    
     with st.form("edit_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
@@ -588,8 +588,11 @@ def halaman_owner():
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
         
         submit = st.form_submit_button("Simpan Barang")
-
+    
         if submit:
+            # Hitung harga jual berdasarkan persentase keuntungan
+            harga_jual = harga + (harga * (persentase_keuntungan / 100))
+    
             if barang_dipilih is None:
                 # Tambah barang baru
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
@@ -600,23 +603,24 @@ def halaman_owner():
                     "Ukuran/Kemasan": [ukuran],
                     "Harga": [harga],
                     "Stok": [stok],
-                    "Persentase Keuntungan": [persentase_keuntungan]
+                    "Persentase Keuntungan": [persentase_keuntungan],
+                    "Harga Jual": [harga_jual]
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang baru berhasil ditambahkan!")
             else:
                 # Update barang yang ada
                 st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_row, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan"]] = \
-                    [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan]
+                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Harga Jual"]] = \
+                    [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan, harga_jual]
                 st.success(f"Barang ID {selected_row} berhasil diupdate!")
             
             save_data()  # Simpan data setelah menambah atau mengedit barang
-
+    
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
     st.dataframe(st.session_state.stok_barang)
-
+    
     # Tombol untuk hapus barang (jika ID bukan 'Tambah Baru')
     if selected_row != "Tambah Baru" and st.button("Hapus Barang"):
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
