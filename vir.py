@@ -198,9 +198,9 @@ def halaman_stock_barang():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Harga dari tampilan
-    if "Harga" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
+    # Hapus kolom Harga dan Persentase Keuntungan dari tampilan
+    columns_to_drop = ["Harga", "Persentase Keuntungan"]
+    df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
@@ -211,8 +211,7 @@ def halaman_stock_barang():
         ]
     
     st.dataframe(df_stok_barang)
-
-    
+        
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.header("Penjualan")
