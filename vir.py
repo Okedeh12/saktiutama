@@ -886,15 +886,6 @@ def halaman_owner():
     else:
         st.write("Tidak ada data piutang konsumen.")
 
-    # Menampilkan histori analisis keuangan
-    st.subheader("Histori Analisis Keuangan")
-    st.dataframe(st.session_state.historis_analisis_keuangan)
-
-    # Tombol untuk mendownload histori analisis keuangan
-    if st.button("Download Histori Analisis Keuangan (CSV)"):
-        csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
-        st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
-
     
     # Grafik keuntungan penjualan per barang
     if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
