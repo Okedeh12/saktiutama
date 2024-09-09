@@ -1003,17 +1003,22 @@ def halaman_owner():
     st.subheader("Historis Keuntungan Bersih")
     st.dataframe(st.session_state.historis_keuntungan_bersih)
 
+    # Fungsi untuk format Rupiah
+    def format_rupiah(value):
+        return f"Rp {value:,.0f}".replace(",", ".")
+    
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
     
-    # Mengonversi nilai angka ke string tanpa pemisah ribuan
+    # Menggunakan format Rupiah tanpa koma ribuan
     data_ringkasan = pd.DataFrame({
         "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [f"{total_keuntungan:.0f}", f"{total_pengeluaran:.0f}", f"{total_keuntungan_bersih:.0f}"]
+        "Jumlah (Rp)": [format_rupiah(total_keuntungan), format_rupiah(total_pengeluaran), format_rupiah(total_keuntungan_bersih)]
     })
     
-    # Menampilkan tabel tanpa pemisah ribuan
+    # Menampilkan tabel dengan format Rupiah
     st.table(data_ringkasan)
+
 
     # Tombol untuk mendownload semua data ke file Excel
     if st.button("Download Semua Data (Excel)"):
