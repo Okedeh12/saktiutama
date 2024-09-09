@@ -589,11 +589,14 @@ def halaman_owner():
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=["Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"])
 
+    # Tabel stok barang dengan fitur edit dan hapus
+    st.header("Stock Barang")
+
     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
-    
+
     if selected_row == "Tambah Baru":
         barang_dipilih = None
         default_values = {
@@ -602,8 +605,7 @@ def halaman_owner():
             "Ukuran/Kemasan": "",
             "Harga": 0,
             "Stok": 0,
-            "Persentase Keuntungan": 0,
-            "Warna/Base": ""
+            "Persentase Keuntungan": 0
         }
     else:
         barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_row]
@@ -613,34 +615,20 @@ def halaman_owner():
             "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
             "Harga": barang_dipilih["Harga"].values[0] if pd.notna(barang_dipilih["Harga"].values[0]) else 0,
             "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
-            "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0,
-            "Warna/Base": barang_dipilih["Warna/Base"].values[0] if "Warna/Base" in barang_dipilih.columns else ""
+            "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0
         }
-    
+
     with st.form("edit_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
         
-        harga_beli = st.number_input("Harga Beli", min_value=0, value=int(default_values["Harga"]))
+        harga = st.number_input("Harga", min_value=0, value=int(default_values["Harga"]))
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
         
-        # Hitung harga jual dan nominal keuntungan
-        harga_jual = harga_beli + (harga_beli * (persentase_keuntungan / 100))
-        nominal_keuntungan = harga_jual - harga_beli
-        
-        st.write(f"**Harga Jual**: Rp {harga_jual:,.0f}")  # Tampilkan harga jual
-        st.write(f"**Nominal Keuntungan**: Rp {nominal_keuntungan:,.0f}")  # Tampilkan nominal keuntungan
-        
-        # Jika kolom Warna/Base ada, tambahkan input untuk Warna/Base
-        if "Warna/Base" in st.session_state.stok_barang.columns:
-            warna_base = st.text_input("Warna/Base (Opsional)", value=default_values["Warna/Base"])
-        else:
-            warna_base = None
-    
         submit = st.form_submit_button("Simpan Barang")
-    
+
         if submit:
             if barang_dipilih is None:
                 # Tambah barang baru
@@ -650,94 +638,65 @@ def halaman_owner():
                     "Nama Barang": [nama_barang],
                     "Merk": [merk],
                     "Ukuran/Kemasan": [ukuran],
-                    "Harga": [harga_beli],
-                    "Harga Jual": [harga_jual],
+                    "Harga": [harga],
                     "Stok": [stok],
-                    "Persentase Keuntungan": [persentase_keuntungan],
-                    "Warna/Base": [warna_base] if warna_base else ""
+                    "Persentase Keuntungan": [persentase_keuntungan]
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang baru berhasil ditambahkan!")
             else:
                 # Update barang yang ada
                 st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_row, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Harga Jual", "Stok", "Persentase Keuntungan", "Warna/Base"]] = \
-                    [nama_barang, merk, ukuran, harga_beli, harga_jual, stok, persentase_keuntungan, warna_base]
+                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan"]] = \
+                    [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan]
                 st.success(f"Barang ID {selected_row} berhasil diupdate!")
             
             save_data()  # Simpan data setelah menambah atau mengedit barang
-    
+
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
-    df_stok_barang = st.session_state.stok_barang.copy()
-    
-    # Hapus kolom Harga dari tampilan jika ada
-    if "Harga" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
-    
-    # Tampilkan Harga Jual jika tidak ada
-    if "Harga Jual" not in df_stok_barang.columns:
-        df_stok_barang["Harga Jual"] = df_stok_barang["Harga"] + (df_stok_barang["Harga"] * (df_stok_barang["Persentase Keuntungan"] / 100))
-    
-    # Pencarian nama barang atau merk
-    search_text = st.text_input("Cari Nama Barang atau Merk")
-    if search_text:
-        df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
-            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
-        ]
-    
-    st.dataframe(df_stok_barang)
-    
+    st.dataframe(st.session_state.stok_barang)
+
     # Tombol untuk hapus barang (jika ID bukan 'Tambah Baru')
     if selected_row != "Tambah Baru" and st.button("Hapus Barang"):
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
         st.success(f"Barang ID {selected_row} berhasil dihapus!")
         save_data()  # Simpan data setelah menghapus barang
-        
-    # Dummy function to format currency; replace with your actual implementation
-    def format_rupiah(amount):
-        return f"Rp {amount:,.2f}"
     
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
-    if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
-        st.dataframe(st.session_state.penjualan)
-    else:
-        st.warning("Data penjualan tidak tersedia.")
+    st.dataframe(st.session_state.penjualan)
     
     # Analisa keuangan dengan grafik pemasaran
     st.subheader("Analisa Keuangan")
     
     # Perhitungan total penjualan
-    if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
-        total_penjualan = st.session_state.penjualan["Total Harga"].sum()
-        st.write(f"Total Penjualan: {format_rupiah(total_penjualan)}")
-    else:
-        total_penjualan = 0
-        st.warning("Tidak ada data penjualan.")
+    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+    st.write(f"Total Penjualan: Rp {total_penjualan}")
     
     # Perhitungan tagihan supplier bulanan
-    if "supplier" in st.session_state and not st.session_state.supplier.empty:
-        current_month = datetime.now().strftime("%Y-%m")
-        st.session_state.supplier['Waktu'] = pd.to_datetime(st.session_state.supplier['Waktu'], errors='coerce')
-        
-        # Memfilter tagihan supplier berdasarkan bulan saat ini
-        monthly_supplier_bills = st.session_state.supplier[
-            st.session_state.supplier["Waktu"].dt.strftime("%Y-%m") == current_month
-        ]["Tagihan"].sum()
-        
-        st.write(f"Total Tagihan Supplier Bulan Ini: {format_rupiah(monthly_supplier_bills)}")
+    current_month = datetime.now().strftime("%Y-%m")
+    st.session_state.supplier['Waktu'] = pd.to_datetime(st.session_state.supplier['Waktu'])
+    monthly_supplier_bills = st.session_state.supplier[st.session_state.supplier["Waktu"].dt.strftime("%Y-%m") == current_month]["Tagihan"].sum()
+    st.write(f"Total Tagihan Supplier Bulan Ini: Rp {monthly_supplier_bills}")
+    
+    # Menghitung total penjualan
+    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+
+    # Menghitung total tagihan supplier
+    if not st.session_state.supplier.empty:
+        monthly_supplier_bills = st.session_state.supplier["Tagihan"].sum()
     else:
         monthly_supplier_bills = 0
-        st.warning("Tidak ada data supplier atau tagihan.")
-    
+
     # Menghitung selisih antara total penjualan dan tagihan supplier
     selisih = total_penjualan - monthly_supplier_bills
-    
+
     # Menampilkan hasil perbandingan
-    st.write(f"Selisih antara Total Penjualan dan Tagihan Supplier: {format_rupiah(selisih)}")
-    
+    st.write(f"Total Penjualan: Rp {total_penjualan:,.0f}")
+    st.write(f"Total Tagihan Supplier: Rp {monthly_supplier_bills:,.0f}")
+    st.write(f"Selisih antara Total Penjualan dan Tagihan Supplier: Rp {selisih:,.0f}")
+
     # Membuat DataFrame untuk analisis keuangan
     analisis_keuangan_df = pd.DataFrame({
         "Tanggal": [datetime.now().strftime("%Y-%m-%d")],
@@ -745,32 +704,17 @@ def halaman_owner():
         "Total Tagihan Supplier": [monthly_supplier_bills],
         "Selisih": [selisih]
     })
-    
+
     # Menampilkan tabel analisis keuangan
     st.subheader("Tabel Analisis Keuangan")
     st.dataframe(analisis_keuangan_df)
-    
-    # Menyimpan histori analisis keuangan ke dalam session_state
+
+    # Menyimpan histori analisis keuangan ke file CSV
     if "historis_analisis_keuangan" not in st.session_state:
         st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
-    
-    # Menambahkan data baru ke histori
+
     st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
-    
-    # Filter histori analisis keuangan hanya untuk bulan saat ini
-    current_month = datetime.now().strftime("%Y-%m")
-    st.session_state.historis_analisis_keuangan['Tanggal'] = pd.to_datetime(st.session_state.historis_analisis_keuangan['Tanggal'], errors='coerce')
-    filtered_historis_analisis_keuangan = st.session_state.historis_analisis_keuangan[
-        st.session_state.historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m") == current_month
-    ]
-    
-    # Menampilkan histori analisis keuangan
-    st.subheader("Histori Analisis Keuangan")
-    if not filtered_historis_analisis_keuangan.empty:
-        st.dataframe(filtered_historis_analisis_keuangan)
-    else:
-        st.write("Tidak ada data histori untuk bulan ini.")
-    
+
     # Menampilkan tabel data supplier dengan pencarian
     st.subheader("Data Supplier")
     
@@ -1011,7 +955,6 @@ def halaman_owner():
     })
     st.table(data_ringkasan)
 
-
     # Tombol untuk mendownload semua data ke file Excel
     if st.button("Download Semua Data (Excel)"):
         save_to_excel()
@@ -1022,6 +965,7 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+
 save_data()
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
