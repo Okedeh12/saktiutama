@@ -202,8 +202,7 @@ def halaman_stock_barang():
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang berhasil ditambahkan!")
-    
-            save_data()  # Save data after adding or updating item
+                save_data()  # Save data after adding or updating item
     
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
