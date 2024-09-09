@@ -710,38 +710,43 @@ def halaman_owner():
         
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
-    st.dataframe(st.session_state.penjualan)
+    if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
+        st.dataframe(st.session_state.penjualan)
+    else:
+        st.warning("Data penjualan tidak tersedia.")
     
     # Analisa keuangan dengan grafik pemasaran
     st.subheader("Analisa Keuangan")
     
     # Perhitungan total penjualan
-    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
-    st.write(f"Total Penjualan: Rp {total_penjualan}")
+    if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
+        total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+        st.write(f"Total Penjualan: Rp {total_penjualan:,.0f}")
+    else:
+        total_penjualan = 0
+        st.warning("Tidak ada data penjualan.")
     
     # Perhitungan tagihan supplier bulanan
-    current_month = datetime.now().strftime("%Y-%m")
-    st.session_state.supplier['Waktu'] = pd.to_datetime(st.session_state.supplier['Waktu'])
-    monthly_supplier_bills = st.session_state.supplier[st.session_state.supplier["Waktu"].dt.strftime("%Y-%m") == current_month]["Tagihan"].sum()
-    st.write(f"Total Tagihan Supplier Bulan Ini: Rp {monthly_supplier_bills}")
-    
-    # Menghitung total penjualan
-    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
-
-    # Menghitung total tagihan supplier
-    if not st.session_state.supplier.empty:
-        monthly_supplier_bills = st.session_state.supplier["Tagihan"].sum()
+    if "supplier" in st.session_state and not st.session_state.supplier.empty:
+        current_month = datetime.now().strftime("%Y-%m")
+        st.session_state.supplier['Waktu'] = pd.to_datetime(st.session_state.supplier['Waktu'], errors='coerce')
+        
+        # Memfilter tagihan supplier berdasarkan bulan saat ini
+        monthly_supplier_bills = st.session_state.supplier[
+            st.session_state.supplier["Waktu"].dt.strftime("%Y-%m") == current_month
+        ]["Tagihan"].sum()
+        
+        st.write(f"Total Tagihan Supplier Bulan Ini: Rp {monthly_supplier_bills:,.0f}")
     else:
         monthly_supplier_bills = 0
-
+        st.warning("Tidak ada data supplier atau tagihan.")
+    
     # Menghitung selisih antara total penjualan dan tagihan supplier
     selisih = total_penjualan - monthly_supplier_bills
-
+    
     # Menampilkan hasil perbandingan
-    st.write(f"Total Penjualan: Rp {total_penjualan:,.0f}")
-    st.write(f"Total Tagihan Supplier: Rp {monthly_supplier_bills:,.0f}")
     st.write(f"Selisih antara Total Penjualan dan Tagihan Supplier: Rp {selisih:,.0f}")
-
+    
     # Membuat DataFrame untuk analisis keuangan
     analisis_keuangan_df = pd.DataFrame({
         "Tanggal": [datetime.now().strftime("%Y-%m-%d")],
@@ -749,31 +754,37 @@ def halaman_owner():
         "Total Tagihan Supplier": [monthly_supplier_bills],
         "Selisih": [selisih]
     })
-
+    
     # Menampilkan tabel analisis keuangan
     st.subheader("Tabel Analisis Keuangan")
     st.dataframe(analisis_keuangan_df)
-
-    # Menyimpan histori analisis keuangan ke file CSV
+    
+    # Menyimpan histori analisis keuangan ke dalam session_state dan file CSV jika diperlukan
     if "historis_analisis_keuangan" not in st.session_state:
         st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
-
-    st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
-
-    # Menampilkan tabel data supplier dengan pencarian
-    st.subheader("Data Supplier")
     
+    st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
+    
+    # Menampilkan histori analisis keuangan
+    st.subheader("Histori Analisis Keuangan")
+    st.dataframe(st.session_state.historis_analisis_keuangan)
+    
+    # Menampilkan tabel data supplier dengan fitur pencarian
+    st.subheader("Data Supplier")
     search_input = st.text_input("Cari Nama Barang atau Merk")
     
-    if search_input:
-        filtered_supplier = st.session_state.supplier[
-            (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False)) |
-            (st.session_state.supplier["Merk"].str.contains(search_input, case=False))
-        ]
-        st.write("Hasil Pencarian:")
-        st.dataframe(filtered_supplier)
+    if "supplier" in st.session_state and not st.session_state.supplier.empty:
+        if search_input:
+            filtered_supplier = st.session_state.supplier[
+                (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False, na=False)) |
+                (st.session_state.supplier["Merk"].str.contains(search_input, case=False, na=False))
+            ]
+            st.write("Hasil Pencarian:")
+            st.dataframe(filtered_supplier)
+        else:
+            st.dataframe(st.session_state.supplier)
     else:
-        st.dataframe(st.session_state.supplier)
+        st.warning("Tidak ada data supplier.")
 
         # Inisialisasi piutang konsumen jika belum ada
     if 'piutang_konsumen' not in st.session_state:
