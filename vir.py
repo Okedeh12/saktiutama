@@ -173,7 +173,8 @@ def halaman_stock_barang():
             match_conditions = (
                 (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
                 (st.session_state.stok_barang["Merk"] == merk) &
-                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran)
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                (st.session_state.stok_barang["Harga"] == harga)
             )
             if "Warna/Base" in st.session_state.stok_barang.columns:
                 match_conditions &= (st.session_state.stok_barang["Warna/Base"] == warna_base)
@@ -183,10 +184,7 @@ def halaman_stock_barang():
             if not match.empty:
                 # Update the stock of the existing item
                 existing_id = match["ID"].values[0]
-                updated_stok = match["Stok"].values[0] + stok
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] = updated_stok
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Harga"] = harga
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Harga Jual"] = harga_jual
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, ["Stok", "Harga", "Harga Jual", "Warna/Base"]] = [stok, harga, harga_jual, warna_base]
                 st.success(f"Stok barang ID {existing_id} berhasil diperbarui!")
             else:
                 # Add new item
@@ -211,9 +209,9 @@ def halaman_stock_barang():
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
     
-    # Hapus kolom Persentase Keuntungan dari tampilan
-    if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
+    # Hapus kolom Harga dari tampilan
+    if "Harga" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
     
     st.dataframe(df_stok_barang)
     
@@ -224,6 +222,12 @@ def halaman_stock_barang():
             (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
             (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
         ]
+    
+    st.dataframe(df_stok_barang)
+    
+    # Hapus kolom Persentase Keuntungan dari tampilan
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
     
     st.dataframe(df_stok_barang)
         
