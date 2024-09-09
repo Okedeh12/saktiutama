@@ -783,7 +783,7 @@ def halaman_owner():
             "Kode Warna", "Ukuran/Kemasan", "Jumlah", "Total Tagihan", 
             "Cicilan Tagihan", "Sisa Tagihan", "Janji Bayar"
         ])
-    save_data()
+
     # Form Piutang Konsumen
     st.subheader("Form Piutang Konsumen")
 
@@ -909,17 +909,27 @@ def halaman_owner():
     else:
         st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
     
-    # Simulasi data untuk pengeluaran
+    # Menambahkan tabel pengeluaran dan fitur edit
+    st.subheader("Pengeluaran")
+    
+    # Simulasi data untuk penjualan dan pengeluaran
+    if 'penjualan' not in st.session_state:
+        st.session_state.penjualan = pd.DataFrame(columns=[
+            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
+            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
+            "Keuntungan", "Waktu"
+        ])
+
     if 'pengeluaran' not in st.session_state:
         st.session_state.pengeluaran = pd.DataFrame(columns=[
             "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
 
-    if 'historis_pengeluaran' not in st.session_state:
-        st.session_state.historis_pengeluaran = pd.DataFrame(columns=[
-            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
+    if 'historis_keuntungan_bersih' not in st.session_state:
+        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=[
+            "Waktu", "Keuntungan Bersih"
         ])
-    save_data()
+
     # Menampilkan tabel pengeluaran
     st.dataframe(st.session_state.pengeluaran)
 
@@ -930,7 +940,7 @@ def halaman_owner():
         jumlah_pengeluaran = st.number_input("Jumlah Pengeluaran (Rp)", min_value=0)
         keterangan_pengeluaran = st.text_input("Keterangan Pengeluaran")
         submit_pengeluaran = st.form_submit_button("Tambah Pengeluaran")
-
+        
         if submit_pengeluaran:
             new_data = pd.DataFrame({
                 "Jenis Pengeluaran": [jenis_pengeluaran],
@@ -942,18 +952,9 @@ def halaman_owner():
             st.success("Pengeluaran berhasil ditambahkan!")
             save_data()  # Simpan data setelah penambahan pengeluaran
 
-    # Menyaring data pengeluaran berdasarkan bulan yang sama
-    current_month = datetime.now().strftime('%Y-%m')
-    st.session_state.pengeluaran['Bulan'] = st.session_state.pengeluaran['Waktu'].dt.strftime('%Y-%m')
-    historis_bulan_ini = st.session_state.pengeluaran[st.session_state.pengeluaran['Bulan'] == current_month]
-
     # Tabel historis pengeluaran
-    st.subheader("Historis Pengeluaran Bulan Ini")
-    st.dataframe(historis_bulan_ini[['Jenis Pengeluaran', 'Jumlah Pengeluaran', 'Keterangan', 'Waktu']])
-
-    # Tabel historis pengeluaran keseluruhan
-    st.subheader("Historis Pengeluaran Keseluruhan")
-    st.dataframe(st.session_state.pengeluaran[['Jenis Pengeluaran', 'Jumlah Pengeluaran', 'Keterangan', 'Waktu']])
+    st.subheader("Historis Pengeluaran")
+    st.dataframe(st.session_state.pengeluaran)
 
     # Analisa Keuangan - Total Keuntungan Bersih
     st.subheader("Analisa Keuangan - Total Keuntungan Bersih")
@@ -979,58 +980,27 @@ def halaman_owner():
 
     # Perhitungan total keuntungan bersih
     total_keuntungan_bersih = total_keuntungan - total_pengeluaran
-    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih:,.0f}")
+    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih}")
 
     # Tambah data historis keuntungan bersih
     new_historis = pd.DataFrame({
         "Waktu": [datetime.now()],
         "Keuntungan Bersih": [total_keuntungan_bersih]
     })
-    
-    # Cek apakah data historis sudah ada
-    if 'historis_keuntungan_bersih' not in st.session_state:
-        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=["Waktu", "Keuntungan Bersih"])
-
-    # Menambahkan data historis
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
-    
-    # Menyaring data historis berdasarkan bulan yang sama
-    current_month = datetime.now().strftime('%Y-%m')
-    st.session_state.historis_keuntungan_bersih['Bulan'] = st.session_state.historis_keuntungan_bersih['Waktu'].dt.strftime('%Y-%m')
-    
-    # Mengelompokkan berdasarkan bulan dan mendapatkan total keuntungan bersih
-    historis_bulan_ini = st.session_state.historis_keuntungan_bersih[st.session_state.historis_keuntungan_bersih['Bulan'] == current_month]
-    
-    if not historis_bulan_ini.empty:
-        # Mengelompokkan berdasarkan bulan dan menghitung total keuntungan bersih
-        total_keuntungan_bersih_bulan_ini = historis_bulan_ini['Keuntungan Bersih'].sum()
-        
-        # Mengambil data tanggal terbaru di bulan yang sama
-        data_bulan_ini = {
-            "Waktu": [historis_bulan_ini['Waktu'].max()],
-            "Keuntungan Bersih": [total_keuntungan_bersih_bulan_ini]
-        }
-        historis_bulan_ini = pd.DataFrame(data_bulan_ini)
-    else:
-        # Menampilkan tabel kosong jika tidak ada data untuk bulan ini
-        historis_bulan_ini = pd.DataFrame(columns=["Waktu", "Keuntungan Bersih"])
-    
+
     # Tabel historis keuntungan bersih
     st.subheader("Historis Keuntungan Bersih")
-    st.dataframe(historis_bulan_ini[['Waktu', 'Keuntungan Bersih']])
-    
+    st.dataframe(st.session_state.historis_keuntungan_bersih)
+
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
     data_ringkasan = pd.DataFrame({
         "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [
-            f"Rp {total_keuntungan:,.0f}",
-            f"Rp {total_pengeluaran:,.0f}",
-            f"Rp {total_keuntungan_bersih:,.0f}"
-        ]
+        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
     })
     st.table(data_ringkasan)
-    
+
     # Tombol untuk mendownload semua data ke file Excel
     if st.button("Download Semua Data (Excel)"):
         save_to_excel()
@@ -1041,6 +1011,7 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+
 save_data()
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
