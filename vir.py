@@ -231,7 +231,7 @@ def halaman_stock_barang():
     if selected_action == "Edit Barang" and selected_id != "Tambah Baru" and st.button("Hapus Barang"):
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_id]
         st.success(f"Barang ID {selected_id} berhasil dihapus!")
-
+        save_data()
         
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
@@ -578,7 +578,7 @@ def save_to_excel():
             "Keuntungan Bersih": [total_keuntungan_bersih]
         })
         df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
-
+save_data()
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
     st.header("Halaman Owner - Analisa Keuangan")
@@ -783,7 +783,7 @@ def halaman_owner():
             "Kode Warna", "Ukuran/Kemasan", "Jumlah", "Total Tagihan", 
             "Cicilan Tagihan", "Sisa Tagihan", "Janji Bayar"
         ])
-
+    save_data()
     # Form Piutang Konsumen
     st.subheader("Form Piutang Konsumen")
 
@@ -919,7 +919,7 @@ def halaman_owner():
         st.session_state.historis_pengeluaran = pd.DataFrame(columns=[
             "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
-
+    save_data()
     # Menampilkan tabel pengeluaran
     st.dataframe(st.session_state.pengeluaran)
 
@@ -1041,7 +1041,7 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-
+save_data()
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
