@@ -695,13 +695,6 @@ def halaman_owner():
         st.success(f"Barang ID {selected_row} berhasil dihapus!")
         save_data()  # Simpan data setelah menghapus barang
         
-    # Dummy function to format currency; replace with your actual implementation
-    def format_rupiah(value):
-        return f"Rp {value:,.2f}"
-    
-    # Analisa keuangan dengan grafik pemasaran
-    st.subheader("Analisa Keuangan")
-    
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
     st.dataframe(st.session_state.penjualan)
@@ -753,6 +746,8 @@ def halaman_owner():
         st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
 
     st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
+
+    # Menampilkan tabel data supplier dengan pencarian
     
     # Menampilkan tabel data supplier dengan fitur pencarian
     st.subheader("Data Supplier")
