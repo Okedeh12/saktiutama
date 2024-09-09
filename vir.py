@@ -757,22 +757,9 @@ def halaman_owner():
     if "historis_analisis_keuangan" not in st.session_state:
         st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=["Tanggal", "Total Penjualan", "Total Tagihan Supplier", "Selisih"])
     
-    # Menambahkan data baru ke histori
-    st.session_state.historis_analisis_keuangan = pd.concat([st.session_state.historis_analisis_keuangan, analisis_keuangan_df], ignore_index=True)
-    
-    # Filter histori analisis keuangan hanya untuk bulan saat ini
-    current_month = datetime.now().strftime("%Y-%m")
-    st.session_state.historis_analisis_keuangan['Tanggal'] = pd.to_datetime(st.session_state.historis_analisis_keuangan['Tanggal'], errors='coerce')
-    filtered_historis_analisis_keuangan = st.session_state.historis_analisis_keuangan[
-        st.session_state.historis_analisis_keuangan['Tanggal'].dt.strftime("%Y-%m") == current_month
-    ]
-    
-    # Menampilkan histori analisis keuangan
-    st.subheader("Histori Analisis Keuangan")
-    if not filtered_historis_analisis_keuangan.empty:
-        st.dataframe(filtered_historis_analisis_keuangan)
-    else:
-        st.write
+   # Tabel historis keuntungan bersih
+    st.subheader("Historis Keuntungan Bersih")
+    st.dataframe(st.session_state.historis_keuntungan_bersih)
     
     # Menampilkan tabel data supplier dengan fitur pencarian
     st.subheader("Data Supplier")
