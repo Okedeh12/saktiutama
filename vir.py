@@ -227,8 +227,6 @@ def halaman_stock_barang():
     
     st.dataframe(df_stok_barang)
 
-            save_data()  # Save data after adding or updating item
-
         
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
@@ -1043,7 +1041,6 @@ def halaman_stock_barang():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-save_data()  # Save data after adding or updating item
 
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
