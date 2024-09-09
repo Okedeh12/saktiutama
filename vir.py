@@ -107,16 +107,13 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 def halaman_stock_barang():
     st.header("Stock Barang")
     
-    # Form input barang baru dan edit barang
-    st.subheader("Tambah/Edit Barang")
-    
     # Pilih barang yang akan diedit atau pilih "Tambah Baru"
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
-
+    
     if selected_action == "Edit Barang":
         # Pilih ID Barang untuk Diedit
         selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
-        
+    
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
             default_values = {
@@ -136,7 +133,7 @@ def halaman_stock_barang():
                 "Stok": 0,
                 "Kode Warna": ""
             }
-
+    
     else:
         # Untuk tambah barang baru, set default values kosong
         selected_id = "Tambah Baru"
@@ -148,7 +145,7 @@ def halaman_stock_barang():
             "Stok": 0,
             "Kode Warna": ""
         }
-
+    
     with st.form("input_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
@@ -157,9 +154,23 @@ def halaman_stock_barang():
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         kode_warna = st.text_input("Kode Warna (Opsional)", value=default_values["Kode Warna"])
         submit = st.form_submit_button("Simpan Barang")
-
+    
         if submit:
-            if selected_id == "Tambah Baru":
+            # Cek apakah barang dengan nama, merk, ukuran/kemasan, dan kode warna yang sama sudah ada
+            barang_terdaftar = st.session_state.stok_barang[
+                (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
+                (st.session_state.stok_barang["Merk"] == merk) &
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                ((st.session_state.stok_barang["Kode Warna"] == kode_warna) | (st.session_state.stok_barang["Kode Warna"].isna() & kode_warna == ""))
+            ]
+            
+            if not barang_terdaftar.empty:
+                # Jika barang ditemukan, tambahkan stok
+                existing_id = barang_terdaftar["ID"].values[0]
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, "Stok"] += stok
+                st.success(f"Stok barang ID {existing_id} berhasil ditambah!")
+            else:
+                # Jika barang tidak ditemukan, tambahkan sebagai barang baru
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = pd.DataFrame({
                     "ID": [new_id],
@@ -173,14 +184,9 @@ def halaman_stock_barang():
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang berhasil ditambahkan!")
-            else:
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga Jual", "Stok", "Kode Warna"]] = \
-                    [nama_barang, merk, ukuran, harga_jual, stok, kode_warna]
-                st.success(f"Barang ID {selected_id} berhasil diupdate!")
                 
-            save_data()  # Save data after adding or updating item
-
+            save_data()  # Simpan data setelah menambah atau mengedit barang
+    
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
     df_stok_barang = st.session_state.stok_barang.copy()
