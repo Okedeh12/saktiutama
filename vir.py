@@ -699,6 +699,10 @@ def halaman_owner():
     def format_rupiah(amount):
         return f"Rp {amount:,.2f}"
     
+    # Dummy function to format currency; replace with your actual implementation
+    def format_rupiah(amount):
+        return f"Rp {amount:,.2f}"
+    
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
     if "penjualan" in st.session_state and not st.session_state.penjualan.empty:
@@ -770,36 +774,21 @@ def halaman_owner():
         st.dataframe(filtered_historis_analisis_keuangan)
     else:
         st.write("Tidak ada data histori untuk bulan ini.")
-    # Menampilkan tabel data supplier dengan pencarian
     
     # Menampilkan tabel data supplier dengan pencarian
     st.subheader("Data Supplier")
     
     search_input = st.text_input("Cari Nama Barang atau Merk")
     
-    # Check if supplier data is available
-    if "supplier" in st.session_state and not st.session_state.supplier.empty:
-        supplier_data = st.session_state.supplier
-        
-        # Ensure required columns are present
-        if all(col in supplier_data.columns for col in ["Nama Barang", "Merk"]):
-            if search_input:
-                filtered_supplier = supplier_data[
-                    (supplier_data["Nama Barang"].str.contains(search_input, case=False, na=False)) |
-                    (supplier_data["Merk"].str.contains(search_input, case=False, na=False))
-                ]
-                if not filtered_supplier.empty:
-                    st.write("Hasil Pencarian:")
-                    st.dataframe(filtered_supplier)
-                else:
-                    st.write("Tidak ada data yang sesuai dengan pencarian.")
-            else:
-                st.write("Menampilkan semua data supplier:")
-                st.dataframe(supplier_data)
-        else:
-            st.error("Data supplier tidak memiliki kolom 'Nama Barang' atau 'Merk'.")
+    if search_input:
+        filtered_supplier = st.session_state.supplier[
+            (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False)) |
+            (st.session_state.supplier["Merk"].str.contains(search_input, case=False))
+        ]
+        st.write("Hasil Pencarian:")
+        st.dataframe(filtered_supplier)
     else:
-        st.warning("Data supplier tidak tersedia.")
+        st.dataframe(st.session_state.supplier)
 
         # Inisialisasi piutang konsumen jika belum ada
     if 'piutang_konsumen' not in st.session_state:
