@@ -227,22 +227,6 @@ def halaman_stock_barang():
         st.success(f"Barang ID {selected_id} berhasil dihapus!")
         save_data()
         
-# Dummy data initialization (you should replace this with your actual data initialization)
-if 'stok_barang' not in st.session_state:
-    st.session_state.stok_barang = pd.DataFrame(columns=["ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Stok", "Warna/Base", "Harga", "Harga Jual"])
-if 'penjualan' not in st.session_state:
-    st.session_state.penjualan = pd.DataFrame(columns=["ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Warna/Base", "Jumlah", "Total Harga", "Keuntungan", "Waktu"])
-
-def save_data():
-    # Save stock data to CSV and JSON
-    st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
-    st.session_state.stok_barang.to_json("stok_barang.json", orient="records")
-    
-    # Save sales data to CSV and JSON
-    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
-    st.session_state.penjualan.to_json("penjualan.json", orient="records")
-    
-    st.success("Data berhasil disimpan!")
 
 def halaman_penjualan():
     st.header("Penjualan")
@@ -415,13 +399,6 @@ def halaman_penjualan():
 
     save_data()  # Save data after generating the receipt
                 
-# Dummy function to save data; replace with your actual save_data implementation
-def save_data():
-    # Save supplier data to CSV and JSON
-    st.session_state.supplier.to_csv("supplier.csv", index=False)
-    st.session_state.supplier.to_json("supplier.json", orient="records")
-    
-    st.success("Data berhasil disimpan!")
 
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
@@ -587,47 +564,6 @@ def save_to_excel():
         df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
 save_data()
 
-# Helper function to format currency values
-def format_rupiah(value):
-    return f"Rp {value:,.0f}".replace(",", ".")
-
-# Save all data to CSV and JSON
-def save_data():
-    # Create directory if it does not exist
-    if not os.path.exists('data'):
-        os.makedirs('data')
-    
-    # Save DataFrames to CSV
-    if 'penjualan' in st.session_state and not st.session_state.penjualan.empty:
-        st.session_state.penjualan.to_csv('data/penjualan.csv', index=False)
-    
-    if 'supplier' in st.session_state and not st.session_state.supplier.empty:
-        st.session_state.supplier.to_csv('data/supplier.csv', index=False)
-    
-    if 'piutang_konsumen' in st.session_state and not st.session_state.piutang_konsumen.empty:
-        st.session_state.piutang_konsumen.to_csv('data/piutang_konsumen.csv', index=False)
-    
-    if 'pengeluaran' in st.session_state and not st.session_state.pengeluaran.empty:
-        st.session_state.pengeluaran.to_csv('data/pengeluaran.csv', index=False)
-    
-    if 'historis_analisis_keuangan' in st.session_state and not st.session_state.historis_analisis_keuangan.empty:
-        st.session_state.historis_analisis_keuangan.to_csv('data/historis_analisis_keuangan.csv', index=False)
-    
-    if 'historis_keuntungan_bersih' in st.session_state and not st.session_state.historis_keuntungan_bersih.empty:
-        st.session_state.historis_keuntungan_bersih.to_csv('data/historis_keuntungan_bersih.csv', index=False)
-    
-    # Save all DataFrames to a JSON file
-    all_data = {
-        'penjualan': st.session_state.penjualan.to_dict(orient='records') if 'penjualan' in st.session_state else [],
-        'supplier': st.session_state.supplier.to_dict(orient='records') if 'supplier' in st.session_state else [],
-        'piutang_konsumen': st.session_state.piutang_konsumen.to_dict(orient='records') if 'piutang_konsumen' in st.session_state else [],
-        'pengeluaran': st.session_state.pengeluaran.to_dict(orient='records') if 'pengeluaran' in st.session_state else [],
-        'historis_analisis_keuangan': st.session_state.historis_analisis_keuangan.to_dict(orient='records') if 'historis_analisis_keuangan' in st.session_state else [],
-        'historis_keuntungan_bersih': st.session_state.historis_keuntungan_bersih.to_dict(orient='records') if 'historis_keuntungan_bersih' in st.session_state else [],
-    }
-
-    with open('data/all_data.json', 'w') as json_file:
-        json.dump(all_data, json_file, indent=4)
 
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
