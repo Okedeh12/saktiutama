@@ -556,7 +556,7 @@ def halaman_owner():
     # Tabel stok barang dengan fitur edit dan hapus
     st.header("Stock Barang")
     
-    # Tambahkan opsi untuk "Tambah Baru" di selectbox
+     # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
@@ -592,7 +592,7 @@ def halaman_owner():
         merk = st.text_input("Merk", value=default_values["Merk"])
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
         
-        harga = st.number_input("Harga", min_value=0, value=int(default_values["Harga"]))
+        harga = st.number_input("Harga Beli", min_value=0, value=int(default_values["Harga"]))  # Harga beli barang
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
         
@@ -604,7 +604,7 @@ def halaman_owner():
     
         if submit:
             # Hitung harga jual berdasarkan persentase keuntungan
-            harga_jual = harga + (harga * (persentase_keuntungan / 100))
+            harga_jual = harga + (harga * (persentase_keuntungan / 100))  # Menghitung harga jual berdasarkan harga beli dan persentase keuntungan
     
             if barang_dipilih is None:
                 # Tambah barang baru
@@ -614,7 +614,7 @@ def halaman_owner():
                     "Nama Barang": [nama_barang],
                     "Merk": [merk],
                     "Ukuran/Kemasan": [ukuran],
-                    "Harga Jual": [harga_jual],  # Gantikan Harga dengan Harga Jual
+                    "Harga Jual": [harga_jual],  # Harga jual hasil dari kalkulasi
                     "Stok": [stok],
                     "Persentase Keuntungan": [persentase_keuntungan],
                 }
@@ -630,7 +630,7 @@ def halaman_owner():
                     "Nama Barang": nama_barang,
                     "Merk": merk,
                     "Ukuran/Kemasan": ukuran,
-                    "Harga Jual": harga_jual,  # Gantikan Harga dengan Harga Jual
+                    "Harga Jual": harga_jual,  # Harga jual hasil dari kalkulasi
                     "Stok": stok,
                     "Persentase Keuntungan": persentase_keuntungan,
                 }
@@ -652,7 +652,6 @@ def halaman_owner():
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
         st.success(f"Barang ID {selected_row} berhasil dihapus!")
         save_data()  # Simpan data setelah menghapus barang
-
     
     # Laporan penjualan
     st.subheader("Laporan Penjualan")
