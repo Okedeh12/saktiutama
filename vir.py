@@ -995,7 +995,43 @@ def halaman_owner():
     })
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
 
-    # Tabel historis keuntungan bersih
+    def update_historis_keuntungan_bersih(new_data):
+        # Check if historis_keuntungan_bersih exists in session_state
+        if "historis_keuntungan_bersih" not in st.session_state:
+            st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=["Tanggal", "Keuntungan Bersih"])
+    
+        # Get the current data
+        historis_keuntungan_bersih = st.session_state.historis_keuntungan_bersih
+        
+        # Convert 'Tanggal' to datetime
+        historis_keuntungan_bersih['Tanggal'] = pd.to_datetime(historis_keuntungan_bersih['Tanggal'], errors='coerce')
+    
+        # Filter historis_keuntungan_bersih for the current month
+        current_month = datetime.now().strftime("%Y-%m")
+        filtered_historis_keuntungan_bersih = historis_keuntungan_bersih[
+            historis_keuntungan_bersih['Tanggal'].dt.strftime("%Y-%m") == current_month
+        ]
+    
+        # Check if there's already an entry for today
+        today_date = datetime.now().strftime("%Y-%m-%d")
+        if today_date in filtered_historis_keuntungan_bersih['Tanggal'].dt.strftime("%Y-%m-%d").values:
+            # Update existing entry
+            historis_keuntungan_bersih.loc[
+                historis_keuntungan_bersih['Tanggal'].dt.strftime("%Y-%m-%d") == today_date,
+                "Keuntungan Bersih"
+            ] = new_data["Keuntungan Bersih"].values[0]
+        else:
+            # Add new entry
+            historis_keuntungan_bersih = pd.concat([historis_keuntungan_bersih, new_data], ignore_index=True)
+    
+        # Save updated data back to session_state
+        st.session_state.historis_keuntungan_bersih = historis_keuntungan_bersih
+    
+
+    # Update the historical data
+    update_historis_keuntungan_bersih(new_data)
+    
+    # Display the historical data
     st.subheader("Historis Keuntungan Bersih")
     st.dataframe(st.session_state.historis_keuntungan_bersih)
 
