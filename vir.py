@@ -107,9 +107,6 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 def halaman_stock_barang():
     st.header("Stock Barang")
         
-    # Form input barang baru dan edit barang
-    st.subheader("Tambah/Edit Barang")
-    
     # Pilih aksi untuk tambah atau edit barang
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
     
