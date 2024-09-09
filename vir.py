@@ -916,15 +916,22 @@ def halaman_owner():
     current_month = datetime.now().strftime('%Y-%m')
     st.session_state.historis_keuntungan_bersih['Bulan'] = st.session_state.historis_keuntungan_bersih['Waktu'].dt.strftime('%Y-%m')
     
-    # Hanya menampilkan satu data total keuntungan bersih per bulan
+    # Mengelompokkan berdasarkan bulan dan mendapatkan total keuntungan bersih
     historis_bulan_ini = st.session_state.historis_keuntungan_bersih[st.session_state.historis_keuntungan_bersih['Bulan'] == current_month]
+    
     if not historis_bulan_ini.empty:
-        # Mengelompokkan berdasarkan bulan dan mendapatkan total keuntungan bersih
+        # Mengelompokkan berdasarkan bulan dan menghitung total keuntungan bersih
         total_keuntungan_bersih_bulan_ini = historis_bulan_ini['Keuntungan Bersih'].sum()
-        historis_bulan_ini = pd.DataFrame({
-            "Waktu": [historis_bulan_ini['Waktu'].max()],  # Tampilkan waktu terakhir pada bulan ini
+        
+        # Mengambil data tanggal terbaru di bulan yang sama
+        data_bulan_ini = {
+            "Waktu": [historis_bulan_ini['Waktu'].max()],
             "Keuntungan Bersih": [total_keuntungan_bersih_bulan_ini]
-        })
+        }
+        historis_bulan_ini = pd.DataFrame(data_bulan_ini)
+    else:
+        # Menampilkan tabel kosong jika tidak ada data untuk bulan ini
+        historis_bulan_ini = pd.DataFrame(columns=["Waktu", "Keuntungan Bersih"])
     
     # Tabel historis keuntungan bersih
     st.subheader("Historis Keuntungan Bersih")
