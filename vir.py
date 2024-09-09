@@ -772,22 +772,20 @@ def halaman_owner():
         st.write("Tidak ada data histori untuk bulan ini.")
     # Menampilkan tabel data supplier dengan pencarian
     
-    # Menampilkan tabel data supplier dengan fitur pencarian
+    # Menampilkan tabel data supplier dengan pencarian
     st.subheader("Data Supplier")
-    search_input = st.text_input("Cari Nama Barang atau Merk", key="supplier_search_input")  # Gunakan key unik
     
-    if "supplier" in st.session_state and not st.session_state.supplier.empty:
-        if search_input:
-            filtered_supplier = st.session_state.supplier[
-                (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False, na=False)) |
-                (st.session_state.supplier["Merk"].str.contains(search_input, case=False, na=False))
-            ]
-            st.write("Hasil Pencarian:")
-            st.dataframe(filtered_supplier)
-        else:
-            st.dataframe(st.session_state.supplier)
+    search_input = st.text_input("Cari Nama Barang atau Merk")
+    
+    if search_input:
+        filtered_supplier = st.session_state.supplier[
+            (st.session_state.supplier["Nama Barang"].str.contains(search_input, case=False)) |
+            (st.session_state.supplier["Merk"].str.contains(search_input, case=False))
+        ]
+        st.write("Hasil Pencarian:")
+        st.dataframe(filtered_supplier)
     else:
-        st.warning("Tidak ada data supplier.")
+        st.dataframe(st.session_state.supplier)
 
         # Inisialisasi piutang konsumen jika belum ada
     if 'piutang_konsumen' not in st.session_state:
@@ -888,6 +886,15 @@ def halaman_owner():
             save_data()  # Simpan setelah hapus
     else:
         st.write("Tidak ada data piutang konsumen.")
+
+    # Menampilkan histori analisis keuangan
+    st.subheader("Histori Analisis Keuangan")
+    st.dataframe(st.session_state.historis_analisis_keuangan)
+
+    # Tombol untuk mendownload histori analisis keuangan
+    if st.button("Download Histori Analisis Keuangan (CSV)"):
+        csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
+        st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
 
     
     # Grafik keuntungan penjualan per barang
@@ -992,29 +999,17 @@ def halaman_owner():
         "Keuntungan Bersih": [total_keuntungan_bersih]
     })
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
-    
 
-    # Update the historical data
-    update_historis_keuntungan_bersih(new_data)
-    
-    # Display the historical data
+    # Tabel historis keuntungan bersih
     st.subheader("Historis Keuntungan Bersih")
     st.dataframe(st.session_state.historis_keuntungan_bersih)
 
-    # Fungsi untuk format Rupiah
-    def format_rupiah(value):
-        return f"Rp {value:,.0f}".replace(",", ".")
-    
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
-    
-    # Menggunakan format Rupiah tanpa koma ribuan
     data_ringkasan = pd.DataFrame({
         "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [format_rupiah(total_keuntungan), format_rupiah(total_pengeluaran), format_rupiah(total_keuntungan_bersih)]
+        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
     })
-    
-    # Menampilkan tabel dengan format Rupiah
     st.table(data_ringkasan)
 
 
