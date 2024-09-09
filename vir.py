@@ -387,8 +387,12 @@ def halaman_stock_barang():
         
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
-    # Your logic to save data, e.g., to a database or file
-    pass
+    # Simpan data ke file CSV dan JSON
+    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
+    st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
+    st.session_state.penjualan.to_json("penjualan.json", orient="records")
+    st.session_state.stok_barang.to_json("stok_barang.json", orient="records")
+    st.success("Data berhasil disimpan!")
 
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
@@ -431,9 +435,9 @@ def halaman_penjualan():
         nama_pelanggan = st.text_input("Nama Pelanggan", value=default_values["Nama Pelanggan"])
         nomor_telpon = st.text_input("Nomor Telepon", value=default_values["Nomor Telepon"])
         alamat = st.text_area("Alamat", value=default_values["Alamat"])
-        nama_barang = st.selectbox("Pilih Barang", st.session_state.stok_barang["Nama Barang"], index=st.session_state.stok_barang["Nama Barang"].tolist().index(default_values["Nama Barang"]))
-        ukuran = st.selectbox("Ukuran/Kemasan", st.session_state.stok_barang["Ukuran/Kemasan"], index=st.session_state.stok_barang["Ukuran/Kemasan"].tolist().index(default_values["Ukuran/Kemasan"]))
-        merk = st.selectbox("Merk", st.session_state.stok_barang["Merk"], index=st.session_state.stok_barang["Merk"].tolist().index(default_values["Merk"]))
+        nama_barang = st.selectbox("Pilih Barang", st.session_state.stok_barang["Nama Barang"].tolist(), index=st.session_state.stok_barang["Nama Barang"].tolist().index(default_values["Nama Barang"]))
+        ukuran = st.selectbox("Ukuran/Kemasan", st.session_state.stok_barang["Ukuran/Kemasan"].tolist(), index=st.session_state.stok_barang["Ukuran/Kemasan"].tolist().index(default_values["Ukuran/Kemasan"]))
+        merk = st.selectbox("Merk", st.session_state.stok_barang["Merk"].tolist(), index=st.session_state.stok_barang["Merk"].tolist().index(default_values["Merk"]))
         warna_base = st.text_input("Warna/Base", value=default_values["Warna/Base"], placeholder="Opsional")
         jumlah = st.number_input("Jumlah Orderan", min_value=1, value=int(default_values["Jumlah"]))
         submit = st.form_submit_button("Simpan Penjualan")
