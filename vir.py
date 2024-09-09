@@ -103,7 +103,11 @@ menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", 
 # Main content area
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# Fungsi untuk halaman Stock Barang
+# Fungsi untuk menyimpan data (misalnya ke file atau database)
+def save_data():
+    # Implementasi penyimpanan data
+    pass
+
 def halaman_stock_barang():
     st.header("Stock Barang")
     
@@ -155,8 +159,31 @@ def halaman_stock_barang():
         submit = st.form_submit_button("Simpan Barang")
 
         if submit:
-            if selected_id == "Tambah Baru":
-                new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
+            # Normalisasi input untuk pencocokan tidak sensitif huruf kapital/kecil
+            nama_barang_lower = nama_barang.strip().lower()
+            merk_lower = merk.strip().lower()
+            ukuran_lower = ukuran.strip().lower()
+
+            # Periksa apakah barang yang sama sudah ada
+            existing_item = st.session_state.stok_barang[
+                (st.session_state.stok_barang["Nama Barang"].str.lower() == nama_barang_lower) &
+                (st.session_state.stok_barang["Merk"].str.lower() == merk_lower) &
+                (st.session_state.stok_barang["Ukuran/Kemasan"].str.lower() == ukuran_lower)
+            ]
+
+            if not existing_item.empty:
+                # Jika barang sudah ada, tambahkan stok yang baru
+                existing_id = existing_item["ID"].values[0]
+                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == existing_id, 
+                    ["Harga", "Stok"]] = [harga, existing_item["Stok"].values[0] + stok]
+                st.success(f"Stok untuk Barang ID {existing_id} berhasil diperbarui!")
+            else:
+                # Jika barang belum ada, tambahkan sebagai entri baru
+                if selected_id == "Tambah Baru":
+                    new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
+                else:
+                    new_id = selected_id
+                
                 new_data = pd.DataFrame({
                     "ID": [new_id],
                     "Nama Barang": [nama_barang],
@@ -166,13 +193,15 @@ def halaman_stock_barang():
                     "Stok": [stok],
                     "Waktu Input": [datetime.now()]
                 })
-                st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
-                st.success("Barang berhasil ditambahkan!")
-            else:
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok"]] = \
-                    [nama_barang, merk, ukuran, harga, stok]
-                st.success(f"Barang ID {selected_id} berhasil diupdate!")
+                
+                if selected_id == "Tambah Baru":
+                    st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
+                else:
+                    st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
+                        ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok"]] = \
+                        [nama_barang, merk, ukuran, harga, stok]
+                
+                st.success("Barang berhasil ditambahkan atau diupdate!")
                 
             save_data()  # Save data after adding or updating item
 
@@ -185,9 +214,10 @@ def halaman_stock_barang():
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk")
     if search_text:
+        search_text_lower = search_text.strip().lower()
         df_stok_barang = df_stok_barang[
-            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
-            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
+            (df_stok_barang["Nama Barang"].str.contains(search_text_lower, case=False, na=False)) |
+            (df_stok_barang["Merk"].str.contains(search_text_lower, case=False, na=False))
         ]
     
     st.dataframe(df_stok_barang)
