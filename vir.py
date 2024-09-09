@@ -231,7 +231,8 @@ def halaman_stock_barang():
     if selected_action == "Edit Barang" and selected_id != "Tambah Baru" and st.button("Hapus Barang"):
         st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_id]
         st.success(f"Barang ID {selected_id} berhasil dihapus!")
-        save_data()  # Simpan data setelah menghapus barang
+
+save_data()  # Simpan data setelah menghapus barang
 
         
 # Dummy function to save data; replace with your actual save_data implementation
@@ -409,7 +410,7 @@ def halaman_penjualan():
             with open(struk_file, 'r') as f:
                 st.download_button(label="Download Struk Penjualan", data=f, file_name=struk_file, mime="text/plain")
                 
-            save_data()  # Save data after generating the receipt
+save_data()  # Save data after generating the receipt
                 
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
@@ -509,9 +510,8 @@ def halaman_supplier():
             if st.button(f"Hapus Supplier ID {delete_id}"):
                 st.session_state.supplier = st.session_state.supplier[st.session_state.supplier["ID"] != delete_id]
                 st.success(f"Data supplier ID {delete_id} berhasil dihapus!")
-                save_data()  # Save data after deleting a supplier
 
-
+save_data()  # Save data after deleting a supplier
 
 # Fungsi untuk menyimpan semua data ke file Excel
 def save_to_excel():
