@@ -995,7 +995,7 @@ def halaman_owner():
     })
     st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
 
-    def update_historis_keuntungan_bersih(new_data):
+def update_historis_keuntungan_bersih(new_data):
         # Check if historis_keuntungan_bersih exists in session_state
         if "historis_keuntungan_bersih" not in st.session_state:
             st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=["Tanggal", "Keuntungan Bersih"])
