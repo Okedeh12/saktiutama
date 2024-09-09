@@ -107,6 +107,9 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 def halaman_stock_barang():
     st.header("Stock Barang")
         
+    # Form input barang baru dan edit barang
+    st.subheader("Tambah/Edit Barang")
+    
     # Pilih aksi untuk tambah atau edit barang
     selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
     
@@ -151,12 +154,15 @@ def halaman_stock_barang():
     
         if submit:
             # Check if an existing item matches the input values
-            match = st.session_state.stok_barang[
+            match_conditions = (
                 (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
                 (st.session_state.stok_barang["Merk"] == merk) &
-                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
-                (st.session_state.stok_barang["Warna/Base"] == warna_base)
-            ]
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran)
+            )
+            if "Warna/Base" in st.session_state.stok_barang.columns:
+                match_conditions &= (st.session_state.stok_barang["Warna/Base"] == warna_base)
+            
+            match = st.session_state.stok_barang[match_conditions]
     
             if not match.empty:
                 # Update the stock of the existing item
@@ -180,6 +186,24 @@ def halaman_stock_barang():
                 st.success("Barang berhasil ditambahkan!")
     
             save_data()  # Save data after adding or updating item
+    
+    # Tabel stok barang
+    st.subheader("Daftar Stok Barang")
+    df_stok_barang = st.session_state.stok_barang.copy()
+    
+    # Hapus kolom Persentase Keuntungan dan Harga dari tampilan
+    columns_to_drop = ["Persentase Keuntungan", "Harga"]
+    df_stok_barang = df_stok_barang.drop(columns=[col for col in columns_to_drop if col in df_stok_barang.columns])
+    
+    # Pencarian nama barang atau merk
+    search_text = st.text_input("Cari Nama Barang atau Merk")
+    if search_text:
+        df_stok_barang = df_stok_barang[
+            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
+            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
+        ]
+    
+    st.dataframe(df_stok_barang)
     
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
