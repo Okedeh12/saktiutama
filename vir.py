@@ -212,6 +212,11 @@ def halaman_stock_barang():
     
     st.dataframe(df_stok_barang)
         
+# Dummy function to save data; replace with your actual save_data implementation
+def save_data():
+    # Your logic to save data, e.g., to a database or file
+    pass
+
 # Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.header("Penjualan")
@@ -323,6 +328,8 @@ def halaman_penjualan():
     # Tabel stok barang terupdate
     st.subheader("Stok Barang Terupdate")
     df_stok_barang = st.session_state.stok_barang.copy()
+    if "Harga" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Harga"])  # Menghapus kolom Harga
     if "Persentase Keuntungan" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
     st.dataframe(df_stok_barang, use_container_width=True, hide_index=False)
