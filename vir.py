@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 import time
 from io import StringIO
+import json
 
 # Paths to JSON files
 STOK_BARANG_JSON = "stok_barang.json"
