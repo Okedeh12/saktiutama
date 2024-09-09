@@ -932,46 +932,17 @@ def halaman_owner():
         ]
     })
     st.table(data_ringkasan)
-    def save_to_excel():
-        # Membuat writer untuk file Excel
-        with pd.ExcelWriter("data_laporan.xlsx", engine='xlsxwriter') as writer:
-            # Menyimpan data penjualan
-            if 'penjualan' in st.session_state and not st.session_state.penjualan.empty:
-                st.session_state.penjualan.to_excel(writer, sheet_name='Penjualan', index=False)
-            
-            # Menyimpan data pengeluaran
-            if 'pengeluaran' in st.session_state and not st.session_state.pengeluaran.empty:
-                st.session_state.pengeluaran.to_excel(writer, sheet_name='Pengeluaran', index=False)
-            
-            # Menyimpan data piutang konsumen
-            if 'piutang_konsumen' in st.session_state and not st.session_state.piutang_konsumen.empty:
-                st.session_state.piutang_konsumen.to_excel(writer, sheet_name='Piutang Konsumen', index=False)
-            
-            # Menyimpan data stok barang
-            if 'stok_barang' in st.session_state and not st.session_state.stok_barang.empty:
-                st.session_state.stok_barang.to_excel(writer, sheet_name='Stok Barang', index=False)
-            
-            # Menyimpan data historis analisis keuangan
-            if 'historis_analisis_keuangan' in st.session_state and not st.session_state.historis_analisis_keuangan.empty:
-                st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name='Analisis Keuangan', index=False)
-            
-            # Menyimpan data historis keuntungan bersih
-            if 'historis_keuntungan_bersih' in st.session_state and not st.session_state.historis_keuntungan_bersih.empty:
-                st.session_state.historis_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
     
-        # Menggunakan io.BytesIO untuk menyimpan file dalam buffer memory
-        with open("data_laporan.xlsx", "rb") as file:
-            return file.read()
-            
     # Tombol untuk mendownload semua data ke file Excel
     if st.button("Download Semua Data (Excel)"):
-        excel_data = save_to_excel()
-        st.download_button(
-            label="Download Excel",
-            data=excel_data,
-            file_name="data_laporan.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        save_to_excel()
+        with open("data_laporan.xlsx", "rb") as file:
+            st.download_button(
+                label="Download Excel",
+                data=file,
+                file_name="data_laporan.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
             
 # Menampilkan halaman berdasarkan menu yang dipilih
