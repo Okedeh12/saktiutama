@@ -771,7 +771,7 @@ def halaman_owner():
     
     # Menampilkan tabel data supplier dengan fitur pencarian
     st.subheader("Data Supplier")
-    search_input = st.text_input("Cari Nama Barang atau Merk")
+    search_input = st.text_input("Cari Nama Barang atau Merk", key="supplier_search_input")  # Gunakan key unik
     
     if "supplier" in st.session_state and not st.session_state.supplier.empty:
         if search_input:
