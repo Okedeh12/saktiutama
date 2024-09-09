@@ -556,7 +556,7 @@ def halaman_owner():
     # Tabel stok barang dengan fitur edit dan hapus
     st.header("Stock Barang")
     
-     # Tambahkan opsi untuk "Tambah Baru" di selectbox
+    # Tambahkan opsi untuk "Tambah Baru" di selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
@@ -592,9 +592,16 @@ def halaman_owner():
         merk = st.text_input("Merk", value=default_values["Merk"])
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
         
-        harga = st.number_input("Harga Beli", min_value=0, value=int(default_values["Harga"]))  # Harga beli barang
+        harga_beli = st.number_input("Harga Beli", min_value=0, value=int(default_values["Harga"]))  # Harga beli barang
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
+        
+        # Hitung harga jual dan nominal keuntungan
+        harga_jual = harga_beli + (harga_beli * (persentase_keuntungan / 100))
+        nominal_keuntungan = harga_jual - harga_beli
+        
+        st.write(f"**Harga Jual**: Rp {harga_jual:,.0f}")  # Tampilkan harga jual
+        st.write(f"**Nominal Keuntungan**: Rp {nominal_keuntungan:,.0f}")  # Tampilkan nominal keuntungan
         
         # Jika kolom Kode Warna ada, tambahkan input untuk Kode Warna
         if has_kode_warna:
@@ -603,9 +610,6 @@ def halaman_owner():
         submit = st.form_submit_button("Simpan Barang")
     
         if submit:
-            # Hitung harga jual berdasarkan persentase keuntungan
-            harga_jual = harga + (harga * (persentase_keuntungan / 100))  # Menghitung harga jual berdasarkan harga beli dan persentase keuntungan
-    
             if barang_dipilih is None:
                 # Tambah barang baru
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
