@@ -896,10 +896,6 @@ def halaman_owner():
         }).reset_index()
         st.dataframe(analisis_keuntungan)
 
-   # Simulasi data untuk contoh
-    total_keuntungan = 5000000  # Total keuntungan
-    total_pengeluaran = 2000000  # Total pengeluaran
-
     # Perhitungan total keuntungan bersih
     total_keuntungan_bersih = total_keuntungan - total_pengeluaran
     st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih:,.0f}")
