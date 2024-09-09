@@ -258,8 +258,29 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
-    # Your logic to save data, e.g., to a database or file
-    pass
+    # Define file paths
+    stok_barang_csv_path = "stok_barang.csv"
+    stok_barang_json_path = "stok_barang.json"
+    
+    # Save stock data to CSV
+    st.session_state.stok_barang.to_csv(stok_barang_csv_path, index=False)
+    
+    # Save stock data to JSON
+    stok_barang_json = st.session_state.stok_barang.to_dict(orient='records')
+    with open(stok_barang_json_path, "w") as json_file:
+        json.dump(stok_barang_json, json_file, indent=4)
+    
+    # Save sales data to CSV
+    penjualan_csv_path = "penjualan.csv"
+    penjualan_json_path = "penjualan.json"
+    
+    # Save sales data to CSV
+    st.session_state.penjualan.to_csv(penjualan_csv_path, index=False)
+    
+    # Save sales data to JSON
+    penjualan_json = st.session_state.penjualan.to_dict(orient='records')
+    with open(penjualan_json_path, "w") as json_file:
+        json.dump(penjualan_json, json_file, indent=4)
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
@@ -385,16 +406,23 @@ def halaman_stock_barang():
         st.success(f"Barang ID {selected_id} berhasil dihapus!")
         save_data()
         
-# Dummy function to save data; replace with your actual save_data implementation
+# Dummy data initialization (you should replace this with your actual data initialization)
+if 'stok_barang' not in st.session_state:
+    st.session_state.stok_barang = pd.DataFrame(columns=["ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Stok", "Warna/Base", "Harga", "Harga Jual"])
+if 'penjualan' not in st.session_state:
+    st.session_state.penjualan = pd.DataFrame(columns=["ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Warna/Base", "Jumlah", "Total Harga", "Keuntungan", "Waktu"])
+
 def save_data():
-    # Simpan data ke file CSV dan JSON
-    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
+    # Save stock data to CSV and JSON
     st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
-    st.session_state.penjualan.to_json("penjualan.json", orient="records")
     st.session_state.stok_barang.to_json("stok_barang.json", orient="records")
+    
+    # Save sales data to CSV and JSON
+    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
+    st.session_state.penjualan.to_json("penjualan.json", orient="records")
+    
     st.success("Data berhasil disimpan!")
 
-# Fungsi untuk halaman Penjualan
 def halaman_penjualan():
     st.header("Penjualan")
 
@@ -563,13 +591,16 @@ def halaman_penjualan():
             
             with open(struk_file, 'r') as f:
                 st.download_button(label="Download Struk Penjualan", data=f, file_name=struk_file, mime="text/plain")
-                
-save_data()  # Save data after generating the receipt
+
+    save_data()  # Save data after generating the receipt
                 
 # Dummy function to save data; replace with your actual save_data implementation
 def save_data():
-    # Your logic to save data, e.g., to a database or file
-    pass
+    # Save supplier data to CSV and JSON
+    st.session_state.supplier.to_csv("supplier.csv", index=False)
+    st.session_state.supplier.to_json("supplier.json", orient="records")
+    
+    st.success("Data berhasil disimpan!")
 
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
