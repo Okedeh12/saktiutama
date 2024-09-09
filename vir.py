@@ -226,6 +226,12 @@ def halaman_stock_barang():
         ]
     
     st.dataframe(df_stok_barang)
+    
+    # Tombol untuk hapus barang (jika ID bukan 'Tambah Baru')
+    if selected_action == "Edit Barang" and selected_id != "Tambah Baru" and st.button("Hapus Barang"):
+        st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_id]
+        st.success(f"Barang ID {selected_id} berhasil dihapus!")
+        save_data()  # Simpan data setelah menghapus barang
 
         
 # Dummy function to save data; replace with your actual save_data implementation
@@ -241,34 +247,24 @@ def halaman_penjualan():
     st.subheader("Tambah/Edit Penjualan")
 
     # Pilih ID Penjualan untuk diedit
-    if not st.session_state.penjualan.empty:
-        id_penjualan = st.selectbox("Pilih ID Penjualan untuk Diedit", st.session_state.penjualan["ID"].tolist() + ["Tambah Baru"])
+    id_penjualan = st.selectbox(
+        "Pilih ID Penjualan untuk Diedit",
+        st.session_state.penjualan["ID"].tolist() + ["Tambah Baru"]
+    )
 
-        if id_penjualan != "Tambah Baru":
-            penjualan_edit = st.session_state.penjualan[st.session_state.penjualan["ID"] == id_penjualan].iloc[0]
-            default_values = {
-                "Nama Pelanggan": penjualan_edit["Nama Pelanggan"],
-                "Nomor Telepon": penjualan_edit["Nomor Telepon"],
-                "Alamat": penjualan_edit["Alamat"],
-                "Nama Barang": penjualan_edit["Nama Barang"],
-                "Ukuran/Kemasan": penjualan_edit["Ukuran/Kemasan"],
-                "Merk": penjualan_edit["Merk"],
-                "Warna/Base": penjualan_edit["Warna/Base"] if "Warna/Base" in penjualan_edit.index else "",
-                "Jumlah": penjualan_edit["Jumlah"]
-            }
-        else:
-            default_values = {
-                "Nama Pelanggan": "",
-                "Nomor Telepon": "",
-                "Alamat": "",
-                "Nama Barang": st.session_state.stok_barang["Nama Barang"].tolist()[0] if not st.session_state.stok_barang.empty else "",
-                "Ukuran/Kemasan": st.session_state.stok_barang["Ukuran/Kemasan"].tolist()[0] if not st.session_state.stok_barang.empty else "",
-                "Merk": st.session_state.stok_barang["Merk"].tolist()[0] if not st.session_state.stok_barang.empty else "",
-                "Warna/Base": "",
-                "Jumlah": 1
-            }
+    if id_penjualan != "Tambah Baru":
+        penjualan_edit = st.session_state.penjualan[st.session_state.penjualan["ID"] == id_penjualan].iloc[0]
+        default_values = {
+            "Nama Pelanggan": penjualan_edit["Nama Pelanggan"],
+            "Nomor Telepon": penjualan_edit["Nomor Telepon"],
+            "Alamat": penjualan_edit["Alamat"],
+            "Nama Barang": penjualan_edit["Nama Barang"],
+            "Ukuran/Kemasan": penjualan_edit["Ukuran/Kemasan"],
+            "Merk": penjualan_edit["Merk"],
+            "Warna/Base": penjualan_edit["Warna/Base"] if "Warna/Base" in penjualan_edit.index else "",
+            "Jumlah": penjualan_edit["Jumlah"]
+        }
     else:
-        id_penjualan = "Tambah Baru"
         default_values = {
             "Nama Pelanggan": "",
             "Nomor Telepon": "",
@@ -412,7 +408,8 @@ def halaman_penjualan():
             
             with open(struk_file, 'r') as f:
                 st.download_button(label="Download Struk Penjualan", data=f, file_name=struk_file, mime="text/plain")
-                save_data()  # Save data after adding or updating item
+                
+            save_data()  # Save data after generating the receipt
                 
 # Fungsi untuk halaman Supplier
 def halaman_supplier():
