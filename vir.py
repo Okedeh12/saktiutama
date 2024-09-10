@@ -868,27 +868,37 @@ def halaman_owner():
         st.dataframe(st.session_state.historis_analisa_pendapatan)
     
     
-    # Grafik total penjualan per barang (Nama Barang + Merk)
-    if not st.session_state.penjualan.empty:
-        st.subheader("Grafik Penjualan Per Barang")
+    # Debugging: Display the columns in the DataFrame
+    st.write("Columns in 'penjualan':", st.session_state.penjualan.columns)
     
-        # Group by Nama Barang and Merk, then sum the total penjualan (sales)
-        sales_per_item = st.session_state.penjualan.groupby(["Nama Barang", "Merk"])["Total Penjualan"].sum()
+    # Ensure the DataFrame has the required columns
+    required_columns = ["Nama Barang", "Merk", "Total Penjualan"]
+    missing_columns = [col for col in required_columns if col not in st.session_state.penjualan.columns]
     
-        # Create a bar plot
-        plt.figure(figsize=(12, 8))
-        sales_per_item.sort_values(ascending=False).plot(kind="bar", color="skyblue")
-    
-        # Customize the plot
-        plt.title("Total Penjualan per Barang dan Merk", fontsize=16)
-        plt.xlabel("Nama Barang dan Merk", fontsize=14)
-        plt.ylabel("Total Penjualan (Rp)", fontsize=14)
-        plt.xticks(rotation=45, ha="right", fontsize=12)
-    
-        # Display the plot in Streamlit
-        st.pyplot(plt)
+    if missing_columns:
+        st.error(f"Missing columns in 'penjualan': {', '.join(missing_columns)}")
     else:
-        st.write("Data penjualan kosong atau kolom 'Total Penjualan' tidak ditemukan.")
+        # Grafik total penjualan per barang (Nama Barang + Merk)
+        if not st.session_state.penjualan.empty:
+            st.subheader("Grafik Penjualan Per Barang")
+    
+            # Group by Nama Barang and Merk, then sum the total penjualan (sales)
+            sales_per_item = st.session_state.penjualan.groupby(["Nama Barang", "Merk"])["Total Penjualan"].sum()
+    
+            # Create a bar plot
+            plt.figure(figsize=(12, 8))
+            sales_per_item.sort_values(ascending=False).plot(kind="bar", color="skyblue")
+    
+            # Customize the plot
+            plt.title("Total Penjualan per Barang dan Merk", fontsize=16)
+            plt.xlabel("Nama Barang dan Merk", fontsize=14)
+            plt.ylabel("Total Penjualan (Rp)", fontsize=14)
+            plt.xticks(rotation=45, ha="right", fontsize=12)
+    
+            # Display the plot in Streamlit
+            st.pyplot(plt)
+        else:
+            st.write("Data penjualan kosong atau kolom 'Total Penjualan' tidak ditemukan.")
     
     # Menambahkan tabel pengeluaran dan fitur edit
     st.subheader("Pengeluaran")
