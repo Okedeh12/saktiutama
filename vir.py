@@ -646,27 +646,29 @@ def halaman_owner():
         else:
             st.error("Kolom 'Total Harga' tidak ditemukan dalam data penjualan.")
         
-        # Grafik total penjualan per barang
-        if not st.session_state.penjualan.empty and "Nama Barang" in st.session_state.penjualan.columns:
-            st.subheader("Grafik Penjualan Per Barang")
+        # Grafik total penjualan per barang dan merk
+        if not st.session_state.penjualan.empty and "Nama Barang" in st.session_state.penjualan.columns and "Merk" in st.session_state.penjualan.columns:
+            st.subheader("Grafik Penjualan Per Barang dan Merk")
     
-            # Group by "Nama Barang" and sum the "Total Harga"
-            sales_per_item = st.session_state.penjualan.groupby("Nama Barang")["Total Harga"].sum()
+            # Group by "Nama Barang" and "Merk" and sum the "Total Harga"
+            sales_per_item_and_brand = st.session_state.penjualan.groupby(["Nama Barang", "Merk"])["Total Harga"].sum().reset_index()
     
             # Create a bar plot
-            plt.figure(figsize=(12, 8))
-            sales_per_item.sort_values(ascending=False).plot(kind="bar", color="skyblue")
+            plt.figure(figsize=(14, 8))
+            for key, grp in sales_per_item_and_brand.groupby(['Nama Barang']):
+                plt.bar(grp['Merk'] + ' (' + grp['Nama Barang'] + ')', grp['Total Harga'], label=key)
     
             # Customize the plot
-            plt.title("Total Penjualan per Barang", fontsize=16)
-            plt.xlabel("Nama Barang", fontsize=14)
+            plt.title("Total Penjualan per Barang dan Merk", fontsize=16)
+            plt.xlabel("Barang dan Merk", fontsize=14)
             plt.ylabel("Total Penjualan (Rp)", fontsize=14)
             plt.xticks(rotation=45, ha="right", fontsize=12)
+            plt.legend(title='Nama Barang', bbox_to_anchor=(1.05, 1), loc='upper left')
     
             # Display the plot in Streamlit
             st.pyplot(plt)
         else:
-            st.write("Data penjualan kosong atau kolom 'Nama Barang' tidak ditemukan.")
+            st.write("Data penjualan kosong atau kolom 'Nama Barang' atau 'Merk' tidak ditemukan.")
     
     # Perhitungan tagihan supplier bulanan
     current_month = datetime.now().strftime("%Y-%m")
