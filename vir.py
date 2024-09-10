@@ -553,6 +553,7 @@ def halaman_owner():
         ])
 
 
+
     # Add "Tambah Baru" option to selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Option to add new item
@@ -570,14 +571,24 @@ def halaman_owner():
         }
     else:
         barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_row]
-        default_values = {
-            "Nama Barang": barang_dipilih["Nama Barang"].values[0],
-            "Merk": barang_dipilih["Merk"].values[0],
-            "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
-            "Harga": barang_dipilih["Harga"].values[0] if pd.notna(barang_dipilih["Harga"].values[0]) else 0,
-            "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
-            "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0
-        }
+        if not barang_dipilih.empty:
+            default_values = {
+                "Nama Barang": barang_dipilih["Nama Barang"].values[0],
+                "Merk": barang_dipilih["Merk"].values[0],
+                "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
+                "Harga": barang_dipilih["Harga"].values[0] if pd.notna(barang_dipilih["Harga"].values[0]) else 0,
+                "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
+                "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0
+            }
+        else:
+            default_values = {
+                "Nama Barang": "",
+                "Merk": "",
+                "Ukuran/Kemasan": "",
+                "Harga": 0,
+                "Stok": 0,
+                "Persentase Keuntungan": 0
+            }
 
     with st.form("edit_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
@@ -624,16 +635,16 @@ def halaman_owner():
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
         if st.button("Hapus Barang"):
-            # Confirm deletion
             if st.confirmation_dialog(f"Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
                 st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
                 st.success(f"Barang ID {selected_row} berhasil dihapus!")
                 save_data()  # Save data after deleting item
             else:
                 st.warning("Penghapusan dibatalkan.")
-        def save_data():
-            # Implement your data saving logic here, e.g., saving to a CSV file or database
-            pass
+
+def save_data():
+    # Implement your data saving logic here, e.g., saving to a CSV file or database
+    pass
 
     # Merge sales data with stock data to get 'Harga Jual'
     if 'Harga Jual' in st.session_state.stok_barang.columns:
