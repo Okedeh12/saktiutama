@@ -631,9 +631,9 @@ def halaman_owner():
                 save_data()  # Save data after deleting item
             else:
                 st.warning("Penghapusan dibatalkan.")
-                def save_data():
-                # Implement your data saving logic here, e.g., saving to a CSV file or database
-                pass
+        def save_data():
+            # Implement your data saving logic here, e.g., saving to a CSV file or database
+            pass
 
     # Merge sales data with stock data to get 'Harga Jual'
     if 'Harga Jual' in st.session_state.stok_barang.columns:
