@@ -632,12 +632,41 @@ def halaman_owner():
     else:
         st.write("Kolom 'Harga Jual' tidak ditemukan di data stok.")
     
-    # Analisa keuangan dengan grafik pemasaran
-    st.subheader("Analisa Keuangan")
+    # Check if 'penjualan' DataFrame exists and has required columns
+    if 'penjualan' not in st.session_state:
+        st.error("Data penjualan tidak ditemukan.")
+    else:
+        # Analisa keuangan dengan grafik pemasaran
+        st.subheader("Analisa Keuangan")
     
-    # Perhitungan total penjualan
-    total_penjualan = st.session_state.penjualan["Total Harga"].sum()
-    st.write(f"Total Penjualan: Rp {total_penjualan}")
+        # Perhitungan total penjualan
+        if "Total Harga" in st.session_state.penjualan.columns:
+            total_penjualan = st.session_state.penjualan["Total Harga"].sum()
+            st.write(f"Total Penjualan: Rp {total_penjualan:,.0f}")
+        else:
+            st.error("Kolom 'Total Harga' tidak ditemukan dalam data penjualan.")
+        
+        # Grafik total penjualan per barang
+        if not st.session_state.penjualan.empty and "Nama Barang" in st.session_state.penjualan.columns:
+            st.subheader("Grafik Penjualan Per Barang")
+    
+            # Group by "Nama Barang" and sum the "Total Harga"
+            sales_per_item = st.session_state.penjualan.groupby("Nama Barang")["Total Harga"].sum()
+    
+            # Create a bar plot
+            plt.figure(figsize=(12, 8))
+            sales_per_item.sort_values(ascending=False).plot(kind="bar", color="skyblue")
+    
+            # Customize the plot
+            plt.title("Total Penjualan per Barang", fontsize=16)
+            plt.xlabel("Nama Barang", fontsize=14)
+            plt.ylabel("Total Penjualan (Rp)", fontsize=14)
+            plt.xticks(rotation=45, ha="right", fontsize=12)
+    
+            # Display the plot in Streamlit
+            st.pyplot(plt)
+        else:
+            st.write("Data penjualan kosong atau kolom 'Nama Barang' tidak ditemukan.")
     
     # Perhitungan tagihan supplier bulanan
     current_month = datetime.now().strftime("%Y-%m")
