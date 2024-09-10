@@ -571,7 +571,7 @@ def halaman_owner():
             "Harga": 0,
             "Stok": 0,
             "Persentase Keuntungan": 0,
-            "Kode Warna": ""
+            "Kode Warna": "#000000"
         }
     else:
         barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_row]
@@ -583,7 +583,7 @@ def halaman_owner():
                 "Harga": barang_dipilih["Harga"].values[0] if pd.notna(barang_dipilih["Harga"].values[0]) else 0,
                 "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
                 "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0,
-                "Kode Warna": barang_dipilih["Kode Warna"].values[0] if pd.notna(barang_dipilih["Kode Warna"].values[0]) else ""
+                "Kode Warna": barang_dipilih["Kode Warna"].values[0] if pd.notna(barang_dipilih["Kode Warna"].values[0]) else "#000000"
             }
         else:
             default_values = {
@@ -593,9 +593,10 @@ def halaman_owner():
                 "Harga": 0,
                 "Stok": 0,
                 "Persentase Keuntungan": 0,
-                "Kode Warna": ""
+                "Kode Warna": "#000000"
             }
     
+    # Create form for editing or adding a new item
     with st.form("edit_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
@@ -606,7 +607,7 @@ def halaman_owner():
         persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
         
         # Kode warna untuk setiap barang
-        kode_warna = st.color_picker("Pilih Kode Warna", default_values["Kode Warna"])
+        kode_warna = st.color_picker("Pilih Kode Warna", value=default_values["Kode Warna"])
         
         submit = st.form_submit_button("Simpan Barang")
     
