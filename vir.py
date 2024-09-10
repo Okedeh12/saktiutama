@@ -43,8 +43,9 @@ st.markdown(
         background-color: #45a049; /* Warna tombol saat di-hover */
     }
     </style>
-    """, 
-    unsafe_allow_html=True
+    """,
+    unsafe_allow_html=True  # Pastikan argumen ini ada dan ditutup
+)
 
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
