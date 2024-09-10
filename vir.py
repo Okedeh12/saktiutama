@@ -50,6 +50,10 @@ st.markdown(
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
+# Inisialisasi session state untuk menyimpan status halaman yang dipilih
+if 'page' not in st.session_state:
+    st.session_state['page'] = 'Stock Barang'  # Set halaman default
+
 
 # Load data from CSV files
 def load_data():
@@ -80,12 +84,6 @@ def save_data():
     st.session_state.penjualan.to_csv(PENJUALAN_FILE, index=False)
     st.session_state.supplier.to_csv(SUPPLIER_FILE, index=False)
 
-# Initialize data
-if 'stok_barang' not in st.session_state:
-    load_data()
-
-# Main content area
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
