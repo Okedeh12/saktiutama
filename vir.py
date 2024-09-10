@@ -616,9 +616,6 @@ def halaman_owner():
             st.success(f"Barang ID {selected_row} berhasil dihapus!")
             save_data()  # Save data after deleting item
 
-    # Sales Report
-    st.subheader("Laporan Penjualan")
-
     # Merge sales data with stock data to get 'Harga Jual'
     if 'Harga Jual' in st.session_state.stok_barang.columns:
         merged_df = st.session_state.penjualan.merge(
