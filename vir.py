@@ -622,12 +622,10 @@ def halaman_owner():
 
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
-        delete_button = st.button(f"Hapus Barang ID {selected_row}")
+        if 'delete_confirmation' not in st.session_state:
+            st.session_state.delete_confirmation = None
 
-        if delete_button:
-            if 'delete_confirmation' not in st.session_state:
-                st.session_state.delete_confirmation = None
-
+        if st.button(f"Hapus Barang ID {selected_row}"):
             if st.session_state.delete_confirmation is None:
                 st.session_state.delete_confirmation = selected_row
                 st.warning(f"Apakah Anda yakin ingin menghapus Barang ID {selected_row}? Klik 'Hapus' lagi untuk mengonfirmasi.")
@@ -643,7 +641,7 @@ def halaman_owner():
 
     def save_data():
         # Implement your data saving logic here, e.g., saving to a CSV file or database
-        pass
+        st.write("Data berhasil disimpan!")  # Placeholder for saving logic
         
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
