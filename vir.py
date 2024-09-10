@@ -623,7 +623,7 @@ def halaman_owner():
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
         if st.button("Hapus Barang"):
-            if st.confirm(f"Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
+            if st.button(f"Confirm Hapus Barang ID {selected_row}"):
                 st.session_state.stok_barang = st.session_state.stok_barang[
                     st.session_state.stok_barang["ID"] != selected_row
                 ]
