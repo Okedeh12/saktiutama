@@ -867,29 +867,28 @@ def halaman_owner():
         st.subheader("Histori Analisa Pendapatan")
         st.dataframe(st.session_state.historis_analisa_pendapatan)
     
-        
-        # Tombol untuk mendownload histori analisis keuangan
-        if st.button("Download Histori Analisis Keuangan (CSV)"):
-            csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
-            st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
     
-    # Grafik keuntungan penjualan per barang
-    if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
-        st.subheader("Grafik Keuntungan Per Barang")
-        
-        keuntungan_per_barang = st.session_state.penjualan.groupby("Nama Barang")["Keuntungan"].sum()
-        
+    # Grafik total penjualan per barang (Nama Barang + Merk)
+    if not st.session_state.penjualan.empty:
+        st.subheader("Grafik Penjualan Per Barang")
+    
+        # Group by Nama Barang and Merk, then sum the total penjualan (sales)
+        sales_per_item = st.session_state.penjualan.groupby(["Nama Barang", "Merk"])["Total Penjualan"].sum()
+    
+        # Create a bar plot
         plt.figure(figsize=(12, 8))
-        keuntungan_per_barang.sort_values(ascending=False).plot(kind="bar", color="skyblue")
-        
-        plt.title("Keuntungan per Barang", fontsize=16)
-        plt.xlabel("Nama Barang", fontsize=14)
-        plt.ylabel("Total Keuntungan (Rp)", fontsize=14)
+        sales_per_item.sort_values(ascending=False).plot(kind="bar", color="skyblue")
+    
+        # Customize the plot
+        plt.title("Total Penjualan per Barang dan Merk", fontsize=16)
+        plt.xlabel("Nama Barang dan Merk", fontsize=14)
+        plt.ylabel("Total Penjualan (Rp)", fontsize=14)
         plt.xticks(rotation=45, ha="right", fontsize=12)
-        
+    
+        # Display the plot in Streamlit
         st.pyplot(plt)
     else:
-        st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
+        st.write("Data penjualan kosong atau kolom 'Total Penjualan' tidak ditemukan.")
     
     # Menambahkan tabel pengeluaran dan fitur edit
     st.subheader("Pengeluaran")
