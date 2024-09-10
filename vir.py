@@ -47,18 +47,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Menambahkan elemen sidebar
+# Inisialisasi session state untuk menyimpan status halaman yang dipilih
+if 'page' not in st.session_state:
+    st.session_state['page'] = 'Stock Barang'  # Default page
+
+# Fungsi untuk mengubah halaman
+def change_page(page_name):
+    st.session_state['page'] = page_name
+
+# Sidebar dengan tombol
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
     
-    # Tombol custom di sidebar dengan efek hover
-    st.markdown('<a href="#" class="sidebar-btn">Stock Barang</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn">Penjualan</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn">Supplier</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn">Owner</a>', unsafe_allow_html=True)
-
-# Dummy content to show the selected page (Simulasi konten halaman utama)
-st.write("Pilih menu di sidebar untuk menampilkan konten.")
 
 
 
@@ -893,17 +893,29 @@ def halaman_owner():
             )
 
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Sidebar dengan tombol
+with st.sidebar:
+    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
+    
+    # Tombol dengan link dan efek hover
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Stock Barang\')">Stock Barang</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Penjualan\')">Penjualan</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Supplier\')">Supplier</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Owner\')">Owner</a>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Konten halaman berdasarkan halaman yang dipilih
+if st.session_state['page'] == 'Stock Barang':
+    st.title("Halaman Stock Barang")
+    st.write("Ini adalah halaman Stock Barang.")
+elif st.session_state['page'] == 'Penjualan':
+    st.title("Halaman Penjualan")
+    st.write("Ini adalah halaman Penjualan.")
+elif st.session_state['page'] == 'Supplier':
+    st.title("Halaman Supplier")
+    st.write("Ini adalah halaman Supplier.")
+elif st.session_state['page'] == 'Owner':
+    st.title("Halaman Owner")
+    st.write("Ini adalah halaman Owner.")
 
 # Save data when the app is closed or the menu is changed
 save_data()
