@@ -893,14 +893,6 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-def save_data():
-    # Simpan session state ke file CSV
-    st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
-    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
-    st.session_state.pengeluaran.to_csv("pengeluaran.csv", index=False)
-    st.session_state.piutang_konsumen.to_csv("piutang_konsumen.csv", index=False)
-    st.session_state.historis_analisis_keuangan.to_csv("historis_analisis_keuangan.csv", index=False)
-    st.session_state.historis_keuntungan_bersih.to_csv("historis_keuntungan_bersih.csv", index=False)
     
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
@@ -913,6 +905,14 @@ elif menu == "Owner":
     halaman_owner()
 
 st.markdown('</div>', unsafe_allow_html=True)
+def save_data():
+    # Simpan session state ke file CSV
+    st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
+    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
+    st.session_state.pengeluaran.to_csv("pengeluaran.csv", index=False)
+    st.session_state.piutang_konsumen.to_csv("piutang_konsumen.csv", index=False)
+    st.session_state.historis_analisis_keuangan.to_csv("historis_analisis_keuangan.csv", index=False)
+    st.session_state.historis_keuntungan_bersih.to_csv("historis_keuntungan_bersih.csv", index=False)
 
 # Save data when the app is closed or the menu is changed
 save_data()
