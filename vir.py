@@ -12,41 +12,54 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-
-# CSS custom untuk sidebar dan tombol dengan efek hover
-st.markdown(
-    """
+# CSS styles for a professional look
+st.markdown("""
     <style>
-    /* Mengatur tampilan sidebar */
-    [data-testid="stSidebar"] {
-        background-color: #f4f4f4;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    /* Styling tombol di sidebar */
-    .sidebar-btn {
-        background-color: #4CAF50; /* Warna dasar tombol */
-        color: white;
-        padding: 10px 24px;
+    .header {
         text-align: center;
-        text-decoration: none;
-        display: block;
-        font-size: 16px;
+        padding: 20px;
+        background-color: #f0f4f8;
+        border-bottom: 1px solid #ddd;
+    }
+    .header h1 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    .sidebar .sidebar-content {
+        background-color: #f7f9fc;
+        padding-top: 20px;
+    }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .sidebar .sidebar-content .radio {
+        margin-top: 10px;
+    }
+    .main-content {
+        padding: 20px;
+        background-color: #ffffff;
         border-radius: 8px;
-        margin-bottom: 10px;
-        transition: background-color 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
         cursor: pointer;
     }
-
-    /* Efek hover untuk tombol */
-    .sidebar-btn:hover {
-        background-color: #45a049; /* Warna tombol saat di-hover */
+    .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    .stDataFrame {
+        overflow-x: auto;
     }
     </style>
-    """,
-    unsafe_allow_html=True  # Pastikan argumen ini ditutup
-)
+""", unsafe_allow_html=True)
+
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
@@ -880,16 +893,7 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-# Sidebar dengan tombol
-with st.sidebar:
-    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
-    
-    # Tombol dengan link dan efek hover
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Stock Barang\')">Stock Barang</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Penjualan\')">Penjualan</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Supplier\')">Supplier</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Owner\')">Owner</a>', unsafe_allow_html=True)
-    
+
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
