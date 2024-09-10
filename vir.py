@@ -54,7 +54,10 @@ st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_
 if 'page' not in st.session_state:
     st.session_state['page'] = 'Stock Barang'  # Set halaman default
 
-
+# Fungsi untuk mengubah halaman
+def change_page(page_name):
+    st.session_state['page'] = page_name
+    
 # Load data from CSV files
 def load_data():
     if os.path.exists(STOK_BARANG_FILE):
