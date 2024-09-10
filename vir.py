@@ -79,6 +79,10 @@ def save_to_excel():
         st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name="Historis Analisis Keuangan", index=False)
         st.session_state.historis_keuntungan_bersih.to_excel(writer, sheet_name="Historis Keuntungan Bersih", index=False)
 
+# Function to save data to file (implement as needed)
+def save_data():
+    st.session_state.stok_barang.to_csv('stok_barang.csv', index=False)  # Example file path
+
 # Function for Stock Barang page
 def halaman_stock_barang():
     st.markdown('<h1 style="text-align: center;">Stock Barang</h1>', unsafe_allow_html=True)
@@ -149,14 +153,12 @@ def halaman_stock_barang():
 
             if not existing_item.empty:
                 # Update existing item
+                existing_id = existing_item["ID"].values[0]
                 st.session_state.stok_barang.loc[
-                    (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
-                    (st.session_state.stok_barang["Merk"] == merk) &
-                    (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
-                    (st.session_state.stok_barang["Kode Warna"] == kode_warna),
-                    ["Harga", "Stok", "Harga Jual"]
-                ] = [harga, stok, selling_price]
-                st.success("Barang berhasil diperbarui!")
+                    st.session_state.stok_barang["ID"] == existing_id,
+                    ["Stok", "Harga Jual"]
+                ] = [existing_item["Stok"].values[0] + stok, selling_price]
+                st.success("Stok barang berhasil diperbarui!")
             else:
                 # Add new item
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
@@ -183,9 +185,6 @@ def halaman_stock_barang():
     # Hapus kolom "Harga" dari tabel jika ada
     if "Harga" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Harga"])
-    
-    if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
     
     # Pencarian nama barang atau merk
     search_text = st.text_input("Cari Nama Barang atau Merk", key='search_text')
