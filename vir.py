@@ -533,49 +533,64 @@ def halaman_owner():
         return
 
 
-    # Tabel stok barang dengan fitur edit dan hapus
-    st.header("Stock Barang")
-
-    # Tambahkan opsi untuk "Tambah Baru" di selectbox
-    barang_ids = st.session_state.stok_barang["ID"].tolist()
-    barang_ids.insert(0, "Tambah Baru")  # Opsi untuk menambah barang baru
-    selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
-
-    if selected_row == "Tambah Baru":
-        barang_dipilih = None
+    # Form input barang baru dan edit barang
+    st.markdown('<h2 style="text-align: center;">Tambah/Edit Barang</h2>', unsafe_allow_html=True)
+    
+    # Pilih barang yang akan diedit atau pilih "Tambah Baru"
+    selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"], key='action_select')
+    
+    if selected_action == "Edit Barang":
+        # Pilih ID Barang untuk Diedit
+        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"], key='id_select')
+    
+        if selected_id != "Tambah Baru":
+            barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
+            default_values = {
+                "Nama Barang": barang_dipilih["Nama Barang"].values[0],
+                "Merk": barang_dipilih["Merk"].values[0],
+                "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
+                "Harga": barang_dipilih["Harga"].values[0],
+                "Stok": barang_dipilih["Stok"].values[0],
+                "Kode Warna": barang_dipilih["Kode Warna"].values[0] if "Kode Warna" in barang_dipilih.columns else ""
+            }
+        else:
+            default_values = {
+                "Nama Barang": "",
+                "Merk": "",
+                "Ukuran/Kemasan": "",
+                "Harga": 0,
+                "Stok": 0,
+                "Kode Warna": ""
+            }
+    
+    else:
+        # Untuk tambah barang baru, set default values kosong
+        selected_id = "Tambah Baru"
         default_values = {
             "Nama Barang": "",
             "Merk": "",
             "Ukuran/Kemasan": "",
             "Harga": 0,
             "Stok": 0,
-            "Persentase Keuntungan": 0
+            "Kode Warna": ""
         }
-    else:
-        barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_row]
-        default_values = {
-            "Nama Barang": barang_dipilih["Nama Barang"].values[0],
-            "Merk": barang_dipilih["Merk"].values[0],
-            "Ukuran/Kemasan": barang_dipilih["Ukuran/Kemasan"].values[0],
-            "Harga": barang_dipilih["Harga"].values[0] if pd.notna(barang_dipilih["Harga"].values[0]) else 0,
-            "Stok": barang_dipilih["Stok"].values[0] if pd.notna(barang_dipilih["Stok"].values[0]) else 0,
-            "Persentase Keuntungan": barang_dipilih["Persentase Keuntungan"].values[0] if pd.notna(barang_dipilih["Persentase Keuntungan"].values[0]) else 0
-        }
-
-    with st.form("edit_barang"):
+    
+    with st.form("input_barang"):
         nama_barang = st.text_input("Nama Barang", value=default_values["Nama Barang"])
         merk = st.text_input("Merk", value=default_values["Merk"])
         ukuran = st.text_input("Ukuran/Kemasan", value=default_values["Ukuran/Kemasan"])
-        
         harga = st.number_input("Harga", min_value=0, value=int(default_values["Harga"]))
         stok = st.number_input("Stok Barang", min_value=0, value=int(default_values["Stok"]))
-        persentase_keuntungan = st.number_input("Persentase Keuntungan (%)", min_value=0, max_value=100, value=int(default_values["Persentase Keuntungan"]))
-        
+        kode_warna = st.text_input("Kode Warna/Base", value=default_values["Kode Warna"], placeholder="Opsional")
+    
+        # Calculate the selling price as 15% more than the base price
+        selling_price = harga * 1.15
+    
         submit = st.form_submit_button("Simpan Barang")
-
+    
         if submit:
-            if barang_dipilih is None:
-                # Tambah barang baru
+            if selected_action == "Tambah Barang":
+                # Add new item
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = pd.DataFrame({
                     "ID": [new_id],
@@ -584,28 +599,52 @@ def halaman_owner():
                     "Ukuran/Kemasan": [ukuran],
                     "Harga": [harga],
                     "Stok": [stok],
-                    "Persentase Keuntungan": [persentase_keuntungan]
+                    "Kode Warna": [kode_warna],
+                    "Harga Jual": [selling_price],
+                    "Waktu Input": [datetime.now()]
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
-                st.success("Barang baru berhasil ditambahkan!")
+                st.success("Barang berhasil ditambahkan!")
             else:
-                # Update barang yang ada
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_row, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan"]] = \
-                    [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan]
-                st.success(f"Barang ID {selected_row} berhasil diupdate!")
+                # Update existing item
+                st.session_state.stok_barang.loc[
+                    st.session_state.stok_barang["ID"] == selected_id,
+                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Kode Warna", "Harga Jual"]
+                ] = [nama_barang, merk, ukuran, harga, stok, kode_warna, selling_price]
+                st.success(f"Barang ID {selected_id} berhasil diupdate!")
             
-            save_data()  # Simpan data setelah menambah atau mengedit barang
-
+            save_data()  # Save data after adding or updating item
+    
     # Tabel stok barang
     st.subheader("Daftar Stok Barang")
-    st.dataframe(st.session_state.stok_barang)
-
+    df_stok_barang = st.session_state.stok_barang.copy()
+    
+    # Hapus kolom "Harga" dan "Persentase Keuntungan" dari tabel jika ada
+    if "Harga" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Harga"])
+    if "Persentase Keuntungan" in df_stok_barang.columns:
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
+    
+    # Pencarian nama barang atau merk
+    search_text = st.text_input("Cari Nama Barang atau Merk", key='search_text')
+    if search_text:
+        df_stok_barang = df_stok_barang[
+            (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
+            (df_stok_barang["Merk"].str.contains(search_text, case=False, na=False))
+        ]
+    
+    st.dataframe(df_stok_barang)
+    
     # Tombol untuk hapus barang (jika ID bukan 'Tambah Baru')
-    if selected_row != "Tambah Baru" and st.button("Hapus Barang"):
-        st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
-        st.success(f"Barang ID {selected_row} berhasil dihapus!")
-        save_data()  # Simpan data setelah menghapus barang
+    if selected_id != "Tambah Baru":
+        if st.button("Hapus Barang"):
+            st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_id]
+            st.success(f"Barang ID {selected_id} berhasil dihapus!")
+            save_data()  # Save data after deleting item
+    
+    def save_data():
+        # Implement your data saving logic here, e.g., saving to a CSV file or database
+        st.write("Data berhasil disimpan!")  # Placeholder for saving logic
         
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
