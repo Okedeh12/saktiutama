@@ -12,53 +12,58 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS custom untuk sidebar dan tombol dengan efek hover
-st.markdown(
-    """
+# CSS styles for a professional look
+st.markdown("""
     <style>
-    /* Mengatur tampilan sidebar */
-    [data-testid="stSidebar"] {
-        background-color: #f4f4f4;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    /* Styling tombol di sidebar */
-    .sidebar-btn {
-        background-color: #4CAF50; /* Warna dasar tombol */
-        color: white;
-        padding: 10px 24px;
+    .header {
         text-align: center;
-        text-decoration: none;
-        display: block;
-        font-size: 16px;
+        padding: 20px;
+        background-color: #f0f4f8;
+        border-bottom: 1px solid #ddd;
+    }
+    .header h1 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    .sidebar .sidebar-content {
+        background-color: #f7f9fc;
+        padding-top: 20px;
+    }
+    .sidebar .sidebar-content h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .sidebar .sidebar-content .radio {
+        margin-top: 10px;
+    }
+    .main-content {
+        padding: 20px;
+        background-color: #ffffff;
         border-radius: 8px;
-        margin-bottom: 10px;
-        transition: background-color 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        border: none;
         cursor: pointer;
     }
-
-    /* Efek hover untuk tombol */
-    .sidebar-btn:hover {
-        background-color: #45a049; /* Warna tombol saat di-hover */
+    .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    .stDataFrame {
+        overflow-x: auto;
     }
     </style>
-    """, 
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
-# Inisialisasi session state untuk menyimpan status halaman yang dipilih
-if 'page' not in st.session_state:
-    st.session_state['page'] = 'Stock Barang'  # Default page
+# Display the header
+st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
-# Fungsi untuk mengubah halaman
-def change_page(page_name):
-    st.session_state['page'] = page_name
 
-# Sidebar dengan tombol
-with st.sidebar:
-    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
-    
 # Load data from CSV files
 def load_data():
     if os.path.exists(STOK_BARANG_FILE):
@@ -92,9 +97,11 @@ def save_data():
 if 'stok_barang' not in st.session_state:
     load_data()
 
-# Sidebar dengan tombol
-with st.sidebar:
-    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
+# Sidebar menu
+menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
+
+# Main content area
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
@@ -887,30 +894,17 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
-# Sidebar dengan tombol
-with st.sidebar:
-    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
-    
-    # Tombol dengan link dan efek hover
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Stock Barang\')">Stock Barang</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Penjualan\')">Penjualan</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Supplier\')">Supplier</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Owner\')">Owner</a>', unsafe_allow_html=True)
-
-# Konten halaman berdasarkan halaman yang dipilih
-if st.session_state['page'] == 'Stock Barang':
-    st.title("Halaman Stock Barang")
-    st.write("Ini adalah halaman Stock Barang.")
-elif st.session_state['page'] == 'Penjualan':
-    st.title("Halaman Penjualan")
-    st.write("Ini adalah halaman Penjualan.")
-elif st.session_state['page'] == 'Supplier':
-    st.title("Halaman Supplier")
-    st.write("Ini adalah halaman Supplier.")
-elif st.session_state['page'] == 'Owner':
-    st.title("Halaman Owner")
-    st.write("Ini adalah halaman Owner.")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
