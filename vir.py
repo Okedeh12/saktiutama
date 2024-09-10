@@ -881,17 +881,33 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
-    halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
-    halaman_supplier()
-elif menu == "Owner":
-    halaman_owner()
+# Sidebar dengan tombol
+with st.sidebar:
+    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
+    
+    # Tombol sidebar yang mengubah halaman
+    if st.button('Stock Barang'):
+        change_page('Stock Barang')
+    if st.button('Penjualan'):
+        change_page('Penjualan')
+    if st.button('Supplier'):
+        change_page('Supplier')
+    if st.button('Owner'):
+        change_page('Owner')
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Konten halaman berdasarkan halaman yang dipilih
+if st.session_state['page'] == 'Stock Barang':
+    st.title("Halaman Stock Barang")
+    st.write("Ini adalah halaman Stock Barang.")
+elif st.session_state['page'] == 'Penjualan':
+    st.title("Halaman Penjualan")
+    st.write("Ini adalah halaman Penjualan.")
+elif st.session_state['page'] == 'Supplier':
+    st.title("Halaman Supplier")
+    st.write("Ini adalah halaman Supplier.")
+elif st.session_state['page'] == 'Owner':
+    st.title("Halaman Owner")
+    st.write("Ini adalah halaman Owner.")
 
 # Save data when the app is closed or the menu is changed
 save_data()
