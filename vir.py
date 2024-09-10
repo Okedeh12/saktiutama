@@ -47,10 +47,6 @@ st.markdown(
     unsafe_allow_html=True  # Pastikan argumen ini ditutup
 )
 
-# Inisialisasi session state untuk menyimpan status halaman yang dipilih
-if 'page' not in st.session_state:
-    st.session_state['page'] = 'Stock Barang'  # Set halaman default
-
 # Fungsi untuk mengubah halaman
 def change_page(page_name):
     st.session_state['page'] = page_name
