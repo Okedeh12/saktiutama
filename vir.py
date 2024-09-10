@@ -47,9 +47,6 @@ st.markdown(
     unsafe_allow_html=True  # Pastikan argumen ini ditutup
 )
 
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
 # Inisialisasi session state untuk menyimpan status halaman yang dipilih
 if 'page' not in st.session_state:
     st.session_state['page'] = 'Stock Barang'  # Set halaman default
@@ -57,6 +54,8 @@ if 'page' not in st.session_state:
 # Fungsi untuk mengubah halaman
 def change_page(page_name):
     st.session_state['page'] = page_name
+    st.experimental_rerun()  # Force rerun to ensure page content refreshes
+
     
 # Load data from CSV files
 def load_data():
