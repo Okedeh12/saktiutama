@@ -798,34 +798,52 @@ def halaman_owner():
     else:
         st.write("Tidak ada data piutang konsumen.")
 
+    # Initialize session state variables if they don't exist
+    if 'historis_analisis_keuangan' not in st.session_state:
+        st.session_state.historis_analisis_keuangan = pd.DataFrame(columns=[
+            "Waktu", "Keuntungan Bersih", "Bulan"
+        ])
+    
+    if 'penjualan' not in st.session_state:
+        st.session_state.penjualan = pd.DataFrame(columns=[
+            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
+            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
+            "Keuntungan", "Waktu"
+        ])
+    
+    if 'pengeluaran' not in st.session_state:
+        st.session_state.pengeluaran = pd.DataFrame(columns=[
+            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
+        ])
+    
+    if 'historis_keuntungan_bersih' not in st.session_state:
+        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=[
+            "Waktu", "Keuntungan Bersih", "Bulan"
+        ])
+    
     # Menampilkan histori analisis keuangan
     st.subheader("Histori Analisis Keuangan")
     st.dataframe(st.session_state.historis_analisis_keuangan)
-
+    
     # Tombol untuk mendownload histori analisis keuangan
     if st.button("Download Histori Analisis Keuangan (CSV)"):
         csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
         st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
-
     
     # Grafik keuntungan penjualan per barang
     if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
         st.subheader("Grafik Keuntungan Per Barang")
-
-        # Grouping the data by "Nama Barang" and summing up the "Keuntungan"
+        
         keuntungan_per_barang = st.session_state.penjualan.groupby("Nama Barang")["Keuntungan"].sum()
-
-        # Plotting the bar chart
+        
         plt.figure(figsize=(12, 8))
         keuntungan_per_barang.sort_values(ascending=False).plot(kind="bar", color="skyblue")
-
-        # Adding titles and labels
+        
         plt.title("Keuntungan per Barang", fontsize=16)
         plt.xlabel("Nama Barang", fontsize=14)
         plt.ylabel("Total Keuntungan (Rp)", fontsize=14)
         plt.xticks(rotation=45, ha="right", fontsize=12)
-
-        # Display the plot in Streamlit
+        
         st.pyplot(plt)
     else:
         st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
@@ -833,27 +851,9 @@ def halaman_owner():
     # Menambahkan tabel pengeluaran dan fitur edit
     st.subheader("Pengeluaran")
     
-    # Simulasi data untuk penjualan dan pengeluaran
-    if 'penjualan' not in st.session_state:
-        st.session_state.penjualan = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang",
-            "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga",
-            "Keuntungan", "Waktu"
-        ])
-
-    if 'pengeluaran' not in st.session_state:
-        st.session_state.pengeluaran = pd.DataFrame(columns=[
-            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
-        ])
-
-    if 'historis_keuntungan_bersih' not in st.session_state:
-        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=[
-            "Waktu", "Keuntungan Bersih"
-        ])
-
     # Menampilkan tabel pengeluaran
     st.dataframe(st.session_state.pengeluaran)
-
+    
     # Form untuk menambah pengeluaran
     with st.form("tambah_pengeluaran"):
         st.write("Tambah Pengeluaran Baru")
@@ -872,69 +872,90 @@ def halaman_owner():
             st.session_state.pengeluaran = pd.concat([st.session_state.pengeluaran, new_data], ignore_index=True)
             st.success("Pengeluaran berhasil ditambahkan!")
             save_data()  # Simpan data setelah penambahan pengeluaran
-
+    
     # Tabel historis pengeluaran
     st.subheader("Historis Pengeluaran")
     st.dataframe(st.session_state.pengeluaran)
-
+    
     # Analisa Keuangan - Total Keuntungan Bersih
     st.subheader("Analisa Keuangan - Total Keuntungan Bersih")
-
-    # Perhitungan total pengeluaran
-    total_pengeluaran = st.session_state.pengeluaran["Jumlah Pengeluaran"].sum()
-    st.write(f"Total Pengeluaran: Rp {total_pengeluaran}")
-
-    # Perhitungan total keuntungan dari penjualan
-    total_keuntungan = st.session_state.penjualan["Keuntungan"].sum()
-    st.write(f"Total Keuntungan Penjualan: Rp {total_keuntungan}")
-
-    # Tabel analisis keuntungan per barang
-    st.subheader("Analisis Keuntungan Per Barang")
-    if not st.session_state.penjualan.empty:
-        analisis_keuntungan = st.session_state.penjualan.groupby(
-            ["Nama Barang", "Ukuran/Kemasan", "Merk", "Waktu"]
-        ).agg({
-            "Keuntungan": "sum",
-            "Jumlah": "sum"
-        }).reset_index()
-        st.dataframe(analisis_keuntungan)
-
-    # Perhitungan total keuntungan bersih
-    total_keuntungan_bersih = total_keuntungan - total_pengeluaran
-    st.write(f"Total Keuntungan Bersih: Rp {total_keuntungan_bersih}")
-
-    # Ensure 'historis_keuntungan_bersih' DataFrame has the required columns
-    if 'historis_keuntungan_bersih' not in st.session_state:
-        st.session_state.historis_keuntungan_bersih = pd.DataFrame(columns=["Waktu", "Keuntungan Bersih", "Bulan"])
-
-    # Update data historis keuntungan bersih
-    current_month = datetime.now().strftime("%Y-%m")
-
-    # Check if 'Bulan' column exists before filtering
-    if 'Bulan' in st.session_state.historis_keuntungan_bersih.columns:
-        st.session_state.historis_keuntungan_bersih = st.session_state.historis_keuntungan_bersih[
-            st.session_state.historis_keuntungan_bersih["Bulan"] != current_month
-        ]
-
-    # Add the new data for the current month
-    new_historis = pd.DataFrame({
-        "Waktu": [datetime.now()],
-        "Keuntungan Bersih": [total_keuntungan_bersih],
-        "Bulan": [current_month]
-    })
-    st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
-
-    # Tabel historis keuntungan bersih
-    st.subheader("Historis Keuntungan Bersih")
-    st.dataframe(st.session_state.historis_keuntungan_bersih)
-
+    
+    # Ensure that the required columns are present
+    if 'Harga Jual' in st.session_state.stok_barang.columns and 'Harga' in st.session_state.stok_barang.columns:
+        merged_df = st.session_state.penjualan.merge(
+            st.session_state.stok_barang[['Nama Barang', 'Harga', 'Harga Jual']], 
+            on='Nama Barang', 
+            how='left'
+        )
+        # Calculate total selling price and total cost
+        total_selling_price = (merged_df["Jumlah"] * merged_df["Harga Jual"]).sum()
+        total_cost = (merged_df["Jumlah"] * merged_df["Harga"]).sum()
+        total_keuntungan = total_selling_price - total_cost
+        # Calculate total expenses
+        total_pengeluaran = st.session_state.pengeluaran["Jumlah Pengeluaran"].sum()
+    
+        st.write(f"Total Keuntungan (Harga Jual): Rp {total_keuntungan}")
+    
+        # Debug prints
+        st.write(f"Debug - Total Keuntungan (Harga Jual): Rp {total_keuntungan}")
+    
+        # Update data historis keuntungan bersih
+        current_month = datetime.now().strftime("%Y-%m")
+    
+        # Check if 'Bulan' column exists before filtering
+        if 'Bulan' in st.session_state.historis_keuntungan_bersih.columns:
+            st.session_state.historis_keuntungan_bersih = st.session_state.historis_keuntungan_bersih[
+                st.session_state.historis_keuntungan_bersih["Bulan"] != current_month
+            ]
+    
+        # Add the new data for the current month
+        new_historis = pd.DataFrame({
+            "Waktu": [datetime.now()],
+            "Keuntungan Bersih": [total_keuntungan - total_pengeluaran],
+            "Bulan": [current_month]
+        })
+        st.session_state.historis_keuntungan_bersih = pd.concat([st.session_state.historis_keuntungan_bersih, new_historis], ignore_index=True)
+    
+        # Tabel historis keuntungan bersih
+        st.subheader("Historis Keuntungan Bersih")
+        st.dataframe(st.session_state.historis_keuntungan_bersih)
+    else:
+        st.write("Kolom 'Harga Jual' atau 'Harga' tidak ditemukan di data stok.")
+    
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
-    data_ringkasan = pd.DataFrame({
-        "Keterangan": ["Total Penjualan", "Total Pengeluaran", "Total Keuntungan Bersih"],
-        "Jumlah (Rp)": [total_keuntungan, total_pengeluaran, total_keuntungan_bersih]
-    })
+    current_date = datetime.now()
+    summary_data = {
+        "Keterangan": ["Total Keuntungan", "Total Pengeluaran", "Total Keuntungan Bersih"],
+        "Jumlah (Rp)": [
+            total_keuntungan, 
+            total_pengeluaran, 
+            total_keuntungan - total_pengeluaran
+        ],
+        "Waktu": [current_date.strftime("%d-%m-%Y %H:%M:%S")] * 3,
+        "Bulan": [current_date.strftime("%Y-%m")] * 3
+    }
+    data_ringkasan = pd.DataFrame(summary_data)
     st.table(data_ringkasan)
+    
+    # Sales Report
+    st.subheader("Laporan Penjualan")
+    
+    # Merge sales data with stock data to get 'Harga Jual'
+    if 'Harga Jual' in st.session_state.stok_barang.columns:
+        merged_df = st.session_state.penjualan.merge(
+            st.session_state.stok_barang[['Nama Barang', 'Harga', 'Harga Jual']], 
+            on='Nama Barang', 
+            how='left'
+        )
+        # Calculate 'Total Harga' and 'Keuntungan'
+        merged_df["Total Harga"] = merged_df["Jumlah"] * merged_df["Harga Jual"]
+        # Calculate profit (assuming profit calculation is based on 'Harga' from stock)
+        merged_df["Keuntungan"] = merged_df["Total Harga"] - (merged_df["Jumlah"] * merged_df["Harga"])
+        
+        st.dataframe(merged_df)
+    else:
+        st.write("Kolom 'Harga Jual' tidak ditemukan di data stok.")
 
     # Tombol untuk mendownload semua data ke file Excel
     if st.button("Download Semua Data (Excel)"):
