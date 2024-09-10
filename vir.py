@@ -12,6 +12,7 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
+
 # CSS custom untuk sidebar dan tombol dengan efek hover
 st.markdown(
     """
@@ -46,7 +47,6 @@ st.markdown(
     """,
     unsafe_allow_html=True  # Pastikan argumen ini ditutup
 )
-
 # Display the header
 st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
 
@@ -880,27 +880,16 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-
-
-# Fungsi untuk mengubah halaman
-def change_page(page_name):
-    st.session_state['page'] = page_name
-    st.experimental_rerun()  # Force rerun to ensure page content refreshes
-
 # Sidebar dengan tombol
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
     
-    # Tombol sidebar yang mengubah halaman
-    if st.button('Stock Barang'):
-        change_page('Stock Barang')
-    if st.button('Penjualan'):
-        change_page('Penjualan')
-    if st.button('Supplier'):
-        change_page('Supplier')
-    if st.button('Owner'):
-        change_page('Owner')
-        
+    # Tombol dengan link dan efek hover
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Stock Barang\')">Stock Barang</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Penjualan\')">Penjualan</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Supplier\')">Supplier</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Owner\')">Owner</a>', unsafe_allow_html=True)
+    
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
