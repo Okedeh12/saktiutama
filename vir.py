@@ -877,9 +877,6 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-# Fungsi untuk mengubah halaman
-def change_page(page_name):
-    st.session_state['page'] = page_name
 # Sidebar dengan tombol
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
