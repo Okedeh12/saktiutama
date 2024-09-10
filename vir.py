@@ -900,26 +900,18 @@ with st.sidebar:
         change_page('Supplier')
     if st.button('Owner'):
         change_page('Owner')
+        
+# Menampilkan halaman berdasarkan menu yang dipilih
+if menu == "Stock Barang":
+    halaman_stock_barang()
+elif menu == "Penjualan":
+    halaman_penjualan()
+elif menu == "Supplier":
+    halaman_supplier()
+elif menu == "Owner":
+    halaman_owner()
 
-# Konten halaman berdasarkan halaman yang dipilih
-if st.session_state['page'] == 'Stock Barang':
-    st.title("Halaman Stock Barang")
-    
-    # Membaca data dari berkas CSV
-    if os.path.exists(STOK_BARANG_FILE):
-        df = pd.read_csv(STOK_BARANG_FILE)
-        st.write(df)
-    else:
-        st.error(f"File {STOK_BARANG_FILE} tidak ditemukan.")
-elif st.session_state['page'] == 'Penjualan':
-    st.title("Halaman Penjualan")
-    st.write("Ini adalah halaman Penjualan.")
-elif st.session_state['page'] == 'Supplier':
-    st.title("Halaman Supplier")
-    st.write("Ini adalah halaman Supplier.")
-elif st.session_state['page'] == 'Owner':
-    st.title("Halaman Owner")
-    st.write("Ini adalah halaman Owner.")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
 save_data()
