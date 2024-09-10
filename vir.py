@@ -59,9 +59,6 @@ def change_page(page_name):
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
     
-
-
-
 # Load data from CSV files
 def load_data():
     if os.path.exists(STOK_BARANG_FILE):
@@ -95,11 +92,9 @@ def save_data():
 if 'stok_barang' not in st.session_state:
     load_data()
 
-# Sidebar menu
-menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
-
-# Main content area
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
+# Sidebar dengan tombol
+with st.sidebar:
+    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
 
 # Fungsi untuk halaman Stock Barang
 def halaman_stock_barang():
