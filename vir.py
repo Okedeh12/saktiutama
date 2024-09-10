@@ -139,7 +139,26 @@ def halaman_stock_barang():
         submit = st.form_submit_button("Simpan Barang")
 
         if submit:
-            if selected_id == "Tambah Baru":
+            # Check if an item with the same attributes exists
+            existing_item = st.session_state.stok_barang[
+                (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
+                (st.session_state.stok_barang["Merk"] == merk) &
+                (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                (st.session_state.stok_barang["Kode Warna"] == kode_warna)
+            ]
+
+            if not existing_item.empty:
+                # Update existing item
+                st.session_state.stok_barang.loc[
+                    (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
+                    (st.session_state.stok_barang["Merk"] == merk) &
+                    (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
+                    (st.session_state.stok_barang["Kode Warna"] == kode_warna),
+                    ["Harga", "Stok", "Harga Jual"]
+                ] = [harga, stok, selling_price]
+                st.success("Barang berhasil diperbarui!")
+            else:
+                # Add new item
                 new_id = st.session_state.stok_barang["ID"].max() + 1 if not st.session_state.stok_barang.empty else 1
                 new_data = pd.DataFrame({
                     "ID": [new_id],
@@ -154,12 +173,7 @@ def halaman_stock_barang():
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang berhasil ditambahkan!")
-            else:
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_id, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Kode Warna", "Harga Jual"]] = \
-                    [nama_barang, merk, ukuran, harga, stok, kode_warna, selling_price]
-                st.success(f"Barang ID {selected_id} berhasil diupdate!")
-                
+
             save_data()  # Save data after adding or updating item
 
     # Tabel stok barang
@@ -182,8 +196,7 @@ def halaman_stock_barang():
         ]
     
     st.dataframe(df_stok_barang)
-
-
+    
 # Function for Penjualan page
 def halaman_penjualan():
     st.header("Penjualan")
