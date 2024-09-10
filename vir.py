@@ -12,56 +12,48 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
-st.markdown("""
+# Display the header
+st.markdown(
+    '''
     <style>
     .header {
         text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
         font-family: 'Arial', sans-serif;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
+        color: #333333;
         margin-bottom: 20px;
     }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
+    .header h1 {
+        font-size: 36px;
     }
     </style>
-""", unsafe_allow_html=True)
+    <div class="header">
+        <h1>TOKO SAKTI UTAMA</h1>
+    </div>
+    ''', 
+    unsafe_allow_html=True
+)
 
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+# Fungsi untuk halaman Stock Barang
+def halaman_stock_barang():
+    st.header("Stock Barang")
+    st.subheader("Tambah/Edit Barang")
+    # Form input barang baru dan edit barang di sini
+
+# Fungsi untuk halaman Penjualan
+def halaman_penjualan():
+    st.header("Penjualan")
+    st.subheader("Tambah/Edit Penjualan")
+    # Form tambah/edit penjualan di sini
+
+# Fungsi untuk halaman Supplier
+def halaman_supplier():
+    st.header("Data Supplier")
+    # Form atau data supplier di sini
+
+# Fungsi untuk halaman Owner dengan pengaman password
+def halaman_owner():
+    st.header("Halaman Owner - Analisa Keuangan")
+    # Konten halaman owner di sini
 
 
 # Load data from CSV files
@@ -894,6 +886,12 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
+# Pilihan menu menggunakan selectbox
+menu = st.sidebar.selectbox(
+    "Pilih Halaman", 
+    ("Stock Barang", "Penjualan", "Supplier", "Owner")
+)
+
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
     halaman_stock_barang()
@@ -904,6 +902,7 @@ elif menu == "Supplier":
 elif menu == "Owner":
     halaman_owner()
 
+# Menutup div jika diperlukan
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
