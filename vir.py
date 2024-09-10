@@ -892,11 +892,6 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-# Pilihan menu menggunakan selectbox
-menu = st.sidebar.selectbox(
-    "Pilih Halaman", 
-    ("Stock Barang", "Penjualan", "Supplier", "Owner")
-)
 
 # Menampilkan halaman berdasarkan menu yang dipilih
 if menu == "Stock Barang":
@@ -908,7 +903,6 @@ elif menu == "Supplier":
 elif menu == "Owner":
     halaman_owner()
 
-# Menutup div jika diperlukan
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Save data when the app is closed or the menu is changed
