@@ -534,13 +534,6 @@ def halaman_owner():
         return
 
     # Initialize session state variables if not present
-    if 'penjualan' not in st.session_state:
-        st.session_state.penjualan = pd.DataFrame(columns=[
-            "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", 
-            "Nama Barang", "Ukuran/Kemasan", "Merk", "Kode Warna", 
-            "Jumlah", "Total Harga", "Keuntungan", "Waktu"
-        ])
-
     if 'stok_barang' not in st.session_state:
         st.session_state.stok_barang = pd.DataFrame(columns=[
             "ID", "Nama Barang", "Ukuran/Kemasan", "Merk", "Harga", 
@@ -551,8 +544,6 @@ def halaman_owner():
         st.session_state.pengeluaran = pd.DataFrame(columns=[
             "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
         ])
-
-
 
     # Add "Tambah Baru" option to selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
@@ -635,32 +626,12 @@ def halaman_owner():
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
         if st.button("Hapus Barang"):
-            if st.confirmation_dialog(f"Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
+            if st.confirm("Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
                 st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
                 st.success(f"Barang ID {selected_row} berhasil dihapus!")
                 save_data()  # Save data after deleting item
             else:
                 st.warning("Penghapusan dibatalkan.")
-
-        def save_data():
-            # Implement your data saving logic here, e.g., saving to a CSV file or database
-            pass
-
-    # Merge sales data with stock data to get 'Harga Jual'
-    if 'Harga Jual' in st.session_state.stok_barang.columns:
-        merged_df = st.session_state.penjualan.merge(
-            st.session_state.stok_barang[['Nama Barang', 'Harga', 'Harga Jual']], 
-            on='Nama Barang', 
-            how='left'
-        )
-        # Calculate 'Total Harga' and 'Keuntungan'
-        merged_df["Total Harga"] = merged_df["Jumlah"] * merged_df["Harga Jual"]
-        # Calculate profit (assuming profit calculation is based on 'Harga' from stock)
-        merged_df["Keuntungan"] = merged_df["Total Harga"] - (merged_df["Jumlah"] * merged_df["Harga"])
-        
-        st.dataframe(merged_df)
-    else:
-        st.write("Kolom 'Harga Jual' tidak ditemukan di data stok.")
     
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
