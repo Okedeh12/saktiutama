@@ -881,6 +881,12 @@ def halaman_owner():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
+
+# Fungsi untuk mengubah halaman
+def change_page(page_name):
+    st.session_state['page'] = page_name
+    st.experimental_rerun()  # Force rerun to ensure page content refreshes
+
 # Sidebar dengan tombol
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
@@ -898,7 +904,13 @@ with st.sidebar:
 # Konten halaman berdasarkan halaman yang dipilih
 if st.session_state['page'] == 'Stock Barang':
     st.title("Halaman Stock Barang")
-    st.write("Ini adalah halaman Stock Barang.")
+    
+    # Membaca data dari berkas CSV
+    if os.path.exists(STOK_BARANG_FILE):
+        df = pd.read_csv(STOK_BARANG_FILE)
+        st.write(df)
+    else:
+        st.error(f"File {STOK_BARANG_FILE} tidak ditemukan.")
 elif st.session_state['page'] == 'Penjualan':
     st.title("Halaman Penjualan")
     st.write("Ini adalah halaman Penjualan.")
