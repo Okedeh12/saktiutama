@@ -511,7 +511,16 @@ def save_to_excel():
         })
         df_keuntungan_bersih.to_excel(writer, sheet_name='Keuntungan Bersih', index=False)
 
+# Initialize session state variables if not present
+if 'stok_barang' not in st.session_state:
+    st.session_state.stok_barang = pd.DataFrame(columns=[
+        "ID", "Nama Barang", "Ukuran/Kemasan", "Merk", "Harga", 
+        "Harga Jual", "Persentase Keuntungan", "Stok", "Kode Warna"
+    ])
 
+def save_data():
+    # Implement your data saving logic here, e.g., saving to a CSV file or database
+    st.write("Data berhasil disimpan!")  # Placeholder for saving logic
 
 # Fungsi untuk halaman Owner dengan pengaman password
 def halaman_owner():
@@ -533,14 +542,7 @@ def halaman_owner():
                 st.error("Password salah!")
         return
 
-    # Initialize session state variables if not present
-    if 'stok_barang' not in st.session_state:
-        st.session_state.stok_barang = pd.DataFrame(columns=[
-            "ID", "Nama Barang", "Ukuran/Kemasan", "Merk", "Harga", 
-            "Harga Jual", "Persentase Keuntungan", "Stok", "Kode Warna"
-        ])
-
-    # Add "Tambah Baru" option to selectbox
+        # Add "Tambah Baru" option to selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Option to add new item
     selected_row = st.selectbox("Pilih ID Barang untuk Diedit atau Tambah Baru", barang_ids)
@@ -622,9 +624,6 @@ def halaman_owner():
 
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
-        if 'delete_confirmation' not in st.session_state:
-            st.session_state.delete_confirmation = None
-
         if st.button(f"Hapus Barang ID {selected_row}"):
             if st.session_state.delete_confirmation is None:
                 st.session_state.delete_confirmation = selected_row
@@ -638,10 +637,6 @@ def halaman_owner():
                 save_data()  # Save data after deleting item
             else:
                 st.session_state.delete_confirmation = None
-
-    def save_data():
-        # Implement your data saving logic here, e.g., saving to a CSV file or database
-        st.write("Data berhasil disimpan!")  # Placeholder for saving logic
         
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
