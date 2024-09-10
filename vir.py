@@ -632,10 +632,10 @@ def halaman_owner():
             else:
                 st.warning("Penghapusan dibatalkan.")
 
-def save_data():
-    # Implement your data saving logic here, e.g., saving to a CSV file or database
-    pass
-    
+    def save_data():
+        # Implement your data saving logic here, e.g., saving to a CSV file or database
+        pass
+        
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
         st.error("Data penjualan tidak ditemukan.")
