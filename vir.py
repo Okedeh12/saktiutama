@@ -12,56 +12,53 @@ STOK_BARANG_FILE = "stok_barang.csv"
 PENJUALAN_FILE = "penjualan.csv"
 SUPPLIER_FILE = "supplier.csv"
 
-# CSS styles for a professional look
-st.markdown("""
+# CSS custom untuk sidebar dan tombol dengan efek hover
+st.markdown(
+    """
     <style>
-    .header {
-        text-align: center;
+    /* Mengatur tampilan sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #f4f4f4;
         padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
+        border-radius: 10px;
     }
-    .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
+
+    /* Styling tombol di sidebar */
+    .sidebar-btn {
+        background-color: #4CAF50; /* Warna dasar tombol */
         color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        font-size: 16px;
         border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
         cursor: pointer;
     }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
+
+    /* Efek hover untuk tombol */
+    .sidebar-btn:hover {
+        background-color: #45a049; /* Warna tombol saat di-hover */
     }
     </style>
-""", unsafe_allow_html=True)
+    """, 
+    unsafe_allow_html=True
+)
 
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
+# Menambahkan elemen sidebar
+with st.sidebar:
+    st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
+    
+    # Tombol custom di sidebar dengan efek hover
+    st.markdown('<a href="#" class="sidebar-btn">Stock Barang</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn">Penjualan</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn">Supplier</a>', unsafe_allow_html=True)
+    st.markdown('<a href="#" class="sidebar-btn">Owner</a>', unsafe_allow_html=True)
+
+# Dummy content to show the selected page (Simulasi konten halaman utama)
+st.write("Pilih menu di sidebar untuk menampilkan konten.")
 
 
 
