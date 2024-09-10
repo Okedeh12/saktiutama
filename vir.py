@@ -44,7 +44,7 @@ st.markdown(
     }
     </style>
     """,
-    unsafe_allow_html=True  # Pastikan argumen ini ada dan ditutup
+    unsafe_allow_html=True  # Pastikan argumen ini ditutup
 )
 
 # Display the header
@@ -877,16 +877,22 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-
+# Fungsi untuk mengubah halaman
+def change_page(page_name):
+    st.session_state['page'] = page_name
 # Sidebar dengan tombol
 with st.sidebar:
     st.markdown('<h2 style="text-align:center;">Menu Kasir</h2>', unsafe_allow_html=True)
     
-    # Tombol dengan link dan efek hover
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Stock Barang\')">Stock Barang</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Penjualan\')">Penjualan</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Supplier\')">Supplier</a>', unsafe_allow_html=True)
-    st.markdown('<a href="#" class="sidebar-btn" onclick="change_page(\'Owner\')">Owner</a>', unsafe_allow_html=True)
+    # Tombol sidebar yang mengubah halaman
+    if st.button('Stock Barang'):
+        change_page('Stock Barang')
+    if st.button('Penjualan'):
+        change_page('Penjualan')
+    if st.button('Supplier'):
+        change_page('Supplier')
+    if st.button('Owner'):
+        change_page('Owner')
 
 # Konten halaman berdasarkan halaman yang dipilih
 if st.session_state['page'] == 'Stock Barang':
