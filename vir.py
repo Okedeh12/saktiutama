@@ -540,11 +540,6 @@ def halaman_owner():
             "Harga Jual", "Persentase Keuntungan", "Stok", "Kode Warna"
         ])
 
-    if 'pengeluaran' not in st.session_state:
-        st.session_state.pengeluaran = pd.DataFrame(columns=[
-            "Jenis Pengeluaran", "Jumlah Pengeluaran", "Keterangan", "Waktu"
-        ])
-
     # Add "Tambah Baru" option to selectbox
     barang_ids = st.session_state.stok_barang["ID"].tolist()
     barang_ids.insert(0, "Tambah Baru")  # Option to add new item
@@ -606,15 +601,17 @@ def halaman_owner():
                     "Harga": [harga],
                     "Stok": [stok],
                     "Persentase Keuntungan": [persentase_keuntungan],
-                    "Harga Jual": [harga_jual]
+                    "Harga Jual": [harga_jual],
+                    "Kode Warna": [""]
                 })
                 st.session_state.stok_barang = pd.concat([st.session_state.stok_barang, new_data], ignore_index=True)
                 st.success("Barang baru berhasil ditambahkan!")
             else:
                 # Update existing item
-                st.session_state.stok_barang.loc[st.session_state.stok_barang["ID"] == selected_row, 
-                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Harga Jual"]] = \
-                    [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan, harga_jual]
+                st.session_state.stok_barang.loc[
+                    st.session_state.stok_barang["ID"] == selected_row,
+                    ["Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Harga Jual"]
+                ] = [nama_barang, merk, ukuran, harga, stok, persentase_keuntungan, harga_jual]
                 st.success(f"Barang ID {selected_row} berhasil diupdate!")
             
             save_data()  # Save data after adding or updating items
@@ -626,12 +623,18 @@ def halaman_owner():
     # Button to delete item (if ID is not 'Tambah Baru')
     if selected_row != "Tambah Baru":
         if st.button("Hapus Barang"):
-            if st.confirm("Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
-                st.session_state.stok_barang = st.session_state.stok_barang[st.session_state.stok_barang["ID"] != selected_row]
+            if st.confirm(f"Apakah Anda yakin ingin menghapus Barang ID {selected_row}?"):
+                st.session_state.stok_barang = st.session_state.stok_barang[
+                    st.session_state.stok_barang["ID"] != selected_row
+                ]
                 st.success(f"Barang ID {selected_row} berhasil dihapus!")
                 save_data()  # Save data after deleting item
             else:
                 st.warning("Penghapusan dibatalkan.")
+
+def save_data():
+    # Implement your data saving logic here, e.g., saving to a CSV file or database
+    pass
     
     # Check if 'penjualan' DataFrame exists and has required columns
     if 'penjualan' not in st.session_state:
