@@ -925,17 +925,23 @@ def halaman_owner():
     # Tabel ringkasan keuangan
     st.subheader("Ringkasan Keuangan")
     current_date = datetime.now()
+    
+    # Format the values with commas and without decimals
     summary_data = {
         "Keterangan": ["Total Keuntungan", "Total Pengeluaran", "Total Keuntungan Bersih"],
         "Jumlah (Rp)": [
-            total_keuntungan, 
-            total_pengeluaran, 
-            total_keuntungan - total_pengeluaran
+            f"{total_keuntungan:,.0f}",  # Format with thousand separator and no decimals
+            f"{total_pengeluaran:,.0f}",  # Format with thousand separator and no decimals
+            f"{(total_keuntungan - total_pengeluaran):,.0f}"  # Format with thousand separator and no decimals
         ],
         "Waktu": [current_date.strftime("%d-%m-%Y %H:%M:%S")] * 3,
         "Bulan": [current_date.strftime("%Y-%m")] * 3
     }
+    
+    # Convert the summary data to a DataFrame
     data_ringkasan = pd.DataFrame(summary_data)
+    
+    # Display the table
     st.table(data_ringkasan)
     
     # Sales Report
