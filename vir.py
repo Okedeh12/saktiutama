@@ -821,57 +821,57 @@ def halaman_owner():
             "Waktu", "Keuntungan Bersih", "Bulan"
         ])
     
-    # Initialize the session state if not already initialized
-    if 'historis_analisa_pendapatan' not in st.session_state:
-        st.session_state.historis_analisa_pendapatan = pd.DataFrame(columns=['Bulan', 'Total Penjualan', 'Total Tagihan Supplier', 'Keuntungan Bersih'])
-    
-    # Current date and month
-    current_month = datetime.now().strftime("%Y-%m")
-    
-    # Calculate `total_penjualan`, `total_tagihan_supplier`, and `keuntungan_bersih`
-    total_penjualan = total_keuntungan  # or use your existing logic for total penjualan
-    total_tagihan_supplier = ...  # your logic to calculate total tagihan supplier
-    keuntungan_bersih = total_penjualan - total_tagihan_supplier
-    
-    # Check if there's already data for the current month
-    if not st.session_state.historis_analisa_pendapatan.empty:
-        latest_record = st.session_state.historis_analisa_pendapatan.iloc[-1]  # Get the latest record
-        latest_month = latest_record['Bulan']
+        # Initialize the session state if not already initialized
+        if 'historis_analisa_pendapatan' not in st.session_state:
+            st.session_state.historis_analisa_pendapatan = pd.DataFrame(columns=['Bulan', 'Total Penjualan', 'Total Tagihan Supplier', 'Keuntungan Bersih'])
         
-        # Update the record if it's the same month, otherwise create a new one
-        if latest_month == current_month:
-            st.session_state.historis_analisa_pendapatan.iloc[-1] = {
-                'Bulan': current_month,
-                'Total Penjualan': total_penjualan,
-                'Total Tagihan Supplier': total_tagihan_supplier,
-                'Keuntungan Bersih': keuntungan_bersih
-            }
+        # Current date and month
+        current_month = datetime.now().strftime("%Y-%m")
+        
+        # Calculate `total_penjualan`, `total_tagihan_supplier`, and `keuntungan_bersih`
+        total_penjualan = total_keuntungan  # or use your existing logic for total penjualan
+        total_tagihan_supplier = ...  # your logic to calculate total tagihan supplier
+        keuntungan_bersih = total_penjualan - total_tagihan_supplier
+        
+        # Check if there's already data for the current month
+        if not st.session_state.historis_analisa_pendapatan.empty:
+            latest_record = st.session_state.historis_analisa_pendapatan.iloc[-1]  # Get the latest record
+            latest_month = latest_record['Bulan']
+            
+            # Update the record if it's the same month, otherwise create a new one
+            if latest_month == current_month:
+                st.session_state.historis_analisa_pendapatan.iloc[-1] = {
+                    'Bulan': current_month,
+                    'Total Penjualan': total_penjualan,
+                    'Total Tagihan Supplier': total_tagihan_supplier,
+                    'Keuntungan Bersih': keuntungan_bersih
+                }
+            else:
+                # Add a new record for a different month
+                st.session_state.historis_analisa_pendapatan = st.session_state.historis_analisa_pendapatan.append({
+                    'Bulan': current_month,
+                    'Total Penjualan': total_penjualan,
+                    'Total Tagihan Supplier': total_tagihan_supplier,
+                    'Keuntungan Bersih': keuntungan_bersih
+                }, ignore_index=True)
         else:
-            # Add a new record for a different month
+            # First-time entry
             st.session_state.historis_analisa_pendapatan = st.session_state.historis_analisa_pendapatan.append({
                 'Bulan': current_month,
                 'Total Penjualan': total_penjualan,
                 'Total Tagihan Supplier': total_tagihan_supplier,
                 'Keuntungan Bersih': keuntungan_bersih
             }, ignore_index=True)
-    else:
-        # First-time entry
-        st.session_state.historis_analisa_pendapatan = st.session_state.historis_analisa_pendapatan.append({
-            'Bulan': current_month,
-            'Total Penjualan': total_penjualan,
-            'Total Tagihan Supplier': total_tagihan_supplier,
-            'Keuntungan Bersih': keuntungan_bersih
-        }, ignore_index=True)
+        
+        # Display the financial analysis history (last updated entry only)
+        st.subheader("Histori Analisa Pendapatan")
+        st.dataframe(st.session_state.historis_analisa_pendapatan)
     
-    # Display the financial analysis history (last updated entry only)
-    st.subheader("Histori Analisa Pendapatan")
-    st.dataframe(st.session_state.historis_analisa_pendapatan)
-
-    
-    # Tombol untuk mendownload histori analisis keuangan
-    if st.button("Download Histori Analisis Keuangan (CSV)"):
-        csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
-        st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
+        
+        # Tombol untuk mendownload histori analisis keuangan
+        if st.button("Download Histori Analisis Keuangan (CSV)"):
+            csv = st.session_state.historis_analisis_keuangan.to_csv(index=False)
+            st.download_button(label="Download CSV", data=csv, file_name="histori_analisis_keuangan.csv", mime="text/csv")
     
     # Grafik keuntungan penjualan per barang
     if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
