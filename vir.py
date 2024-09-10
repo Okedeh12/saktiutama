@@ -1,121 +1,87 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
-import matplotlib.pyplot as plt
+import os
 from datetime import datetime
+import matplotlib.pyplot as plt
 import os
 import time
 from io import StringIO
 
 
-# Path to data files
-STOK_BARANG_FILE = "stok_barang.csv"
-PENJUALAN_FILE = "penjualan.csv"
-SUPPLIER_FILE = "supplier.csv"
+# Define file paths
+STOK_BARANG_FILE = 'stok_barang.csv'
+PENJUALAN_FILE = 'penjualan.csv'
+SUPPLIER_FILE = 'supplier.csv'
+OWNER_FILE = 'owner.csv'  # Add the owner file path
 
-# CSS styles for a professional look
-st.markdown("""
-    <style>
-    .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #f0f4f8;
-        border-bottom: 1px solid #ddd;
-    }
-    .header h1 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #f7f9fc;
-        padding-top: 20px;
-    }
-    .sidebar .sidebar-content h2 {
-        font-family: 'Arial', sans-serif;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    .sidebar .sidebar-content .radio {
-        margin-top: 10px;
-    }
-    .main-content {
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stDataFrame {
-        overflow-x: auto;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Display the header
-st.markdown('<div class="header"><h1>TOKO SAKTI UTAMA</h1></div>', unsafe_allow_html=True)
-
-
-# Load data from CSV files
-def load_data():
-    if os.path.exists(STOK_BARANG_FILE):
-        st.session_state.stok_barang = pd.read_csv(STOK_BARANG_FILE, parse_dates=["Waktu Input"])
-    else:
+# Initialize session state data if not already present
+def initialize_session_state():
+    if 'stok_barang' not in st.session_state:
         st.session_state.stok_barang = pd.DataFrame(columns=[
             "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Harga", "Stok", "Persentase Keuntungan", "Waktu Input"
         ])
-
-    if os.path.exists(PENJUALAN_FILE):
-        st.session_state.penjualan = pd.read_csv(PENJUALAN_FILE, parse_dates=["Waktu"])
-    else:
+    if 'penjualan' not in st.session_state:
         st.session_state.penjualan = pd.DataFrame(columns=[
             "ID", "Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Jumlah", "Total Harga", "Keuntungan", "Waktu"
         ])
-
-    if os.path.exists(SUPPLIER_FILE):
-        st.session_state.supplier = pd.read_csv(SUPPLIER_FILE, parse_dates=["Waktu"])
-    else:
+    if 'supplier' not in st.session_state:
         st.session_state.supplier = pd.DataFrame(columns=[
             "ID", "Nama Barang", "Merk", "Ukuran/Kemasan", "Jumlah Barang", "Nama Supplier", "Tagihan", "Waktu"
         ])
+    if 'owner' not in st.session_state:
+        st.session_state.owner = pd.DataFrame(columns=[
+            "ID", "Username", "Password"  # Adjust columns as needed
+        ])
+
+# Load data from CSV files if they exist
+def load_data():
+    if os.path.exists(STOK_BARANG_FILE):
+        st.session_state.stok_barang = pd.read_csv(STOK_BARANG_FILE, parse_dates=["Waktu Input"])
+    if os.path.exists(PENJUALAN_FILE):
+        st.session_state.penjualan = pd.read_csv(PENJUALAN_FILE, parse_dates=["Waktu"])
+    if os.path.exists(SUPPLIER_FILE):
+        st.session_state.supplier = pd.read_csv(SUPPLIER_FILE, parse_dates=["Waktu"])
+    if 'owner' not in st.session_state:
+        st.session_state.owner = pd.DataFrame(columns=["ID"])
 
 # Save data to CSV files
 def save_data():
     st.session_state.stok_barang.to_csv(STOK_BARANG_FILE, index=False)
     st.session_state.penjualan.to_csv(PENJUALAN_FILE, index=False)
     st.session_state.supplier.to_csv(SUPPLIER_FILE, index=False)
+    st.session_state.owner.to_csv(OWNER_FILE, index=False)  # Save owner data
+    st.session_state.stok_barang.to_csv("stok_barang.csv", index=False)
+    st.session_state.penjualan.to_csv("penjualan.csv", index=False)
+    st.session_state.supplier.to_csv("supplier.csv", index=False)
+    st.session_state.piutang_konsumen.to_csv("piutang_konsumen.csv", index=False)
+    st.session_state.pengeluaran.to_csv("pengeluaran.csv", index=False)
+    st.session_state.historis_analisis_keuangan.to_csv("historis_analisis_keuangan.csv", index=False)
+    st.session_state.historis_keuntungan_bersih.to_csv("historis_keuntungan_bersih.csv", index=False)
 
-# Initialize data
-if 'stok_barang' not in st.session_state:
-    load_data()
+def save_to_excel():
+    with pd.ExcelWriter("data_laporan.xlsx") as writer:
+        st.session_state.stok_barang.to_excel(writer, sheet_name="Stock Barang", index=False)
+        st.session_state.penjualan.to_excel(writer, sheet_name="Penjualan", index=False)
+        st.session_state.supplier.to_excel(writer, sheet_name="Supplier", index=False)
+        st.session_state.piutang_konsumen.to_excel(writer, sheet_name="Piutang Konsumen", index=False)
+        st.session_state.pengeluaran.to_excel(writer, sheet_name="Pengeluaran", index=False)
+        st.session_state.historis_analisis_keuangan.to_excel(writer, sheet_name="Historis Analisis Keuangan", index=False)
+        st.session_state.historis_keuntungan_bersih.to_excel(writer, sheet_name="Historis Keuntungan Bersih", index=False)
 
-# Sidebar menu
-menu = st.sidebar.radio("Pilih Menu", ["Stock Barang", "Penjualan", "Supplier", "Owner"])
-
-# Main content area
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
-# Fungsi untuk halaman Stock Barang
+# Function for Stock Barang page
 def halaman_stock_barang():
-    st.header("Stock Barang")
+    st.markdown('<h1 style="text-align: center;">Stock Barang</h1>', unsafe_allow_html=True)
     
     # Form input barang baru dan edit barang
-    st.subheader("Tambah/Edit Barang")
+    st.markdown('<h2 style="text-align: center;">Tambah/Edit Barang</h2>', unsafe_allow_html=True)
     
     # Pilih barang yang akan diedit atau pilih "Tambah Baru"
-    selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"])
-
+    selected_action = st.selectbox("Pilih Aksi", ["Tambah Barang", "Edit Barang"], key='action_select')
+    
     if selected_action == "Edit Barang":
         # Pilih ID Barang untuk Diedit
-        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"])
+        selected_id = st.selectbox("Pilih ID Barang untuk Diedit", st.session_state.stok_barang["ID"].tolist() + ["Tambah Baru"], key='id_select')
         
         if selected_id != "Tambah Baru":
             barang_dipilih = st.session_state.stok_barang[st.session_state.stok_barang["ID"] == selected_id]
@@ -177,13 +143,13 @@ def halaman_stock_barang():
             save_data()  # Save data after adding or updating item
 
     # Tabel stok barang
-    st.subheader("Daftar Stok Barang")
+    st.markdown('<h2 style="text-align: center;">Daftar Stok Barang</h2>', unsafe_allow_html=True)
     df_stok_barang = st.session_state.stok_barang.copy()
     if "Persentase Keuntungan" in df_stok_barang.columns:
         df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
     
     # Pencarian nama barang atau merk
-    search_text = st.text_input("Cari Nama Barang atau Merk")
+    search_text = st.text_input("Cari Nama Barang atau Merk", key='search_text')
     if search_text:
         df_stok_barang = df_stok_barang[
             (df_stok_barang["Nama Barang"].str.contains(search_text, case=False, na=False)) |
@@ -192,14 +158,13 @@ def halaman_stock_barang():
     
     st.dataframe(df_stok_barang)
 
-# Fungsi untuk halaman Penjualan
+# Function for Penjualan page
 def halaman_penjualan():
     st.header("Penjualan")
-
-    # Form untuk tambah/edit penjualan
+    
+    # Form for adding/editing sales
     st.subheader("Tambah/Edit Penjualan")
 
-    # Pilih ID Penjualan untuk diedit
     if not st.session_state.penjualan.empty:
         id_penjualan = st.selectbox("Pilih ID Penjualan untuk Diedit", st.session_state.penjualan["ID"].tolist() + ["Tambah Baru"])
 
@@ -243,15 +208,14 @@ def halaman_penjualan():
         nama_pelanggan = st.text_input("Nama Pelanggan", value=default_values["Nama Pelanggan"])
         nomor_telpon = st.text_input("Nomor Telepon", value=default_values["Nomor Telepon"])
         alamat = st.text_area("Alamat", value=default_values["Alamat"])
-        nama_barang = st.selectbox("Pilih Barang", st.session_state.stok_barang["Nama Barang"], index=st.session_state.stok_barang["Nama Barang"].tolist().index(default_values["Nama Barang"]))
-        ukuran = st.selectbox("Ukuran/Kemasan", st.session_state.stok_barang["Ukuran/Kemasan"], index=st.session_state.stok_barang["Ukuran/Kemasan"].tolist().index(default_values["Ukuran/Kemasan"]))
-        merk = st.selectbox("Merk", st.session_state.stok_barang["Merk"], index=st.session_state.stok_barang["Merk"].tolist().index(default_values["Merk"]))
+        nama_barang = st.selectbox("Pilih Barang", st.session_state.stok_barang["Nama Barang"].tolist(), index=st.session_state.stok_barang["Nama Barang"].tolist().index(default_values["Nama Barang"]))
+        ukuran = st.selectbox("Ukuran/Kemasan", st.session_state.stok_barang[st.session_state.stok_barang["Nama Barang"] == nama_barang]["Ukuran/Kemasan"].tolist(), index=st.session_state.stok_barang[st.session_state.stok_barang["Nama Barang"] == nama_barang]["Ukuran/Kemasan"].tolist().index(default_values["Ukuran/Kemasan"]))
+        merk = st.selectbox("Merk", st.session_state.stok_barang[(st.session_state.stok_barang["Nama Barang"] == nama_barang) & (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran)]["Merk"].tolist(), index=st.session_state.stok_barang[(st.session_state.stok_barang["Nama Barang"] == nama_barang) & (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran)]["Merk"].tolist().index(default_values["Merk"]))
         kode_warna = st.text_input("Kode Warna", value=default_values["Kode Warna"], placeholder="Opsional")
         jumlah = st.number_input("Jumlah Orderan", min_value=1, value=int(default_values["Jumlah"]))
         submit = st.form_submit_button("Simpan Penjualan")
 
         if submit:
-            # Mengambil data harga dan persentase keuntungan berdasarkan kombinasi
             stok_barang_filter = st.session_state.stok_barang[
                 (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
                 (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
@@ -263,7 +227,7 @@ def halaman_penjualan():
                 persentase_keuntungan = stok_barang_filter["Persentase Keuntungan"].values[0]
                 total_harga = harga_barang * jumlah
                 keuntungan = total_harga * (persentase_keuntungan / 100)
-                waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Mendapatkan waktu saat ini
+                waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
                 new_penjualan = pd.DataFrame({
                     "ID": [st.session_state.penjualan["ID"].max() + 1 if not st.session_state.penjualan.empty else 1],
@@ -287,7 +251,6 @@ def halaman_penjualan():
                         ["Nama Pelanggan", "Nomor Telepon", "Alamat", "Nama Barang", "Ukuran/Kemasan", "Merk", "Kode Warna", "Jumlah", "Total Harga", "Keuntungan", "Waktu"]] = \
                         [nama_pelanggan, nomor_telpon, alamat, nama_barang, ukuran, merk, kode_warna, jumlah, total_harga, keuntungan, waktu]
                 
-                # Update stok barang
                 st.session_state.stok_barang.loc[
                     (st.session_state.stok_barang["Nama Barang"] == nama_barang) &
                     (st.session_state.stok_barang["Ukuran/Kemasan"] == ukuran) &
@@ -296,33 +259,29 @@ def halaman_penjualan():
                 ] -= jumlah
                 
                 st.success(f"Penjualan untuk {nama_pelanggan} berhasil disimpan!")
-                save_data()  # Save data after adding or updating sale
+                save_data()
             else:
                 st.error("Kombinasi Nama Barang, Ukuran/Kemasan, dan Merk tidak ditemukan di stok.")
 
-    # Tabel stok barang terupdate
     st.subheader("Stok Barang Terupdate")
     df_stok_barang = st.session_state.stok_barang.copy()
     if "Persentase Keuntungan" in df_stok_barang.columns:
-        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
+        df_stok_barang = df_stok_barang.drop(columns=["Persentase Keuntungan"])
     st.dataframe(df_stok_barang, use_container_width=True, hide_index=False)
 
-    # Tabel penjualan
     st.subheader("Data Penjualan")
     if not st.session_state.penjualan.empty:
         st.session_state.penjualan["Nomor Telepon"] = st.session_state.penjualan["Nomor Telepon"].astype(str)
         st.dataframe(st.session_state.penjualan, use_container_width=True, hide_index=False)
 
-    # Tombol pencarian stok barang
     search_barang = st.text_input("Cari Barang")
     if search_barang:
         hasil_pencarian = st.session_state.stok_barang[st.session_state.stok_barang["Nama Barang"].str.contains(search_barang, case=False)]
         st.write("Hasil Pencarian:")
         if "Persentase Keuntungan" in hasil_pencarian.columns:
-            hasil_pencarian = hasil_pencarian.drop(columns=["Persentase Keuntungan"])  # Menghapus kolom Persentase Keuntungan jika ada
+            hasil_pencarian = hasil_pencarian.drop(columns=["Persentase Keuntungan"])
         st.dataframe(hasil_pencarian, use_container_width=True, hide_index=False)
 
-    # Pencarian nama pelanggan atau nomor telepon
     search_pelanggan = st.text_input("Cari Nama Pelanggan atau Nomor Telepon")
     if search_pelanggan:
         hasil_pencarian_pelanggan = st.session_state.penjualan[
@@ -332,7 +291,6 @@ def halaman_penjualan():
         st.write("Hasil Pencarian:")
         st.dataframe(hasil_pencarian_pelanggan, use_container_width=True, hide_index=False)
 
-    # Dropdown untuk memilih ID penjualan
     if not st.session_state.penjualan.empty:
         id_pilihan = st.selectbox("Pilih ID Penjualan untuk Detail", st.session_state.penjualan["ID"].tolist())
         if id_pilihan:
@@ -340,7 +298,6 @@ def halaman_penjualan():
             st.write("Detail Penjualan:")
             st.dataframe(penjualan_detail, use_container_width=True, hide_index=False)
 
-    # Dropdown untuk memilih ID penjualan untuk Download Struk
     if not st.session_state.penjualan.empty:
         id_penjualan = st.selectbox("Pilih ID Penjualan untuk Download Struk", st.session_state.penjualan["ID"].unique())
         
@@ -361,7 +318,6 @@ def halaman_penjualan():
             struk.write(f"Waktu: {selected_sale['Waktu']}\n")
             struk.write("============ TERIMA KASIH ============\n")
 
-            # Menyediakan file untuk di-download
             struk_file = 'struk_pembelian.txt'
             with open(struk_file, 'w') as f:
                 f.write(struk.getvalue())
@@ -893,18 +849,94 @@ def halaman_owner():
                 file_name="data_laporan.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-    
-# Menampilkan halaman berdasarkan menu yang dipilih
-if menu == "Stock Barang":
+
+# Define the pages and their content
+def page_admin():
+    st.header("Halaman Admin")
+    halaman_stock_barang()  # Call the stock barang function here
+
+def page_penjualan():
+    st.header("Penjualan")
+    st.write("halaman Penjualan")  
+
+def page_supplier():
+    st.header("Halaman Supplier")
+    st.write("Data Supplier")  # Add functionality for supplier management
+
+def page_owner():
+    st.header("Halaman Owner")
+    st.write("Konten untuk halaman Owner")  # Add functionality for owner content
+
+# Custom CSS for navigation box and menu items
+st.markdown("""
+    <style>
+    /* Style for the navigation container */
+    .css-1d391kg {
+        background-color: #8967B3; /* Background color of the navigation box */
+        padding: 10px; /* Padding around the menu */
+        border-radius: 10px; /* Rounded corners for the menu */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for a subtle 3D effect */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .css-1d391kg .css-1g7kjm0 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .css-1d391kg .css-1l7zdkv {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+    }
+    /* Style for the menu items */
+    .css-1d391kg .css-1l7zdkv .css-1t8dhd0 {
+        font-size: 16px;
+        text-align: center;
+        color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa; /* Background color of the menu item */
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .css-1d391kg .css-1l7zdkv .css-1t8dhd0:hover {
+        background-color: #007bff; /* Hover background color */
+        color: white; /* Hover text color */
+    }
+    .css-1d391kg .css-1l7zdkv .css-1t8dhd0.css-1i6g40i {
+        background-color: #007bff; /* Active menu item background */
+        color: white; /* Active menu item text color */
+    }
+            
+    </style>
+    """, unsafe_allow_html=True)
+
+# Create a sidebar with navigation options
+with st.sidebar:
+    selected_page = option_menu(
+        menu_title="Toko Sakti Utama",
+        options=["Stock Barang", "Penjualan", "Supplier", "Owner"],
+        icons=["box", "receipt", "truck", "person"],
+        menu_icon="cast",
+        default_index=0
+    )
+
+# Page routing
+if selected_page == "Stock Barang":
+    initialize_session_state()
+    load_data()
     halaman_stock_barang()
-elif menu == "Penjualan":
-    halaman_penjualan()
-elif menu == "Supplier":
+elif selected_page == "Penjualan":
+    initialize_session_state()
+    load_data()
+    halaman_penjualan()  # Ensure this is called correctly
+elif selected_page == "Supplier":
+    initialize_session_state()
+    load_data()
     halaman_supplier()
-elif menu == "Owner":
+elif selected_page == "Owner":
+    initialize_session_state()
+    load_data()
     halaman_owner()
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Save data when the app is closed or the menu is changed
-save_data()
