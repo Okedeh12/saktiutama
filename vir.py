@@ -868,24 +868,6 @@ def halaman_owner():
         st.dataframe(st.session_state.historis_analisa_pendapatan)
     
     
-            # Grafik keuntungan penjualan per barang
-            if not st.session_state.penjualan.empty and "Keuntungan" in st.session_state.penjualan.columns:
-                st.subheader("Grafik Keuntungan Per Barang")
-                
-                keuntungan_per_barang = st.session_state.penjualan.groupby("Nama Barang")["Keuntungan"].sum()
-                
-                plt.figure(figsize=(12, 8))
-                keuntungan_per_barang.sort_values(ascending=False).plot(kind="bar", color="skyblue")
-                
-                plt.title("Keuntungan per Barang", fontsize=16)
-                plt.xlabel("Nama Barang", fontsize=14)
-                plt.ylabel("Total Keuntungan (Rp)", fontsize=14)
-                plt.xticks(rotation=45, ha="right", fontsize=12)
-                
-                st.pyplot(plt)
-            else:
-                st.write("Data penjualan kosong atau kolom 'Keuntungan' tidak ditemukan.")
-    
     # Menambahkan tabel pengeluaran dan fitur edit
     st.subheader("Pengeluaran")
     
